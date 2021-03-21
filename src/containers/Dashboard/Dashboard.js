@@ -1,10 +1,7 @@
 import { Component } from 'react';
 import { Spinner } from '../../components/UI/Spinner/Spinner'
 import axios from '../../axios'
-import styles from './Dashboard.module.css'
-import { ContentBox } from '../ContentBox/ContentBox';
-import { Table } from '../../components/UI/Table/Table';
-import DataTable from '../../components/visualization/DataTable/DataTable';
+import { DataTable } from '../../components/visualization/DataTable/DataTable';
 
 class Dashboard extends Component {
   state = {
@@ -20,7 +17,8 @@ class Dashboard extends Component {
         const headers = res.data['headers']
         const entries = res.data['entry']
         const rows = this.getRows(headers, entries);
-        this.setState({ headers: headers, rows: rows})
+        this.setState({ data: res.data['entry'] })
+        this.setState({ headers: headers, rows: rows })
       })
       .catch(err => {
         console.log(err)
@@ -39,10 +37,10 @@ class Dashboard extends Component {
     })
     return rows
   }
-  
+
   render() {
-    const dataTable = this.state.rows && this.state.headers
-      ? <DataTable headers={this.state.headers} rows={this.state.rows} />
+    const dataTable = this.state.rows && this.state.headers && this.state.data
+      ? <DataTable headers={this.state.headers} rows={this.state.rows} data={this.state.data} />
       : <Spinner />
     return dataTable
   }
