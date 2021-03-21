@@ -1,0 +1,13 @@
+.DataTable {
+  padding: 0 32px 32px;
+}
+
+.DataTable table {
+  border-collapse: collapse;
+}
+
+.DataTable th,
+.DataTable td {
+  border: 1px solid black;
+  padding: 4px 8px;
+}

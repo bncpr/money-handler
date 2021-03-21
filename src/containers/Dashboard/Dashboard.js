@@ -1,6 +1,12 @@
 import { Component } from 'react';
 import { Spinner } from '../../components/UI/Spinner/Spinner'
 import axios from '../../axios'
+<<<<<<< HEAD
+=======
+import styles from './Dashboard.module.css'
+import { ContentBox } from '../ContentBox/ContentBox';
+import { Table } from '../../components/UI/Table/Table';
+>>>>>>> react-table
 import DataTable from '../../components/visualization/DataTable/DataTable';
 
 class Dashboard extends Component {
