@@ -1,5 +1,5 @@
 import styles from './Toolbar.module.css'
-import { NavigationItems } from '../NavigationItems/NavigationItems'
+import NavigationItems from '../NavigationItems/NavigationItems'
 
 export const Toolbar = () => {
     return (
