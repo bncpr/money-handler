@@ -1,26 +1,7 @@
 .ContentBox {
-    border: 2px solid white;
+    border-radius: 10px;
     background-color: #F5F3F2;
-    border-radius: 5px;
-    width: 95%;
-    margin: auto;
-    margin-top: 5px;
-    margin-bottom: 2.5px;
-    height: 100%;
-    min-height: 350px;
-    box-sizing: border-box;
-}
-
-@media (min-width: 700px) {
-    .ContentBox {
-        width: 80%;
-        margin: 5px;
-    }
-}
-
-@media (min-width: 1000px) {
-    .ContentBox {
-        width: 960px;
-        height: 500px;
-    }
+    box-shadow: 0 4px 8px rgba(128, 128, 128, 0.35);
+    margin: 0 8px 16px;
+    flex-grow: 0;
 }

@@ -3,15 +3,10 @@
     top: 56px;
     text-align: center;
     display: flex;
-    flex-flow: column;
+    flex-flow: row wrap;
     padding: 15px;
-    justify-content: center;
+    justify-content: space-evenly;
     overflow: hidden;
-    
+    box-sizing: border-box;
 }
 
-@media (min-width: 700px) {
-    .Content {
-        flex-flow: row;
-    }
-}

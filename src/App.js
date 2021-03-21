@@ -1,11 +1,11 @@
-import { Spinner } from './components/UI/Spinner/Spinner'
 import { Layout } from './containers/Layout/Layout'
+import { Login } from './containers/Login/Login'
 
 function App() {
   return (
     <Layout>
-        <h1>Welcome to this app</h1>
-        <p>Please login.</p>
+        {/* <ContentBox><h1>Hello</h1></ContentBox> */}
+        <Login />
     </Layout>
   );
 }

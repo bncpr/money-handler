@@ -1,0 +1,10 @@
+.Form {
+    width: 80%;
+    margin: auto;
+    height: 200px;
+}
+
+.Form input {
+    display: block;
+    margin: auto;
+}

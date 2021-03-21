@@ -1,5 +1,5 @@
 .Toolbar {
-    background-color: olivedrab;
+    background-color: #6b705c;
     height: 56px;
     width: 100%;
     padding: 0;
@@ -12,7 +12,7 @@
     box-sizing: border-box;
     padding: 0 10px;
     z-index: 90;
-    border-bottom: 1px solid darkolivegreen;
+    border-bottom: 1px solid #a5a58d;
 }
 
 .Toolbar nav {
