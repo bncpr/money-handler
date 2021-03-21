@@ -1,0 +1,19 @@
+.Spinner {
+    font-size: 4em;
+    animation: rotate-spinner infinite 1s forwards;
+    display: block;
+    color: goldenrod;
+    margin: auto;
+}
+
+@keyframes rotate-spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        font-size: 4.5em;
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

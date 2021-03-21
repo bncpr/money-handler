@@ -1,0 +1,17 @@
+.Content {
+    position: relative;
+    top: 56px;
+    text-align: center;
+    display: flex;
+    flex-flow: column;
+    padding: 15px;
+    justify-content: center;
+    overflow: hidden;
+    
+}
+
+@media (min-width: 700px) {
+    .Content {
+        flex-flow: row;
+    }
+}
