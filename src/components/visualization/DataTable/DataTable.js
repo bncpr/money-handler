@@ -7,7 +7,7 @@ import styles from './DataTable.module.css'
 class DataTable extends Component {
   render() {
     return (
-      <ContentBox className={styles.DataTable}>
+      <div className={styles.DataTable}>
         <h1>Entries</h1>
         <table>
           <thead>
@@ -19,7 +19,7 @@ class DataTable extends Component {
             {this.props.rows.map(row => <tr key={row.id}>{row.map(td => <td>{td}</td>)}</tr>)}
           </tbody>
         </table>
-      </ContentBox>
+      </div>
     )
   }
 }

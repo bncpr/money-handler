@@ -2,6 +2,9 @@ import { Component } from 'react';
 import { Spinner } from '../../components/UI/Spinner/Spinner'
 import axios from '../../axios'
 import DataTable from '../../components/visualization/DataTable/DataTable';
+import { ContentBox } from '../ContentBox/ContentBox';
+import styles from './Dashboard.module.css'
+import { Button } from '../../components/UI/Button/Button';
 
 class Dashboard extends Component {
   state = {
@@ -11,13 +14,10 @@ class Dashboard extends Component {
   componentDidMount() {
     axios.get('/entries.json')
       .then(res => {
-        // console.log(res)
-        // const dataArray = Object.keys(res.data).map(key => res.data[key])
-        console.log(res.data)
         const headers = res.data['headers']
         const entries = res.data['entry']
         const rows = this.getRows(headers, entries);
-        this.setState({ headers: headers, rows: rows})
+        this.setState({ headers: headers, rows: rows })
       })
       .catch(err => {
         console.log(err)
@@ -36,12 +36,24 @@ class Dashboard extends Component {
     })
     return rows
   }
-  
+
+  addEntryHandler() {
+    console.log('hello')
+  }
+
   render() {
-    const dataTable = this.state.rows && this.state.headers
-      ? <DataTable headers={this.state.headers} rows={this.state.rows} />
-      : <Spinner />
-    return dataTable
+    let dataTable = null;
+    if (this.state.rows && this.state.headers) {
+      dataTable = <DataTable headers={this.state.headers} rows={this.state.rows} />
+    }
+
+    return (
+      <ContentBox className={styles.Dashboard}>
+        {dataTable}
+        <Button onClick={this.addEntryHandler}>ADD</Button>
+        {/* TODO: move button */}
+      </ContentBox>
+    )
   }
 }
 
