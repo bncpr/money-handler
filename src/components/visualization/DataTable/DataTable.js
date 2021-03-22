@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import { ContentBox } from '../../../containers/ContentBox/ContentBox';
 import styles from './DataTable.module.css'
@@ -62,17 +62,47 @@ function Table({ columns, data }) {
   )
 }
 
-export const DataTable = ({ data, headers }) => {
-  const _columns = () =>
-    headers.map(header => {
-      return {
-        Header: header,
-        accessor: header
-      }
-    })
+const Subcategories = ({ values }) => {
+  return (
+    <Fragment>
+      {values.map((value, idx) => {
+        return (
+          <span key={idx} className={styles.Subcategory}>
+            {value}
+          </span>
+        )
+      })}
+    </Fragment>
+  )
+}
 
+export const DataTable = ({ data }) => {
   const columns = React.useMemo(
-    _columns, []
+    () => [
+      {
+        Header: 'Date',
+        accessor: 'date'
+      },
+      {
+        Header: 'Value',
+        accessor: 'value'
+      },
+      {
+        Header: 'Paid',
+        accessor: 'payer'
+      },
+      {
+        Header: 'Category',
+        accessor: 'category',
+      },
+      {
+        Header: 'Subcategory',
+        accessor: 'subcategory',
+        Cell: ({ cell: { value } }) => {
+          return value ? <Subcategories values={value} /> : null
+        }
+      }
+    ], []
   )
   return (
     <ContentBox className={styles.DataTable}>

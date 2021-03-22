@@ -11,9 +11,6 @@ class Dashboard extends Component {
   componentDidMount() {
     axios.get('/entries.json')
       .then(res => {
-        // console.log(res)
-        // const dataArray = Object.keys(res.data).map(key => res.data[key])
-        console.log(res.data)
         const headers = res.data['headers']
         const entries = res.data['entry']
         const rows = this.getRows(headers, entries);
