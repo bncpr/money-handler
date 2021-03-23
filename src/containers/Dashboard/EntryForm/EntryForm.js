@@ -35,13 +35,14 @@ export const EntryForm = ({ subs }) => {
   
   const [state, setState] = useState({
     date: '',
-    payer: '',
+    payer: 'ben',
     value: '',
     category: '',
     subcategories: null
   })
   
   useEffect(() => {
+    console.log(subs);
     const subcategories = {};
     subs.forEach(sub => {subcategories[sub] = false})
     setState({...state, subcategories: {...subcategories}})
@@ -68,7 +69,14 @@ export const EntryForm = ({ subs }) => {
 
   const onSubmitEntry = (event) => {
     event.preventDefault()
-    axios.post('entries/entry.json', state)
+    const newState = {...state}
+    const subs = [];
+    Object.keys(newState['subcategories'])
+      .map(key => {
+        if (newState['subcategories'][key]) subs.push(key)
+      })
+    newState['subcategories'] = subs
+    axios.post('entries/entries.json', newState)
       .then(res => {
         console.log(res)
       })
