@@ -9,19 +9,19 @@ class Dashboard extends Component {
   state = {
     headers: null,
     rows: null,
-    subcategories: []
+    subs: []
   }
   componentDidMount() {
     axios.get('/entries.json')
       .then(res => {
         const headers = res.data['headers']
-        const entries = res.data['entry']
+        const entries = Object.values(res.data['entry'])
         const rows = this.getRows(headers, entries);
-        const subcategories = res.data['subcategories']
+        const subs = res.data['subcategories']
         this.setState({
           headers,
           rows,
-          subcategories,
+          subs
         })
       })
       .catch(err => {
@@ -35,7 +35,17 @@ class Dashboard extends Component {
       let row = [];
       row.id = entries.indexOf(entry);
       headers.forEach(header => {
-        row.push(entry[header] ? entry[header] : null)
+        let sub = entry[header];
+        if (header === 'subcategories') {
+          row.push(
+            sub
+              ? Object.keys(sub)
+                .map(key => sub[key] ? key : null)
+              : null
+          )
+        } else {
+          row.push(sub ? sub : null)
+        }
       })
       rows.push(row)
     })
@@ -55,7 +65,7 @@ class Dashboard extends Component {
     return (
       <ContentBox className={styles.Dashboard}>
         {dataTable}
-        <EntryForm subcategories={this.state.subcategories} />
+        <EntryForm subs={this.state.subs} />
       </ContentBox>
     )
   }
