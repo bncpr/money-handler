@@ -5,11 +5,13 @@ import DataTable from '../../components/visualization/DataTable/DataTable';
 import { ContentBox } from '../ContentBox/ContentBox';
 import styles from './Dashboard.module.css'
 import { Button } from '../../components/UI/Button/Button';
+import { EntryForm } from './EntryForm/EntryForm';
 
 class Dashboard extends Component {
   state = {
     headers: null,
-    rows: null
+    rows: null,
+    subcategories: []
   }
   componentDidMount() {
     axios.get('/entries.json')
@@ -17,7 +19,12 @@ class Dashboard extends Component {
         const headers = res.data['headers']
         const entries = res.data['entry']
         const rows = this.getRows(headers, entries);
-        this.setState({ headers: headers, rows: rows })
+        const subcategories = res.data['subcategories']
+        this.setState({
+          headers,
+          rows,
+          subcategories,
+        })
       })
       .catch(err => {
         console.log(err)
@@ -50,8 +57,7 @@ class Dashboard extends Component {
     return (
       <ContentBox className={styles.Dashboard}>
         {dataTable}
-        <Button onClick={this.addEntryHandler}>ADD</Button>
-        {/* TODO: move button */}
+        <EntryForm subcategories={this.state.subcategories} />
       </ContentBox>
     )
   }
