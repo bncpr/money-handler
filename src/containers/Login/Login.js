@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { ContentBox } from '../ContentBox/ContentBox'
+import { ContentBox } from '../../components/UI/ContentBox/ContentBox'
 import styles from './Login.module.css'
 
 export class Login extends Component {

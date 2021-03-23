@@ -1,5 +1,4 @@
-import { connect } from "react-redux"
-import { Toolbar } from "../../components/Navigation/Toolbar/Toolbar"
+import { Toolbar } from "../Navigation/Toolbar/Toolbar"
 import styles from './Layout.module.css'
 
 export const Layout = ({ children }) => {

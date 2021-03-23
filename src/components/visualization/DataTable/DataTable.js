@@ -1,7 +1,4 @@
-import { render } from "@testing-library/react";
 import { Component } from "react";
-import { ContentBox } from "../../../containers/ContentBox/ContentBox"
-import { capitalizeFirstChar } from "../../../utility/utility"
 import styles from './DataTable.module.css'
 
 class DataTable extends Component {

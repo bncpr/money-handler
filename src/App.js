@@ -1,19 +1,13 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { Layout } from './containers/Layout/Layout'
+import { Layout } from './components/Layout/Layout'
 import { Login } from './containers/Login/Login'
 import { Route, Switch } from 'react-router';
-import { ContentBox } from './containers/ContentBox/ContentBox';
+import { ContentBox } from './components/UI/ContentBox/ContentBox';
 import Dashboard from './containers/Dashboard/Dashboard'
 
 const Welcome = () => {
   return <ContentBox>Welcome</ContentBox>
-}
-// const User = () => {
-//   return <ContentBox>User</ContentBox>
-// }
-const Logout = () => {
-  return <ContentBox>Logout</ContentBox>
 }
 
 class App extends Component {

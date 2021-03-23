@@ -1,10 +1,8 @@
 import { Component } from 'react';
-import { Spinner } from '../../components/UI/Spinner/Spinner'
 import axios from '../../axios'
 import DataTable from '../../components/visualization/DataTable/DataTable';
-import { ContentBox } from '../ContentBox/ContentBox';
+import { ContentBox } from '../../components/UI/ContentBox/ContentBox';
 import styles from './Dashboard.module.css'
-import { Button } from '../../components/UI/Button/Button';
 import { EntryForm } from './EntryForm/EntryForm';
 
 class Dashboard extends Component {
