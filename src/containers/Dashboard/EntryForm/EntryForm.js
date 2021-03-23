@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect } from 'react'
 import { Button } from '../../../components/UI/Button/Button'
 import styles from './EntryForm.module.css'
+import axios from '../../../axios'
 
 const Checkbox = ({ labelText, onChange, name }) => {
   const [checked, setChecked] = useState(false)
@@ -27,7 +28,7 @@ const Checkbox = ({ labelText, onChange, name }) => {
   )
 }
 
-export const EntryForm = ({ subcategories }) => {
+export const EntryForm = ({ subs }) => {
   
   const [showForm, setShowForm] = useState(false);
   const onShowForm = () => setShowForm(!showForm)
@@ -37,23 +38,14 @@ export const EntryForm = ({ subcategories }) => {
     payer: '',
     value: '',
     category: '',
-    subs: null
+    subcategories: null
   })
   
   useEffect(() => {
-    const subs = {};
-    subcategories.forEach(
-      sub => {
-        subs[sub] = false
-      }
-    )
-    setState({
-      ...state,
-      subs: {
-        ...subs
-      }
-    })
-  }, [subcategories])
+    const subcategories = {};
+    subs.forEach(sub => {subcategories[sub] = false})
+    setState({...state, subcategories: {...subcategories}})
+  }, [subs])
 
   const onChangeHandler = (event) => {
     const target = event.target
@@ -67,8 +59,8 @@ export const EntryForm = ({ subcategories }) => {
     const target = event.target
     setState({
       ...state,
-      subs: {
-        ...state.subs,
+      subcategories: {
+        ...state.subcategories,
         [target.name]: target.checked
       }
     })
@@ -76,10 +68,14 @@ export const EntryForm = ({ subcategories }) => {
 
   const onSubmitEntry = (event) => {
     event.preventDefault()
-    console.log(state)
-    return
+    axios.post('entries/entry.json', state)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
-
 
   const form = (
     <form onSubmit={onSubmitEntry}>
@@ -111,9 +107,9 @@ export const EntryForm = ({ subcategories }) => {
         placeholder='Enter category'
         value={state.category}
         onChange={onChangeHandler} />
-      <label>Subcategories:</label>
+      <label>subs:</label>
       <div className={styles.inputGroup}>
-        {subcategories.map(
+        {subs.map(
           sub => <Checkbox
             name={sub}
             onChange={onPickHandler}
