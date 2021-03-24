@@ -1,0 +1,9 @@
+.radioGroup {
+  padding: 15px 0;
+  margin: auto;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  max-width: 500px;
+  width: 80%;
+}

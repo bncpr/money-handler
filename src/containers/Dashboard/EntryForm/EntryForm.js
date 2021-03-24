@@ -1,38 +1,23 @@
-import { Fragment, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '../../../components/UI/Button/Button'
+import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox'
 import styles from './EntryForm.module.css'
 import axios from '../../../axios'
+import { InputGroup } from '../../../components/UI/Form/InputGroup/InputGroup'
+import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
+import { RadioGroup } from '../../../components/UI/Form/RadioGroup/RadioGroup'
 
-const Checkbox = ({ labelText, onChange, name }) => {
-  const [checked, setChecked] = useState(false)
-  const onChecked = event => {
-    setChecked(event.target.checked)
+const reducer = (state, action) => {
+  switch (action.type) {
+    case ''
   }
-
-  return (
-    <div className={styles.checkBox} onChange={onChange}>
-      <label>
-        <input
-          name={name}
-          type='checkbox'
-          checked={checked}
-          onChange={onChecked} />
-        <span className={
-          checked
-            ? styles.checked
-            : styles.notChecked
-        }>
-          {labelText}</span>
-      </label>
-    </div>
-  )
 }
 
 export const EntryForm = ({ subs }) => {
-  
+
   const [showForm, setShowForm] = useState(false);
   const onShowForm = () => setShowForm(!showForm)
-  
+
   const [state, setState] = useState({
     date: '',
     payer: 'ben',
@@ -40,12 +25,12 @@ export const EntryForm = ({ subs }) => {
     category: '',
     subcategories: null
   })
-  
+
   useEffect(() => {
     console.log(subs);
     const subcategories = {};
-    subs.forEach(sub => {subcategories[sub] = false})
-    setState({...state, subcategories: {...subcategories}})
+    subs.forEach(sub => { subcategories[sub] = false })
+    setState({ ...state, subcategories: { ...subcategories } })
   }, [subs])
 
   const onChangeHandler = (event) => {
@@ -67,9 +52,16 @@ export const EntryForm = ({ subs }) => {
     })
   }
 
+  const onSelectHandler = (name) => {
+    setState({
+      ...state,
+      payer: name
+    })
+  }
+
   const onSubmitEntry = (event) => {
     event.preventDefault()
-    const newState = {...state}
+    const newState = { ...state }
     const subs = [];
     Object.keys(newState['subcategories'])
       .map(key => {
@@ -100,14 +92,14 @@ export const EntryForm = ({ subs }) => {
         value={state.value}
         placeholder='Enter value'
         onChange={onChangeHandler} />
+
       <label>Paid:</label>
-      <select
-        onChange={onChangeHandler}
-        value={state.payer}
-        name='payer'>
-        <option value='ben'>Ben</option>
-        <option value='ella'>Ella</option>
-      </select>
+
+      <RadioGroup onChange={onSelectHandler} selected={state.payer}>
+        <RadioButton text='Ben' name='ben' />
+        <RadioButton text='Ella' name='ella' />
+      </RadioGroup>
+
       <label>Category:</label>
       <input
         type='text'
@@ -115,15 +107,14 @@ export const EntryForm = ({ subs }) => {
         placeholder='Enter category'
         value={state.category}
         onChange={onChangeHandler} />
+
       <label>Subcategories:</label>
-      <div className={styles.inputGroup}>
+      <InputGroup>
         {subs.map(
-          sub => <Checkbox
-            name={sub}
-            onChange={onPickHandler}
-            labelText={sub} />
+          sub => <Checkbox name={sub} onChange={onPickHandler} labelText={sub} />
         )}
-      </div>
+      </InputGroup>
+
       <Button>Submit</Button>
     </form>
   )
