@@ -1,28 +1,14 @@
-import styles from './Checkbox.module.css'
-import { useState } from 'react'
+import styles from '../../../../utility/Bubble.module.css'
 
-export const Checkbox = ({ labelText, onChange, name }) => {
-
-  const [checked, setChecked] = useState(false)
-  const onChecked = event => {
-    setChecked(event.target.checked)
-  }
-
+export const Checkbox = ({ text, onTick, name, checked }) => {
   return (
-      <label className={styles.checkBox} onClick={onChange}>
-
-        <input
-          name={name}
-          type='checkbox'
-          checked={checked}
-          onChange={onChecked} />
-
-        <span className={
-          checked
-            ? styles.checked
-            : styles.notChecked
-        }>{labelText}</span>
-        
-      </label>
+      <div
+        className={`${styles.bubble} ${checked ? styles.selected : ''}`}
+        name={name}
+        onClick={() => onTick(name, checked)}>
+        {text}
+      </div>
   )
 }
+
+// const CheckBoxGroup = ({ children})

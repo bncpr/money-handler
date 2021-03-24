@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useReducer } from 'react'
 import { Button } from '../../../components/UI/Button/Button'
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox'
 import styles from './EntryForm.module.css'
@@ -6,10 +6,15 @@ import axios from '../../../axios'
 import { InputGroup } from '../../../components/UI/Form/InputGroup/InputGroup'
 import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
 import { RadioGroup } from '../../../components/UI/Form/RadioGroup/RadioGroup'
+import { updateObj } from '../../../utility/utility'
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case ''
+    case 'CHANGE_VALUE':
+      return updateObj(state, { [action.name]: action.value })
+    case 'TICK_SUBCATEGORY_VALUE':
+      return updateObj(state, { 'subcategories': updateObj(state.subcategories, { [action.name]: (!action.checked) }) })
+    default: return state
   }
 }
 
@@ -18,7 +23,7 @@ export const EntryForm = ({ subs }) => {
   const [showForm, setShowForm] = useState(false);
   const onShowForm = () => setShowForm(!showForm)
 
-  const [state, setState] = useState({
+  const [state, dispatch] = useReducer(reducer, {
     date: '',
     payer: 'ben',
     value: '',
@@ -26,38 +31,23 @@ export const EntryForm = ({ subs }) => {
     subcategories: null
   })
 
+  const onChangeHandler = (name, value) => {
+    dispatch({ type: 'CHANGE_VALUE', name, value })
+  }
+
+  const onCheckHandler = (name, checked) => {
+    dispatch({ type: 'TICK_SUBCATEGORY_VALUE', name, checked })
+  }
+
   useEffect(() => {
-    console.log(subs);
     const subcategories = {};
     subs.forEach(sub => { subcategories[sub] = false })
-    setState({ ...state, subcategories: { ...subcategories } })
+    onChangeHandler('subcategories', subcategories)
   }, [subs])
 
-  const onChangeHandler = (event) => {
-    const target = event.target
-    setState({
-      ...state,
-      [target.name]: target.value
-    })
-  }
-
-  const onPickHandler = (event) => {
-    const target = event.target
-    setState({
-      ...state,
-      subcategories: {
-        ...state.subcategories,
-        [target.name]: target.checked
-      }
-    })
-  }
-
-  const onSelectHandler = (name) => {
-    setState({
-      ...state,
-      payer: name
-    })
-  }
+  useEffect(() => {
+    console.log('[useEffect]', state)
+  })
 
   const onSubmitEntry = (event) => {
     event.preventDefault()
@@ -70,6 +60,7 @@ export const EntryForm = ({ subs }) => {
     newState['subcategories'] = subs
     axios.post('entries/entries.json', newState)
       .then(res => {
+        alert('submit')
         console.log(res)
       })
       .catch(err => {
@@ -78,52 +69,70 @@ export const EntryForm = ({ subs }) => {
   }
 
   const form = (
-    <form onSubmit={onSubmitEntry}>
-      <label>Date:</label>
-      <input
-        type='date'
-        name='date'
-        value={state.date}
-        onChange={onChangeHandler} />
-      <label>Value:</label>
-      <input
-        type='number'
-        name='value'
-        value={state.value}
-        placeholder='Enter value'
-        onChange={onChangeHandler} />
+    <form onSubmit={onSubmitEntry} className={!showForm ? styles.hide : ''}>
 
-      <label>Paid:</label>
+        <div className={styles.formDiv}>
+          <label>Date:</label>
+          <input
+            type='date'
+            name='date'
+            value={state.date}
+            onChange={(event) => onChangeHandler('date', event.target.value)} />
+        </div>
 
-      <RadioGroup onChange={onSelectHandler} selected={state.payer}>
-        <RadioButton text='Ben' name='ben' />
-        <RadioButton text='Ella' name='ella' />
-      </RadioGroup>
+        <div className={styles.formDiv}>
+          <label>Value:</label>
+          <input
+            type='number'
+            name='value'
+            value={state.value}
+            placeholder='Enter value'
+            onChange={(event) => onChangeHandler('value', event.target.value)} />
+        </div>
 
-      <label>Category:</label>
-      <input
-        type='text'
-        name='category'
-        placeholder='Enter category'
-        value={state.category}
-        onChange={onChangeHandler} />
+        <div className={styles.formDiv}>
+          <label>Paid:</label>
+          <RadioGroup onChange={onChangeHandler} selected={state.payer}>
+            <RadioButton text='Ben' name='payer' value='ben' />
+            <RadioButton text='Ella' name='payer' value='ella' />
+          </RadioGroup>
+        </div>
 
-      <label>Subcategories:</label>
-      <InputGroup>
-        {subs.map(
-          sub => <Checkbox name={sub} onChange={onPickHandler} labelText={sub} />
-        )}
-      </InputGroup>
+        <div className={styles.formDiv}>
+          <label>Category:</label>
+          <input
+            type='text'
+            name='category'
+            placeholder='Enter category'
+            value={state.category}
+            onChange={(event) => onChangeHandler(event.target.name, event.target.value)} />
+        </div>
 
-      <Button>Submit</Button>
+        <div className={styles.formDiv}>
+          <label>subcategories:</label>
+          <InputGroup className={styles.choices}>
+            {subs.map(
+              sub => <Checkbox
+                name={sub}
+                onTick={onCheckHandler}
+                text={sub}
+                checked={state.subcategories[sub]} />)}
+          </InputGroup>
+        </div>
+
     </form>
   )
   return (
     <div className={styles.entryForm}>
-      {showForm ? form : null}
-      <Button onClick={onShowForm}>{
-        showForm ? 'Cancel' : 'Add'
-      }</Button>
+      {form}
+      <Button onClick={onShowForm}>
+        {showForm ? 'Cancel' : 'Add'}
+      </Button>
+      <Button
+        className={showForm ? '' : styles.hide}
+        onClick={onSubmitEntry}>
+        Submit
+      </Button>
     </div>
   )
 }

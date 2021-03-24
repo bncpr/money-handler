@@ -61,7 +61,6 @@ function Table({ columns, data }) {
 }
 
 const Subcategories = ({ values }) => {
-  console.log(values);
   return (
     <Fragment>
       {values.map((value, idx) => {
@@ -76,7 +75,6 @@ const Subcategories = ({ values }) => {
 }
 
 export const DataTable = ({ data }) => {
-  console.log(data)
   const columns = React.useMemo(
     () => [
       {

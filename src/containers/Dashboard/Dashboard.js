@@ -17,7 +17,6 @@ class Dashboard extends Component {
         const subs = res.data['subcategories']
         const data = Object.values(res.data['entries'])
         this.setState({ subs, data })
-        console.log('[Dashboard]', subs)
       })
       .catch(err => {
         console.log(err)
