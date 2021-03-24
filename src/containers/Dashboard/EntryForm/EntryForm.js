@@ -115,7 +115,7 @@ export const EntryForm = ({ subs }) => {
         placeholder='Enter category'
         value={state.category}
         onChange={onChangeHandler} />
-      <label>subs:</label>
+      <label>Subcategories:</label>
       <div className={styles.inputGroup}>
         {subs.map(
           sub => <Checkbox
