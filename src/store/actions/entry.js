@@ -21,7 +21,7 @@ export const submitEntry = (entry) => {
     axios.post('entries/entries.json', newEntry)
       .then(res => {
         alert('submit')
-        dispatch(submitEntrySuccess(entry))
+        dispatch(submitEntrySuccess(newEntry))
       })
       .catch(err => {
         dispatch(submitEntryFail(err))

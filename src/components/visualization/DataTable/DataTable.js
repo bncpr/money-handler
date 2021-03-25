@@ -1,8 +1,11 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import styles from './DataTable.module.css'
+import { Spinner } from '../../UI/Spinner/Spinner'
+import { useSelector } from 'react-redux';
 
 function Table({ columns, data }) {
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -74,7 +77,8 @@ const Subcategories = ({ values }) => {
   )
 }
 
-export const DataTable = ({ data }) => {
+export const DataTable = () => {
+  const data = useSelector(state => state.data.data)
   const columns = React.useMemo(
     () => [
       {
@@ -104,8 +108,8 @@ export const DataTable = ({ data }) => {
   )
   return (
     <div className={styles.DataTable}>
-      <h1>Table</h1>
-      {data ? <Table columns={columns} data={data} /> : null}
+      <h1>Entries</h1>
+      <Table columns={columns} data={data} />
     </div>
   )
 }
