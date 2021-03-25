@@ -1,22 +1,15 @@
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { NavigationItem } from './NavigationItem/NavigationItem'
 import styles from './NavigationItems.module.css'
 
 
-const NavigationItems = ({ isAuthenticated }) => {
-    return (
-        <ul className={styles.NavigationItems}>
-            <NavigationItem path='/'>Home</NavigationItem>
-            <NavigationItem path='/user'>User</NavigationItem>
-            { isAuthenticated ? <NavigationItem path='/login'>Login</NavigationItem> : null }
-        </ul>
-    )
+export const NavigationItems = () => {
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+  return (
+    <ul className={styles.NavigationItems}>
+      <NavigationItem path='/'>Home</NavigationItem>
+      <NavigationItem path='/user'>User</NavigationItem>
+      { isAuthenticated ? <NavigationItem path='/logout'>Logout</NavigationItem> : null}
+    </ul>
+  )
 }
-
-const mapStateToProps = state => {
-  return {
-    isAuthenticated: state.isAuthenticated
-  }
-}
-
-export default connect(mapStateToProps)(NavigationItems)

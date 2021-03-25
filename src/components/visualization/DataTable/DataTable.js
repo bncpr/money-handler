@@ -105,7 +105,7 @@ export const DataTable = ({ data }) => {
   return (
     <div className={styles.DataTable}>
       <h1>Table</h1>
-      <Table columns={columns} data={data} />
+      {data ? <Table columns={columns} data={data} /> : null}
     </div>
   )
 }

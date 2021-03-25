@@ -1,4 +1,5 @@
-import { useState, useEffect, useReducer } from 'react'
+import { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Button } from '../../../components/UI/Button/Button'
 import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox'
 import styles from './EntryForm.module.css'
@@ -6,38 +7,18 @@ import axios from '../../../axios'
 import { InputGroup } from '../../../components/UI/Form/InputGroup/InputGroup'
 import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
 import { RadioGroup } from '../../../components/UI/Form/RadioGroup/RadioGroup'
-import { updateObj } from '../../../utility/utility'
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'CHANGE_VALUE':
-      return updateObj(state, { [action.name]: action.value })
-    case 'TICK_SUBCATEGORY_VALUE':
-      return updateObj(state, { 'subcategories': updateObj(state.subcategories, { [action.name]: (!action.checked) }) })
-    default: return state
-  }
-}
+import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/actions/entry'
 
 export const EntryForm = ({ subs }) => {
 
   const [showForm, setShowForm] = useState(false);
   const onShowForm = () => setShowForm(!showForm)
 
-  const [state, dispatch] = useReducer(reducer, {
-    date: '',
-    payer: 'ben',
-    value: '',
-    category: '',
-    subcategories: null
-  })
-
-  const onChangeHandler = (name, value) => {
-    dispatch({ type: 'CHANGE_VALUE', name, value })
-  }
-
-  const onCheckHandler = (name, checked) => {
-    dispatch({ type: 'TICK_SUBCATEGORY_VALUE', name, checked })
-  }
+  const entry = useSelector(state => state.entry)
+  const dispatch = useDispatch()
+  const onChangeHandler = (name, value) => dispatch(changeValue(name, value))
+  const onCheckHandler = (name, checked) => dispatch(tickSubcategoryValue(name, checked))
+  const onSubmitHandler = (entry) => dispatch(submitEntry(entry))
 
   useEffect(() => {
     const subcategories = {};
@@ -45,38 +26,15 @@ export const EntryForm = ({ subs }) => {
     onChangeHandler('subcategories', subcategories)
   }, [subs])
 
-  useEffect(() => {
-    console.log('[useEffect]', state)
-  })
-
-  const onSubmitEntry = (event) => {
-    event.preventDefault()
-    const newState = { ...state }
-    const subs = [];
-    Object.keys(newState['subcategories'])
-      .map(key => {
-        if (newState['subcategories'][key]) subs.push(key)
-      })
-    newState['subcategories'] = subs
-    axios.post('entries/entries.json', newState)
-      .then(res => {
-        alert('submit')
-        console.log(res)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
   const form = (
-    <form onSubmit={onSubmitEntry} className={!showForm ? styles.hide : ''}>
+    <form className={!showForm ? styles.hide : ''}>
 
         <div className={styles.formDiv}>
           <label>Date:</label>
           <input
             type='date'
             name='date'
-            value={state.date}
+            value={entry.date}
             onChange={(event) => onChangeHandler('date', event.target.value)} />
         </div>
 
@@ -85,16 +43,16 @@ export const EntryForm = ({ subs }) => {
           <input
             type='number'
             name='value'
-            value={state.value}
+            value={entry.value}
             placeholder='Enter value'
             onChange={(event) => onChangeHandler('value', event.target.value)} />
         </div>
 
         <div className={styles.formDiv}>
           <label>Paid:</label>
-          <RadioGroup onChange={onChangeHandler} selected={state.payer}>
-            <RadioButton text='Ben' name='payer' value='ben' />
-            <RadioButton text='Ella' name='payer' value='ella' />
+          <RadioGroup onChange={onChangeHandler} selected={entry.payer}>
+            <RadioButton text='Ben' name='payer' value='ben' key='ben'/>
+            <RadioButton text='Ella' name='payer' value='ella' key='ella'/>
           </RadioGroup>
         </div>
 
@@ -104,7 +62,7 @@ export const EntryForm = ({ subs }) => {
             type='text'
             name='category'
             placeholder='Enter category'
-            value={state.category}
+            value={entry.category}
             onChange={(event) => onChangeHandler(event.target.name, event.target.value)} />
         </div>
 
@@ -113,10 +71,11 @@ export const EntryForm = ({ subs }) => {
           <InputGroup className={styles.choices}>
             {subs.map(
               sub => <Checkbox
+                key={sub}
                 name={sub}
                 onTick={onCheckHandler}
                 text={sub}
-                checked={state.subcategories[sub]} />)}
+                checked={entry.subcategories[sub]} />)}
           </InputGroup>
         </div>
 
@@ -130,7 +89,7 @@ export const EntryForm = ({ subs }) => {
       </Button>
       <Button
         className={showForm ? '' : styles.hide}
-        onClick={onSubmitEntry}>
+        onClick={() => onSubmitHandler(entry)}>
         Submit
       </Button>
     </div>

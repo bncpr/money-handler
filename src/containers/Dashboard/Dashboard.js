@@ -1,36 +1,22 @@
-import { Component } from 'react';
-import axios from '../../axios'
 import { ContentBox } from '../../components/UI/ContentBox/ContentBox';
-import styles from './Dashboard.module.css'
 import { EntryForm } from './EntryForm/EntryForm';
 import { DataTable } from '../../components/visualization/DataTable/DataTable';
-import { Spinner } from '../../components/UI/Spinner/Spinner'
+import { getData } from '../../store/actions/data'
+import { useSelector, useDispatch } from 'react-redux'
+import { useEffect } from 'react'
 
-class Dashboard extends Component {
-  state = {
-    subs: [],
-    data: []
-  }
-  componentDidMount() {
-    axios.get('/entries.json')
-      .then(res => {
-        const subs = res.data['subcategories']
-        const data = Object.values(res.data['entries'])
-        this.setState({ subs, data })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
+export const Dashboard = () => {
+  const dispatch = useDispatch()
+  const data = useSelector(state => state.data)
+  useEffect(() => {dispatch(getData())}, [dispatch])
 
-  render() {
-    return (
-      <ContentBox>
-        <DataTable data={this.state.data} />
-        <EntryForm subs={this.state.subs} />
-      </ContentBox>
-    )
-  }
+  return   (
+    <ContentBox>
+      <DataTable data={data.data} />
+      <EntryForm subs={data.subs} />
+    </ContentBox>
+  )
+
 }
 
 export default Dashboard
