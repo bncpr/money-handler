@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Button } from '../../../components/UI/Button/Button'
 import { CheckboxItem } from '../../../components/UI/Form/Checkbox/CheckboxItem'
@@ -7,15 +7,21 @@ import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/a
 import { Input } from '../../../components/UI/Form/Input/Input'
 import { RadioInput } from '../../../components/UI/Form/RadioInput/RadioInput'
 import { CheckboxWrapper } from '../../../components/UI/Form/Checkbox/CheckboxWrapper'
+import { getSubcategories } from '../../../store/actions/data'
 
 export const EntryForm = () => {
 
   const [showForm, setShowForm] = useState(false);
   const onShowForm = () => setShowForm(!showForm)
 
+  const gotSubcategories = useSelector(state => state.data.gotSubcategories)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if (!gotSubcategories) dispatch(getSubcategories())
+  })
+
   const subs = useSelector(state => state.data.subs)
   const entry = useSelector(state => state.entry)
-  const dispatch = useDispatch()
   const onChangeHandler = (name, value) => dispatch(changeValue(name, value))
   const onCheckHandler = (name, checked) => dispatch(tickSubcategoryValue(name, checked))
   const onSubmitHandler = (entry) => dispatch(submitEntry(entry))

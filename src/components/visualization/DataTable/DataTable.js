@@ -76,8 +76,7 @@ const Subcategories = ({ values }) => {
   )
 }
 
-export const DataTable = () => {
-  const data = useSelector(state => state.data.data)
+export const DataTable = ({ data }) => {
   const columns = React.useMemo(
     () => [
       {

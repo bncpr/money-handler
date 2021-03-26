@@ -36,3 +36,4 @@ export const submitEntrySuccess = (entry) => {
 export const submitEntryFail = (err) => {
   return { type: actionTypes.SUBMIT_ENTRY_FAIL, payload: { err } }
 }
+

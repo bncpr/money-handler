@@ -1,22 +1,22 @@
 import { ContentBox } from '../../components/UI/ContentBox/ContentBox';
 import { EntryForm } from './EntryForm/EntryForm';
 import { DataTable } from '../../components/visualization/DataTable/DataTable';
-import { getData } from '../../store/actions/data'
+import { getEntries } from '../../store/actions/data'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { Spinner } from '../../components/UI/Spinner/Spinner';
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
-  const data = useSelector(state => state.data.data)
-  const isLoaded = useSelector(state => state.data.isLoaded)
+  const data = useSelector(state => state.data.entries)
+  const gotEntries = useSelector(state => state.data.gotEntries)
   useEffect(() => {
-    if (!isLoaded) dispatch(getData())
+    if (!gotEntries) dispatch(getEntries())
   })
 
   return   (
     <ContentBox>
-      { isLoaded ? <DataTable data={data} /> : <Spinner /> }
+      { gotEntries ? <DataTable data={data} /> : <Spinner /> }
       <EntryForm subs={data.subs} />
     </ContentBox>
   )
