@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import styles from './DataTable.module.css'
-import { useSelector } from 'react-redux';
 
 function Table({ columns, data }) {
 
