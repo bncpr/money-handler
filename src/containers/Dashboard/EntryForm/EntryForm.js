@@ -29,7 +29,8 @@ export const EntryForm = () => {
         text='Date:'
         name='date'
         value={entry.date}
-        onChange={(event) => onChangeHandler('date', event.target.value)} />
+        onChange={(event) => onChangeHandler('date', event.target.value)}
+      />
 
       <Input
         className={styles.formDiv}
@@ -38,7 +39,8 @@ export const EntryForm = () => {
         name='value'
         value={entry.value}
         placeholder='Enter value'
-        onChange={(event) => onChangeHandler('value', event.target.value)} />
+        onChange={(event) => onChangeHandler('value', event.target.value)}
+      />
 
       <RadioInput
         className={styles.formDiv}
@@ -47,7 +49,8 @@ export const EntryForm = () => {
         onChange={onChangeHandler}
         buttonsList={[
           { text: 'ben', name: 'payer', value: 'ben', key: 'ben' },
-          { text: 'ella', name: 'payer', value: 'ella', key: 'ella' }]} />
+          { text: 'ella', name: 'payer', value: 'ella', key: 'ella' }]}
+      />
 
       <Input
         className={styles.formDiv}
@@ -56,16 +59,18 @@ export const EntryForm = () => {
         name='category'
         value={entry.category}
         placeholder='Enter category'
-        onChange={(event) => onChangeHandler(event.target.name, event.target.value)} />
+        onChange={(event) => onChangeHandler(event.target.name, event.target.value)}
+      />
 
       <CheckboxWrapper className={styles.formDiv} text='Subcategories:'>
         {subs.map(
-            sub => <CheckboxItem
-              key={sub}
-              name={sub}
-              onTick={onCheckHandler}
-              text={sub}
-              checked={entry.subcategories[sub]} />)}
+          sub => <CheckboxItem
+            key={sub}
+            name={sub}
+            onTick={onCheckHandler}
+            text={sub}
+            checked={entry.subcategories[sub]}
+          />)}
       </CheckboxWrapper>
 
     </form>
