@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { useSelector } from 'react-redux';
 import { useTable, useSortBy } from 'react-table';
 import styles from './DataTable.module.css'
 
@@ -75,7 +76,8 @@ const Subcategories = ({ values }) => {
   )
 }
 
-export const DataTable = ({ data }) => {
+export const DataTable = () => {
+  const data = useSelector(state => state.data.entries)
   const columns = React.useMemo(
     () => [
       {

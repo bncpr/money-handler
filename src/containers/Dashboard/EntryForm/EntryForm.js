@@ -20,6 +20,7 @@ export const EntryForm = () => {
     if (!didReqEntryFormData) { dispatch(getEntryFormData()) }
   }, [didReqEntryFormData])
 
+  const categories = useSelector(state => state.data.categories)
   const subs = useSelector(state => state.data.subs)
   const entry = useSelector(state => state.entry)
   const onChangeHandler = (name, value) => dispatch(changeValue(name, value))
@@ -58,14 +59,13 @@ export const EntryForm = () => {
           { text: 'ella', name: 'payer', value: 'ella', key: 'ella' }]}
       />
 
-      <Input
+      <RadioInput
         className={styles.formDiv}
-        type={'text'}
+        selected={entry.category}
         text='Category:'
-        name='category'
-        value={entry.category}
-        placeholder='Enter category'
-        onChange={(event) => onChangeHandler(event.target.name, event.target.value)}
+        onChange={onChangeHandler}
+        buttonsList={
+          categories.map(category => ({ text: category, 'name': 'category', value: category, key: category }))}
       />
 
       <CheckboxWrapper className={styles.formDiv} text='Subcategories:'>
@@ -75,8 +75,7 @@ export const EntryForm = () => {
             name={sub}
             onTick={onCheckHandler}
             text={sub}
-            checked={entry.subcategories[sub]}
-          />)}
+            checked={entry.subcategories[sub]} />)}
       </CheckboxWrapper>
 
     </form>
@@ -85,7 +84,7 @@ export const EntryForm = () => {
     <div className={styles.entryForm}>
       {form}
       <Button onClick={onShowForm}>
-        {showForm ? 'Cancel' : 'Add'}
+        {showForm ? 'Hide' : 'Add'}
       </Button>
       <Button
         className={showForm ? '' : styles.hide}

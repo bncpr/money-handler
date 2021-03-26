@@ -7,7 +7,6 @@ import { useEffect } from 'react'
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
-  const data = useSelector(state => state.data.entries)
   const didReqEntries = useSelector(state => state.data.didReqEntries)
   useEffect(() => {
     if (!didReqEntries) { dispatch(getEntries()) }
@@ -15,8 +14,8 @@ export const Dashboard = () => {
 
   return (
     <ContentBox>
-      { <DataTable data={data} />}
-      <EntryForm subs={data.subs} />
+      <DataTable />
+      <EntryForm />
     </ContentBox>
   )
 
