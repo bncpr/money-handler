@@ -27,62 +27,61 @@ export const EntryForm = () => {
   const onCheckHandler = (name, checked) => dispatch(tickSubcategoryValue(name, checked))
   const onSubmitHandler = (entry) => dispatch(submitEntry(entry))
 
-  const form = (
-    <form className={!showForm ? styles.hide : ''}>
-
-      <Input
-        className={styles.formDiv}
-        type={'date'}
-        text='Date:'
-        name='date'
-        value={entry.date}
-        onChange={(event) => onChangeHandler('date', event.target.value)}
-      />
-
-      <Input
-        className={styles.formDiv}
-        type={'number'}
-        text='Value:'
-        name='value'
-        value={entry.value}
-        placeholder='Enter value'
-        onChange={(event) => onChangeHandler('value', event.target.value)}
-      />
-
-      <RadioInput
-        className={styles.formDiv}
-        selected={entry.payer}
-        text='Paid:'
-        onChange={onChangeHandler}
-        buttonsList={[
-          { text: 'ben', name: 'payer', value: 'ben', key: 'ben' },
-          { text: 'ella', name: 'payer', value: 'ella', key: 'ella' }]}
-      />
-
-      <RadioInput
-        className={styles.formDiv}
-        selected={entry.category}
-        text='Category:'
-        onChange={onChangeHandler}
-        buttonsList={
-          categories.map(category => ({ text: category, 'name': 'category', value: category, key: category }))}
-      />
-
-      <CheckboxWrapper className={styles.formDiv} text='Subcategories:'>
-        {subs.map(
-          sub => <CheckboxItem
-            key={sub}
-            name={sub}
-            onTick={onCheckHandler}
-            text={sub}
-            checked={entry.subcategories[sub]} />)}
-      </CheckboxWrapper>
-
-    </form>
-  )
   return (
     <div className={styles.entryForm}>
-      {form}
+
+      <form className={!showForm ? styles.hide : ''}>
+
+        <Input
+          className={styles.formDiv}
+          type={'date'}
+          text='Date:'
+          name='date'
+          value={entry.date}
+          onChange={(event) => onChangeHandler('date', event.target.value)}
+        />
+
+        <Input
+          className={styles.formDiv}
+          type={'number'}
+          text='Value:'
+          name='value'
+          value={entry.value}
+          placeholder='Enter value'
+          onChange={(event) => onChangeHandler('value', event.target.value)}
+        />
+
+        <RadioInput
+          className={styles.formDiv}
+          selected={entry.payer}
+          text='Paid:'
+          onChange={onChangeHandler}
+          buttonsList={[
+            { text: 'ben', name: 'payer', value: 'ben', key: 'ben' },
+            { text: 'ella', name: 'payer', value: 'ella', key: 'ella' }]}
+        />
+
+        <RadioInput
+          className={styles.formDiv}
+          selected={entry.category}
+          text='Category:'
+          onChange={onChangeHandler}
+          buttonsList={
+            categories.map(category => ({ text: category, 'name': 'category', value: category, key: category }))}
+        />
+
+        <CheckboxWrapper className={styles.formDiv} text='Subcategories:'>
+          {subs.map(
+            sub => <CheckboxItem
+              key={sub}
+              name={sub}
+              onTick={onCheckHandler}
+              text={sub}
+              checked={entry.subcategories[sub]} />)}
+        </CheckboxWrapper>
+
+      </form>
+
       <Button onClick={onShowForm}>
         {showForm ? 'Hide' : 'Add'}
       </Button>
@@ -91,6 +90,7 @@ export const EntryForm = () => {
         onClick={() => onSubmitHandler(entry)}>
         Submit
       </Button>
+
     </div>
   )
 }
