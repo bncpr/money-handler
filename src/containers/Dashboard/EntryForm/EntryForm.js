@@ -21,12 +21,6 @@ export const EntryForm = () => {
   const onCheckHandler = (name, checked) => dispatch(tickSubcategoryValue(name, checked))
   const onSubmitHandler = (entry) => dispatch(submitEntry(entry))
 
-  // useEffect(() => {
-  //   const subcategories = {};
-  //   subs.forEach(sub => { subcategories[sub] = false })
-  //   onChangeHandler('subcategories', subcategories)
-  // }, [subs])
-
   const form = (
     <form className={!showForm ? styles.hide : ''}>
 
