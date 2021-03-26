@@ -9,22 +9,23 @@ import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton
 import { RadioGroup } from '../../../components/UI/Form/RadioGroup/RadioGroup'
 import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/actions/entry'
 
-export const EntryForm = ({ subs }) => {
+export const EntryForm = () => {
 
   const [showForm, setShowForm] = useState(false);
   const onShowForm = () => setShowForm(!showForm)
 
+  const subs = useSelector(state => state.data.subs)
   const entry = useSelector(state => state.entry)
   const dispatch = useDispatch()
   const onChangeHandler = (name, value) => dispatch(changeValue(name, value))
   const onCheckHandler = (name, checked) => dispatch(tickSubcategoryValue(name, checked))
   const onSubmitHandler = (entry) => dispatch(submitEntry(entry))
 
-  useEffect(() => {
-    const subcategories = {};
-    subs.forEach(sub => { subcategories[sub] = false })
-    onChangeHandler('subcategories', subcategories)
-  }, [subs])
+  // useEffect(() => {
+  //   const subcategories = {};
+  //   subs.forEach(sub => { subcategories[sub] = false })
+  //   onChangeHandler('subcategories', subcategories)
+  // }, [subs])
 
   const form = (
     <form className={!showForm ? styles.hide : ''}>

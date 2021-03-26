@@ -2,7 +2,7 @@ import { updateObj } from '../../utility/utility'
 import * as actionTypes from '../actions/actionTypes'
 
 const initialState = {
-  date: '',
+  date: new Date().toJSON().slice(0, 10),
   payer: '',
   value: '',
   category: '',

@@ -6,6 +6,10 @@
 .entryForm input {
   margin: auto;
   box-sizing: border-box;
+  border: none;
+  background-color: inherit;
+  color: inherit;
+  width: 55%;
 }
 
 .entryForm form {

@@ -8,13 +8,15 @@ import { Spinner } from '../../components/UI/Spinner/Spinner';
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
-  const data = useSelector(state => state.data)
+  const data = useSelector(state => state.data.data)
   const isLoaded = useSelector(state => state.data.isLoaded)
-  useEffect(() => {dispatch(getData())}, [dispatch])
+  useEffect(() => {
+    if (!isLoaded) dispatch(getData())
+  })
 
   return   (
     <ContentBox>
-      { isLoaded ? <DataTable data={data.data} /> : <Spinner /> }
+      { isLoaded ? <DataTable data={data} /> : <Spinner /> }
       <EntryForm subs={data.subs} />
     </ContentBox>
   )
