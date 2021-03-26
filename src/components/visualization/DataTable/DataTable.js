@@ -64,7 +64,7 @@ function Table({ columns, data }) {
 
 const Subcategories = ({ values }) => {
   return (
-    <Fragment>
+    <div className={styles.subcategories}>
       {values.map((value, idx) => {
         return (
           <span key={idx} className={styles.Subcategory}>
@@ -72,7 +72,7 @@ const Subcategories = ({ values }) => {
           </span>
         )
       })}
-    </Fragment>
+    </div>
   )
 }
 

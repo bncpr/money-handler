@@ -13,9 +13,16 @@
 }
 
 .Subcategory {
-  font-size: 0.9em;
+  font-size: 14px;
   margin: 5px;
   padding: 2px 5px;
   background-color: rgba(85, 107, 47, 0.301);
   border-radius: 15px;
+}
+
+.subcategories {
+  display: flex;
+  flex-flow: row wrap;
+  max-width: 250px;
+  justify-content: center;
 }
