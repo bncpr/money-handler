@@ -1,7 +1,6 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import styles from './DataTable.module.css'
-import { Spinner } from '../../UI/Spinner/Spinner'
 import { useSelector } from 'react-redux';
 
 function Table({ columns, data }) {

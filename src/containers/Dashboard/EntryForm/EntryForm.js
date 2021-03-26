@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Button } from '../../../components/UI/Button/Button'
-import { Checkbox } from '../../../components/UI/Form/Checkbox/Checkbox'
+import { CheckboxItem } from '../../../components/UI/Form/Checkbox/CheckboxItem'
 import styles from './EntryForm.module.css'
-import axios from '../../../axios'
-import { InputGroup } from '../../../components/UI/Form/InputGroup/InputGroup'
-import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
-import { RadioGroup } from '../../../components/UI/Form/RadioGroup/RadioGroup'
 import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/actions/entry'
+import { Input } from '../../../components/UI/Form/Input/Input'
+import { RadioInput } from '../../../components/UI/Form/RadioInput/RadioInput'
+import { CheckboxWrapper } from '../../../components/UI/Form/Checkbox/CheckboxWrapper'
 
 export const EntryForm = () => {
 
@@ -24,55 +23,50 @@ export const EntryForm = () => {
   const form = (
     <form className={!showForm ? styles.hide : ''}>
 
-        <div className={styles.formDiv}>
-          <label>Date:</label>
-          <input
-            type='date'
-            name='date'
-            value={entry.date}
-            onChange={(event) => onChangeHandler('date', event.target.value)} />
-        </div>
+      <Input
+        className={styles.formDiv}
+        type={'date'}
+        text='Date:'
+        name='date'
+        value={entry.date}
+        onChange={(event) => onChangeHandler('date', event.target.value)} />
 
-        <div className={styles.formDiv}>
-          <label>Value:</label>
-          <input
-            type='number'
-            name='value'
-            value={entry.value}
-            placeholder='Enter value'
-            onChange={(event) => onChangeHandler('value', event.target.value)} />
-        </div>
+      <Input
+        className={styles.formDiv}
+        type={'number'}
+        text='Value:'
+        name='value'
+        value={entry.value}
+        placeholder='Enter value'
+        onChange={(event) => onChangeHandler('value', event.target.value)} />
 
-        <div className={styles.formDiv}>
-          <label>Paid:</label>
-          <RadioGroup onChange={onChangeHandler} selected={entry.payer}>
-            <RadioButton text='Ben' name='payer' value='ben' key='ben'/>
-            <RadioButton text='Ella' name='payer' value='ella' key='ella'/>
-          </RadioGroup>
-        </div>
+      <RadioInput
+        className={styles.formDiv}
+        selected={entry.payer}
+        text='Paid:'
+        onChange={onChangeHandler}
+        buttonsList={[
+          { text: 'ben', name: 'payer', value: 'ben', key: 'ben' },
+          { text: 'ella', name: 'payer', value: 'ella', key: 'ella' }]} />
 
-        <div className={styles.formDiv}>
-          <label>Category:</label>
-          <input
-            type='text'
-            name='category'
-            placeholder='Enter category'
-            value={entry.category}
-            onChange={(event) => onChangeHandler(event.target.name, event.target.value)} />
-        </div>
+      <Input
+        className={styles.formDiv}
+        type={'text'}
+        text='Category:'
+        name='category'
+        value={entry.category}
+        placeholder='Enter category'
+        onChange={(event) => onChangeHandler(event.target.name, event.target.value)} />
 
-        <div className={styles.formDiv}>
-          <label>subcategories:</label>
-          <InputGroup className={styles.choices}>
-            {subs.map(
-              sub => <Checkbox
-                key={sub}
-                name={sub}
-                onTick={onCheckHandler}
-                text={sub}
-                checked={entry.subcategories[sub]} />)}
-          </InputGroup>
-        </div>
+      <CheckboxWrapper className={styles.formDiv} text='Subcategories:'>
+        {subs.map(
+            sub => <CheckboxItem
+              key={sub}
+              name={sub}
+              onTick={onCheckHandler}
+              text={sub}
+              checked={entry.subcategories[sub]} />)}
+      </CheckboxWrapper>
 
     </form>
   )

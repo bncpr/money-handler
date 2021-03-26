@@ -1,6 +1,6 @@
 import styles from '../../../../utility/Bubble.module.css'
 
-export const Checkbox = ({ text, onTick, name, checked }) => {
+export const CheckboxItem = ({ text, onTick, name, checked }) => {
   return (
       <div
         className={`${styles.bubble} ${checked ? styles.selected : ''}`}
