@@ -4,19 +4,18 @@ import { DataTable } from '../../components/visualization/DataTable/DataTable';
 import { getEntries } from '../../store/actions/data'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
-import { Spinner } from '../../components/UI/Spinner/Spinner';
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
   const data = useSelector(state => state.data.entries)
-  const gotEntries = useSelector(state => state.data.gotEntries)
+  const didReqEntries = useSelector(state => state.data.didReqEntries)
   useEffect(() => {
-    if (!gotEntries) dispatch(getEntries())
-  })
+    if (!didReqEntries) dispatch(getEntries())
+  }, [didReqEntries])
 
   return   (
     <ContentBox>
-      { gotEntries ? <DataTable data={data} /> : <Spinner /> }
+      { <DataTable data={data} />}
       <EntryForm subs={data.subs} />
     </ContentBox>
   )

@@ -3,6 +3,7 @@ import axios from '../../axios'
 
 export const getEntries = () => {
   return dispatch => {
+    dispatch(getEntriesInit())
     axios.get('/entries/entries.json')
     .then(res => {
       const data = Object.values(res.data)
@@ -12,6 +13,10 @@ export const getEntries = () => {
       dispatch(getEntriesFail(err.message))
     })
   }
+}
+
+export const getEntriesInit = () => {
+  return { type: actionTypes.GET_ENTRIES_INIT }
 }
 
 export const getEntriesSuccess = (entries) => {
@@ -40,4 +45,23 @@ export const getSubcategoriesSuccess = (subcategories) => {
 
 export const getSubcategoriesFail = (err) => {
   return { type: actionTypes.GET_SUBCATEGORIES_FAIL, payload: { err } }
+}
+export const getCategories = () => {
+  return dispatch => {
+    axios.get('/entries/categories.json')
+      .then(res => {
+        dispatch(getCategoriesSuccess(res.data))
+      })
+      .catch(err => {
+        dispatch(getCategoriesFail(err))
+      })
+  }
+}
+
+export const getCategoriesSuccess = (categories) => {
+  return { type: actionTypes.GET_CATEGORIES_SUCCESS, payload: { categories } }
+}
+
+export const getCategoriesFail = (err) => {
+  return { type: actionTypes.GET_CATEGORIES_FAIL, payload: { err } }
 }
