@@ -10,10 +10,10 @@ export const Dashboard = () => {
   const data = useSelector(state => state.data.entries)
   const didReqEntries = useSelector(state => state.data.didReqEntries)
   useEffect(() => {
-    if (!didReqEntries) dispatch(getEntries())
+    if (!didReqEntries) { dispatch(getEntries()) }
   }, [didReqEntries])
 
-  return   (
+  return (
     <ContentBox>
       { <DataTable data={data} />}
       <EntryForm subs={data.subs} />

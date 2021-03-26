@@ -27,25 +27,18 @@ export const getEntriesFail = (err) => {
   return { type: actionTypes.GET_ENTRIES_FAIL, payload: { err } }
 }
 
-export const getSubcategories = () => {
+export const getEntryFormData = () => {
   return dispatch => {
-    axios.get('/entries/subcategories.json')
-      .then(res => {
-        dispatch(getSubcategoriesSuccess(res.data))
-      })
-      .catch(err => {
-        dispatch(getSubcategoriesFail(err))
-      })
+    dispatch(getEntryFormDataInit())
+    dispatch(getCategories())
+    dispatch(getSubcategories())
   }
 }
 
-export const getSubcategoriesSuccess = (subcategories) => {
-  return { type: actionTypes.GET_SUBCATEGORIES_SUCCESS, payload: { subcategories } }
+export const getEntryFormDataInit = () => {
+  return { type: actionTypes.GET_ENTRY_FORM_DATA_INIT }
 }
 
-export const getSubcategoriesFail = (err) => {
-  return { type: actionTypes.GET_SUBCATEGORIES_FAIL, payload: { err } }
-}
 export const getCategories = () => {
   return dispatch => {
     axios.get('/entries/categories.json')
@@ -64,4 +57,24 @@ export const getCategoriesSuccess = (categories) => {
 
 export const getCategoriesFail = (err) => {
   return { type: actionTypes.GET_CATEGORIES_FAIL, payload: { err } }
+}
+
+export const getSubcategories = () => {
+  return dispatch => {
+    axios.get('/entries/subcategories.json')
+      .then(res => {
+        dispatch(getSubcategoriesSuccess(res.data))
+      })
+      .catch(err => {
+        dispatch(getSubcategoriesFail(err))
+      })
+  }
+}
+
+export const getSubcategoriesSuccess = (subcategories) => {
+  return { type: actionTypes.GET_SUBCATEGORIES_SUCCESS, payload: { subcategories } }
+}
+
+export const getSubcategoriesFail = (err) => {
+  return { type: actionTypes.GET_SUBCATEGORIES_FAIL, payload: { err } }
 }

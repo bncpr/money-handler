@@ -7,7 +7,7 @@ import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/a
 import { Input } from '../../../components/UI/Form/Input/Input'
 import { RadioInput } from '../../../components/UI/Form/RadioInput/RadioInput'
 import { CheckboxWrapper } from '../../../components/UI/Form/Checkbox/CheckboxWrapper'
-import { getCategories, getSubcategories } from '../../../store/actions/data'
+import { getEntryFormData } from '../../../store/actions/data'
 
 export const EntryForm = () => {
 
@@ -15,14 +15,10 @@ export const EntryForm = () => {
   const onShowForm = () => setShowForm(!showForm)
 
   const dispatch = useDispatch()
-  const gotSubcategories = useSelector(state => state.data.gotSubcategories)
-  const gotCategories = useSelector(state => state.data.gotCategories)
+  const didReqEntryFormData = useSelector(state => state.data.didReqEntryFormData)
   useEffect(() => {
-    if (!gotSubcategories && !gotCategories) {
-      dispatch(getCategories())
-      dispatch(getSubcategories())
-    }
-  }, [gotSubcategories, gotCategories])
+    if (!didReqEntryFormData) { dispatch(getEntryFormData()) }
+  }, [didReqEntryFormData])
 
   const subs = useSelector(state => state.data.subs)
   const entry = useSelector(state => state.entry)
