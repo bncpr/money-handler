@@ -4,6 +4,7 @@ import { DataTable } from '../../components/visualization/DataTable/DataTable';
 import { getEntries } from '../../store/actions/data'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
+import styles from './Dashboard.module.css'
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
@@ -13,7 +14,7 @@ export const Dashboard = () => {
   }, [didReqEntries])
 
   return (
-    <ContentBox>
+    <ContentBox className={styles.dashboard}>
       <DataTable />
       <EntryForm />
     </ContentBox>
