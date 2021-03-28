@@ -67,7 +67,7 @@ export const EntryForm = () => {
           </div>
         </div>
 
-        <div className={styles.formDiv}>
+        <div className={`${styles.formDiv} ${styles.grid2}`}>
           <label>Tags:</label>
           <div className={styles.inputGroup}>
             {subs.map(
