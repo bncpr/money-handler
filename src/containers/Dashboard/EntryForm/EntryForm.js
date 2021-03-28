@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Button } from '../../../components/UI/Button/Button'
-import { CheckboxItem } from '../../../components/UI/Form/Checkbox/CheckboxItem'
+import { CheckboxItem } from '../../../components/UI/Form/CheckboxItem/CheckboxItem'
 import styles from './EntryForm.module.css'
 import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/actions/entry'
-import { Input } from '../../../components/UI/Form/Input/Input'
-import { RadioInput } from '../../../components/UI/Form/RadioInput/RadioInput'
-import { CheckboxWrapper } from '../../../components/UI/Form/Checkbox/CheckboxWrapper'
 import { getEntryFormData } from '../../../store/actions/data'
-import { RadioGroup } from '../../../components/UI/Form/RadioInput/RadioGroup/RadioGroup'
-import { RadioButton } from '../../../components/UI/Form/RadioInput/RadioButton/RadioButton'
+import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
 
 export const EntryForm = () => {
 
