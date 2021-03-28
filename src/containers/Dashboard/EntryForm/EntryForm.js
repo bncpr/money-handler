@@ -8,6 +8,8 @@ import { Input } from '../../../components/UI/Form/Input/Input'
 import { RadioInput } from '../../../components/UI/Form/RadioInput/RadioInput'
 import { CheckboxWrapper } from '../../../components/UI/Form/Checkbox/CheckboxWrapper'
 import { getEntryFormData } from '../../../store/actions/data'
+import { RadioGroup } from '../../../components/UI/Form/RadioInput/RadioGroup/RadioGroup'
+import { RadioButton } from '../../../components/UI/Form/RadioInput/RadioButton/RadioButton'
 
 export const EntryForm = () => {
 
@@ -32,53 +34,57 @@ export const EntryForm = () => {
 
       <form className={!showForm ? styles.hide : ''}>
 
-        <Input
-          className={styles.formDiv}
-          type={'date'}
-          text='Date:'
-          name='date'
-          value={entry.date}
-          onChange={(event) => onChangeHandler('date', event.target.value)}
-        />
+        <div className={styles.formDiv}>
+          <label>Date:</label>
+          <input
+            type='date' name='date' value={entry.date}
+            onChange={(event) => onChangeHandler('date', event.target.value)}
+          />
+        </div>
 
-        <Input
-          className={styles.formDiv}
-          type={'number'}
-          text='Value:'
-          name='value'
-          value={entry.value}
-          placeholder='Enter value'
-          onChange={(event) => onChangeHandler('value', event.target.value)}
-        />
+        <div className={styles.formDiv}>
+          <label>Value:</label>
+          <input
+            type='number' name='value' value={entry.value}
+            placeholder='Enter value'
+            onChange={(event) => onChangeHandler('value', event.target.value)}
+          />
+        </div>
 
-        <RadioInput
-          className={styles.formDiv}
-          selected={entry.payer}
-          text='Paid:'
-          onChange={onChangeHandler}
-          buttonsList={[
-            { text: 'ben', name: 'payer', value: 'ben', key: 'ben' },
-            { text: 'ella', name: 'payer', value: 'ella', key: 'ella' }]}
-        />
+        <div className={styles.formDiv}>
+          <label>Paid:</label>
+          <div className={styles.inputGroup}>
+            <RadioButton text='ben' name='payer' value='ben' selected={entry.payer} onChange={onChangeHandler} />
+            <RadioButton text='ella' name='payer' value='ella' selected={entry.payer} onChange={onChangeHandler} />
+          </div>
+        </div>
 
-        <RadioInput
-          className={styles.formDiv}
-          selected={entry.category}
-          text='Category:'
-          onChange={onChangeHandler}
-          buttonsList={
-            categories.map(category => ({ text: category, 'name': 'category', value: category, key: category }))}
-        />
+        <div className={styles.formDiv}>
+          <label>Category:</label>
+          <div className={styles.inputGroup}>
+            {categories.map(category => (
+              <RadioButton
+                text={category} name='category' value={category}
+                selected={entry.category}
+                onChange={onChangeHandler}
+              />))}
+          </div>
+        </div>
 
-        <CheckboxWrapper className={styles.formDiv} text='Subcategories:'>
-          {subs.map(
-            sub => <CheckboxItem
-              key={sub}
-              name={sub}
-              onTick={onCheckHandler}
-              text={sub}
-              checked={entry.subcategories[sub]} />)}
-        </CheckboxWrapper>
+        <div className={styles.formDiv}>
+          <label>Tags:</label>
+          <div className={styles.inputGroup}>
+            {subs.map(
+              sub =>
+                <CheckboxItem
+                  key={sub}
+                  name={sub}
+                  onTick={onCheckHandler}
+                  text={sub}
+                  checked={entry.subcategories[sub]}
+                />)}
+          </div>
+        </div>
 
       </form>
 
