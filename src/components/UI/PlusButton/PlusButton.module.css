@@ -1,0 +1,15 @@
+.hiddenInput {
+  transition: width 500ms;
+  width: 50px !important;
+  text-align: center;
+  background-color: inherit;
+  border: none;
+}
+
+.hide {
+  width: 0 !important;
+}
+
+.plusButton button {
+  
+}

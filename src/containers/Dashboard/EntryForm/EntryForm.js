@@ -6,6 +6,7 @@ import styles from './EntryForm.module.css'
 import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/actions/entry'
 import { getEntryFormData } from '../../../store/actions/data'
 import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
+import { PlusButton } from '../../../components/UI/PlusButton/PlusButton'
 
 export const EntryForm = () => {
 
@@ -33,6 +34,7 @@ export const EntryForm = () => {
         <div className={styles.formDiv}>
           <label>Date:</label>
           <input
+            className={styles.entryFormInput}
             type='date' name='date' value={entry.date}
             onChange={(event) => onChangeHandler('date', event.target.value)}
           />
@@ -41,6 +43,7 @@ export const EntryForm = () => {
         <div className={styles.formDiv}>
           <label>Value:</label>
           <input
+            className={styles.entryFormInput}
             type='number' name='value' value={entry.value}
             placeholder='Enter value'
             onChange={(event) => onChangeHandler('value', event.target.value)}
@@ -53,6 +56,7 @@ export const EntryForm = () => {
             <RadioButton text='ben' name='payer' value='ben' selected={entry.payer} onChange={onChangeHandler} />
             <RadioButton text='ella' name='payer' value='ella' selected={entry.payer} onChange={onChangeHandler} />
           </div>
+          <PlusButton />
         </div>
 
         <div className={styles.formDiv}>
@@ -65,6 +69,7 @@ export const EntryForm = () => {
                 onChange={onChangeHandler}
               />))}
           </div>
+          <PlusButton />
         </div>
 
         <div className={styles.formDiv}>
@@ -80,6 +85,7 @@ export const EntryForm = () => {
                   checked={entry.subcategories[sub]}
                 />)}
           </div>
+          <PlusButton />
         </div>
 
       </form>
