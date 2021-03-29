@@ -26,6 +26,12 @@ export const EntryForm = () => {
   const onCheckHandler = (name, checked) => dispatch(tickSubcategoryValue(name, checked))
   const onSubmitHandler = (entry) => dispatch(submitEntry(entry))
 
+  const [addTag, setAddTag] = useState(false)
+  const onAddTag = (event, name) => {
+    event.preventDefault()
+    setAddTag(addTag === name ? false : name)
+  }
+
   return (
     <div className={styles.entryForm}>
 
@@ -55,8 +61,9 @@ export const EntryForm = () => {
           <div className={styles.inputGroup}>
             <RadioButton text='ben' name='payer' value='ben' selected={entry.payer} onChange={onChangeHandler} />
             <RadioButton text='ella' name='payer' value='ella' selected={entry.payer} onChange={onChangeHandler} />
+            {addTag === 'payer' ? <input autoFocus className={styles.hiddenInput} /> : null}
           </div>
-          <PlusButton />
+          <Button onClick={(event) => onAddTag(event, 'payer')}>+</Button>
         </div>
 
         <div className={styles.formDiv}>
@@ -68,8 +75,9 @@ export const EntryForm = () => {
                 selected={entry.category}
                 onChange={onChangeHandler}
               />))}
+            {addTag === 'category' ? <input autoFocus className={styles.hiddenInput} /> : null}
           </div>
-          <PlusButton />
+          <Button onClick={(event) => onAddTag(event, 'category')}>+</Button>
         </div>
 
         <div className={`${styles.formDiv} ${styles.grid2}`}>
@@ -84,8 +92,16 @@ export const EntryForm = () => {
                   text={sub}
                   checked={entry.subcategories[sub]}
                 />)}
+            {addTag === 'tag'
+              ?
+              <div className={styles.hiddenBox}>
+                <input autoFocus className={styles.hiddenInput} />
+                <span>Press enter to add.</span>
+                {/* <Button>Add</Button> */}
+              </div>
+              : null}
           </div>
-          <PlusButton />
+          <Button onClick={(event) => onAddTag(event, 'tag')}>+</Button>
         </div>
 
       </form>
