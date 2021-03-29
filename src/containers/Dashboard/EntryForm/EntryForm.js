@@ -4,7 +4,7 @@ import { Button } from '../../../components/UI/Button/Button'
 import { CheckboxItem } from '../../../components/UI/Form/CheckboxItem/CheckboxItem'
 import styles from './EntryForm.module.css'
 import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/actions/entry'
-import { getEntryFormData } from '../../../store/actions/data'
+import { addTag, getEntryFormData, submitTag } from '../../../store/actions/data'
 import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
 import { PlusButton } from '../../../components/UI/PlusButton/PlusButton'
 
@@ -25,12 +25,33 @@ export const EntryForm = () => {
   const onChangeHandler = (name, value) => dispatch(changeValue(name, value))
   const onCheckHandler = (name, checked) => dispatch(tickSubcategoryValue(name, checked))
   const onSubmitHandler = (entry) => dispatch(submitEntry(entry))
+  const onAddTag = (name, value) => dispatch(submitTag(name, value))
 
-  const [addTag, setAddTag] = useState(false)
-  const onAddTag = (event, name) => {
+  const [showTag, setShowTag] = useState(false)
+  const onShowTag = (event, name) => {
+    // console.log(name)
     event.preventDefault()
-    setAddTag(addTag === name ? false : name)
+    setTagValue('')
+    setShowTag(showTag === name ? false : name)
   }
+  const [tagValue, setTagValue] = useState('')
+  const onChangeTagValue = (event) => {
+    setTagValue(event.target.value)
+  }
+  const onKeyDown = (event, name, value) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      console.log(name, value)
+      onAddTag(name, value)
+      setTagValue('')
+    } else if (event.key === 'Escape') {
+      setShowTag(false)
+    }
+  }
+
+  // useEffect(() => {
+  //   console.log(showTag)
+  // })
 
   return (
     <div className={styles.entryForm}>
@@ -61,9 +82,9 @@ export const EntryForm = () => {
           <div className={styles.inputGroup}>
             <RadioButton text='ben' name='payer' value='ben' selected={entry.payer} onChange={onChangeHandler} />
             <RadioButton text='ella' name='payer' value='ella' selected={entry.payer} onChange={onChangeHandler} />
-            {addTag === 'payer' ? <input autoFocus className={styles.hiddenInput} /> : null}
+            {showTag === 'payer' ? <input autoFocus className={styles.hiddenInput} /> : null}
           </div>
-          <Button onClick={(event) => onAddTag(event, 'payer')}>+</Button>
+          <Button onClick={(event) => onShowTag(event, 'payer')}>+</Button>
         </div>
 
         <div className={styles.formDiv}>
@@ -75,9 +96,9 @@ export const EntryForm = () => {
                 selected={entry.category}
                 onChange={onChangeHandler}
               />))}
-            {addTag === 'category' ? <input autoFocus className={styles.hiddenInput} /> : null}
+            {showTag === 'category' ? <input autoFocus className={styles.hiddenInput} onKeyDown={(event) => {console.log(event)}} /> : null}
           </div>
-          <Button onClick={(event) => onAddTag(event, 'category')}>+</Button>
+          <Button onClick={(event) => onShowTag(event, 'category')}>+</Button>
         </div>
 
         <div className={`${styles.formDiv} ${styles.grid2}`}>
@@ -92,16 +113,22 @@ export const EntryForm = () => {
                   text={sub}
                   checked={entry.subcategories[sub]}
                 />)}
-            {addTag === 'tag'
+            {showTag === 'tag'
               ?
               <div className={styles.hiddenBox}>
-                <input autoFocus className={styles.hiddenInput} />
+                <input
+                  autoFocus
+                  className={styles.hiddenInput}
+                  value={tagValue}
+                  onChange={onChangeTagValue}
+                  onKeyDown={event => onKeyDown(event, 'subs', tagValue)}
+                  onBlur={() => {setShowTag(false)}}
+                />
                 <span>Press enter to add.</span>
-                {/* <Button>Add</Button> */}
               </div>
               : null}
           </div>
-          <Button onClick={(event) => onAddTag(event, 'tag')}>+</Button>
+          <Button onClick={(event) => onShowTag(event, 'tag')}>+</Button>
         </div>
 
       </form>

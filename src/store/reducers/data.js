@@ -31,6 +31,10 @@ export const dataReducer = (state = initialState, action) => {
       return updateObj(state, { categories: state.categories.concat(action.payload.categories) })
     case actionTypes.GET_CATEGORIES_FAIL:
       return state
+    case actionTypes.ADD_TAG:
+      const name = action.payload.name;
+      const value = action.payload.value;
+      return updateObj(state, { [name]: state[name].concat(value) })
     default: return state
   }
 }

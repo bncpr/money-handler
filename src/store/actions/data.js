@@ -5,13 +5,13 @@ export const getEntries = () => {
   return dispatch => {
     dispatch(getEntriesInit())
     axios.get('/entries/entries.json')
-    .then(res => {
-      const data = Object.values(res.data)
-      dispatch(getEntriesSuccess(data))
-    })
-    .catch(err => {
-      dispatch(getEntriesFail(err.message))
-    })
+      .then(res => {
+        const data = Object.values(res.data)
+        dispatch(getEntriesSuccess(data))
+      })
+      .catch(err => {
+        dispatch(getEntriesFail(err.message))
+      })
   }
 }
 
@@ -61,9 +61,10 @@ export const getCategoriesFail = (err) => {
 
 export const getSubcategories = () => {
   return dispatch => {
-    axios.get('/entries/subcategories.json')
+    axios.get('/entries/subs.json')
       .then(res => {
-        dispatch(getSubcategoriesSuccess(res.data))
+        const subs = Object.keys(res.data).map(key => res.data[key]['sub'])
+        dispatch(getSubcategoriesSuccess(subs))
       })
       .catch(err => {
         dispatch(getSubcategoriesFail(err))
@@ -77,4 +78,21 @@ export const getSubcategoriesSuccess = (subcategories) => {
 
 export const getSubcategoriesFail = (err) => {
   return { type: actionTypes.GET_SUBCATEGORIES_FAIL, payload: { err } }
+}
+
+export const addTag = (name, value) => {
+  return { type: actionTypes.ADD_TAG, payload: { name, value } }
+}
+
+export const submitTag = (name, value) => {
+  return dispatch => {
+    dispatch(addTag(name, value))
+    axios.post('/entries/subs.json', { sub: value })
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 }
