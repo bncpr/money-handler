@@ -28,7 +28,6 @@ export const EntryForm = () => {
 
   const [showTag, setShowTag] = useState(false)
   const onShowTag = (event, name) => {
-    // console.log(name)
     event.preventDefault()
     setTagValue('')
     setShowTag(showTag === name ? false : name)
@@ -91,6 +90,7 @@ export const EntryForm = () => {
           <div className={styles.inputGroup}>
             {categories.map(category => (
               <RadioButton
+                key={category}
                 text={category} name='category' value={category}
                 selected={entry.category}
                 onChange={onChangeHandler}

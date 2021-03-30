@@ -16,10 +16,10 @@
   box-sizing: content-box;
   margin: auto;
   max-width: 600px;
-  /* display: grid;
-  grid-template-columns: 50% 50%; */
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  /* display: flex;
+  flex-flow: row wrap; */
 }
 
 .hide {
@@ -60,7 +60,7 @@
 }
 
 .grid2 {
-  /* grid-column: 1 / span 2; */
+  grid-column: 1 / span 2;
 }
 
 .hiddenInput {
