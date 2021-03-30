@@ -43,7 +43,8 @@ export const getCategories = () => {
   return dispatch => {
     axios.get('/entries/categories.json')
       .then(res => {
-        dispatch(getCategoriesSuccess(res.data))
+        const categories = Object.keys(res.data).map(key => res.data[key]['category'])
+        dispatch(getCategoriesSuccess(categories))
       })
       .catch(err => {
         dispatch(getCategoriesFail(err))
@@ -87,7 +88,8 @@ export const addTag = (name, value) => {
 export const submitTag = (name, value) => {
   return dispatch => {
     dispatch(addTag(name, value))
-    axios.post('/entries/subs.json', { sub: value })
+    const tag = name === 'subs' ? 'sub' : name === 'categories' ? 'category' : ''
+    axios.post(`entries/${name}.json`, { [tag]: value })
       .then(res => {
         console.log(res)
       })

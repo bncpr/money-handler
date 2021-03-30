@@ -96,7 +96,19 @@ export const EntryForm = () => {
                 selected={entry.category}
                 onChange={onChangeHandler}
               />))}
-            {showTag === 'category' ? <input autoFocus className={styles.hiddenInput} onKeyDown={(event) => {console.log(event)}} /> : null}
+            {showTag === 'category'
+              ?
+              <div className={styles.hiddenBox}>
+                <input
+                  autoFocus
+                  className={styles.hiddenInput}
+                  value={tagValue}
+                  onChange={onChangeTagValue}
+                  onKeyDown={event => onKeyDown(event, 'categories', tagValue)}
+                />
+                <span>Press enter to add.</span>
+              </div>
+              : null}
           </div>
           <Button onClick={(event) => onShowTag(event, 'category')}>+</Button>
         </div>
@@ -122,7 +134,6 @@ export const EntryForm = () => {
                   value={tagValue}
                   onChange={onChangeTagValue}
                   onKeyDown={event => onKeyDown(event, 'subs', tagValue)}
-                  onBlur={() => {setShowTag(false)}}
                 />
                 <span>Press enter to add.</span>
               </div>
