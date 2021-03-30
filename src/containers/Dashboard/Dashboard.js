@@ -11,7 +11,7 @@ export const Dashboard = () => {
   const didReqEntries = useSelector(state => state.data.didReqEntries)
   useEffect(() => {
     if (!didReqEntries) { dispatch(getEntries()) }
-  }, [didReqEntries])
+  })
 
   return (
     <ContentBox className={styles.dashboard}>

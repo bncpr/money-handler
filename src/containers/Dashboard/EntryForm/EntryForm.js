@@ -4,9 +4,8 @@ import { Button } from '../../../components/UI/Button/Button'
 import { CheckboxItem } from '../../../components/UI/Form/CheckboxItem/CheckboxItem'
 import styles from './EntryForm.module.css'
 import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/actions/entry'
-import { addTag, getEntryFormData, submitTag } from '../../../store/actions/data'
+import { getEntryFormData, submitTag } from '../../../store/actions/data'
 import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
-import { PlusButton } from '../../../components/UI/PlusButton/PlusButton'
 
 export const EntryForm = () => {
 
@@ -17,7 +16,7 @@ export const EntryForm = () => {
   const didReqEntryFormData = useSelector(state => state.data.didReqEntryFormData)
   useEffect(() => {
     if (!didReqEntryFormData) { dispatch(getEntryFormData()) }
-  }, [didReqEntryFormData])
+  })
 
   const categories = useSelector(state => state.data.categories)
   const subs = useSelector(state => state.data.subs)

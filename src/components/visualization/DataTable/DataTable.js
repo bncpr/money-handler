@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useTable, useSortBy } from 'react-table';
 import styles from './DataTable.module.css'
