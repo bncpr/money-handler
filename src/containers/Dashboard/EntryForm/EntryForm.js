@@ -24,7 +24,7 @@ export const EntryForm = () => {
   const onChangeHandler = (name, value) => dispatch(changeValue(name, value))
   const onCheckHandler = (name, checked) => dispatch(tickSubcategoryValue(name, checked))
   const onSubmitHandler = (entry) => dispatch(submitEntry(entry))
-  const onAddTag = (name, value) => dispatch(submitTag(name, value))
+  const onAddTagHandler = (name, value) => dispatch(submitTag(name, value))
 
   const [showTag, setShowTag] = useState(false)
   const onShowTag = (event, name) => {
@@ -40,8 +40,9 @@ export const EntryForm = () => {
     if (event.key === 'Enter') {
       event.preventDefault()
       console.log(name, value)
-      onAddTag(name, value)
+      onAddTagHandler(name, value)
       setTagValue('')
+      setShowTag()
     } else if (event.key === 'Escape') {
       setShowTag(false)
     }
