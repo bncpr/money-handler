@@ -15,7 +15,7 @@ export const EntryForm = () => {
 
   const dispatch = useDispatch()
   const didReqEntryFormData = useSelector(state => state.data.didReqEntryFormData)
-  
+
   useEffect(() => {
     if (!didReqEntryFormData) { dispatch(getEntryFormData()) }
   })
@@ -31,14 +31,17 @@ export const EntryForm = () => {
 
   const [tagState, tagDispatch] = useReducer(tagReducer, '', init)
   const { showTag, tagValue } = tagState
+
   const onShowTag = (event, name) => {
     event.preventDefault()
     tagDispatch({ type: 'RESET_TAG_VALUE' })
     tagDispatch({ type: 'TOGGLE_SHOW_TAG', payload: { name } })
   }
+  
   const onChangeTagValue = (event) => {
     tagDispatch({ type: 'SET_TAG_VALUE', payload: { value: event.target.value } })
   }
+  
   const onKeyDown = (event, name, value) => {
     if (event.key === 'Enter') {
       event.preventDefault()
