@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux';
 import { Layout } from './components/Layout/Layout'
 import { Login } from './containers/Login/Login'
 import { Route, Switch } from 'react-router';
@@ -10,10 +9,8 @@ const Welcome = () => {
 }
 
 export const App = () => {
-  const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
   return (
     <Layout>
-      {!isAuthenticated ? <Login /> : null}
       <Switch>
         <Route path='/user' component={Dashboard} />
         <Route path='/login' component={Login} />

@@ -1,16 +1,16 @@
 import { ContentBox } from '../../components/UI/ContentBox/ContentBox';
-import { EntryForm } from './EntryForm/EntryForm';
-import { DataTable } from '../../components/visualization/DataTable/DataTable';
+import { DataTable } from './DataTable/DataTable'
 import { getEntries } from '../../store/actions/data'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import styles from './Dashboard.module.css'
+import { EntryForm } from './EntryForm/EntryForm';
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
-  const didReqEntries = useSelector(state => state.data.didReqEntries)
+  const entries = useSelector(state => state.data.entries)
   useEffect(() => {
-    if (!didReqEntries) { dispatch(getEntries()) }
+    if (entries.length === 0) { dispatch(getEntries()) }
   })
 
   return (

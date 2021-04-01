@@ -4,7 +4,6 @@ import './index.css';
 import { App } from './App';
 import reportWebVitals from './reportWebVitals';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
-import { authReducer } from './store/reducers/auth';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { composeWithDevTools } from 'redux-devtools-extension';
@@ -13,7 +12,6 @@ import thunk from 'redux-thunk';
 import { entryReducer } from './store/reducers/entry';
 
 const reducer = combineReducers({
-  auth: authReducer,
   data: dataReducer,
   entry: entryReducer
 })

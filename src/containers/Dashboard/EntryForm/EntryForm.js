@@ -4,8 +4,9 @@ import { Button } from '../../../components/UI/Button/Button'
 import { CheckboxItem } from '../../../components/UI/Form/CheckboxItem/CheckboxItem'
 import styles from './EntryForm.module.css'
 import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/actions/entry'
-import { getEntryFormData, submitTag } from '../../../store/actions/data'
+import { addTag } from '../../../store/actions/data'
 import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
+
 
 export const EntryForm = () => {
 
@@ -13,18 +14,14 @@ export const EntryForm = () => {
   const onShowForm = () => setShowForm(!showForm)
 
   const dispatch = useDispatch()
-  const didReqEntryFormData = useSelector(state => state.data.didReqEntryFormData)
-  useEffect(() => {
-    if (!didReqEntryFormData) { dispatch(getEntryFormData()) }
-  })
 
-  const categories = useSelector(state => state.data.categories)
-  const subs = useSelector(state => state.data.subs)
-  const entry = useSelector(state => state.entry)
+  const { categories, subs, payers } = useSelector(state => state.data)
+  const entry = useSelector(state => state.entry) //TODO: move entry from redux to local state
+
   const onChangeHandler = (name, value) => dispatch(changeValue(name, value))
   const onCheckHandler = (name, checked) => dispatch(tickSubcategoryValue(name, checked))
   const onSubmitHandler = (entry) => dispatch(submitEntry(entry))
-  const onAddTagHandler = (name, value) => dispatch(submitTag(name, value))
+  const onAddTagHandler = (name, value) => dispatch(addTag(name, value))
 
   const [showTag, setShowTag] = useState(false)
   const onShowTag = (event, name) => {
