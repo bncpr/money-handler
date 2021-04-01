@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Button } from '../../../components/UI/Button/Button'
 import { CheckboxItem } from '../../../components/UI/Form/CheckboxItem/CheckboxItem'
@@ -6,6 +6,7 @@ import styles from './EntryForm.module.css'
 import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/actions/entry'
 import { addTag } from '../../../store/actions/data'
 import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
+import { tagReducer, init } from './tagReducer'
 
 
 export const EntryForm = () => {
@@ -23,31 +24,30 @@ export const EntryForm = () => {
   const onSubmitHandler = (entry) => dispatch(submitEntry(entry))
   const onAddTagHandler = (name, value) => dispatch(addTag(name, value))
 
-  const [showTag, setShowTag] = useState(false)
+  const [tagState, tagDispatch] = useReducer(tagReducer, '', init)
+  const { showTag, tagValue } = tagState
+
   const onShowTag = (event, name) => {
     event.preventDefault()
-    setTagValue('')
-    setShowTag(showTag === name ? false : name)
+    tagDispatch({ type: 'RESET_TAG_VALUE' })
+    tagDispatch({ type: 'TOGGLE_SHOW_TAG', payload: { name } })
   }
-  const [tagValue, setTagValue] = useState('')
+  
   const onChangeTagValue = (event) => {
-    setTagValue(event.target.value)
+    tagDispatch({ type: 'SET_TAG_VALUE', payload: { value: event.target.value } })
   }
+  
   const onKeyDown = (event, name, value) => {
     if (event.key === 'Enter') {
       event.preventDefault()
-      console.log(name, value)
       onAddTagHandler(name, value)
-      setTagValue('')
-      setShowTag()
+      tagDispatch({ type: 'RESET' })
     } else if (event.key === 'Escape') {
-      setShowTag(false)
+      tagDispatch({ type: 'RESET' })
     }
   }
 
-  // useEffect(() => {
-  //   console.log(showTag)
-  // })
+  useEffect(() => { console.log(tagValue) })
 
   return (
     <div className={styles.entryForm}>
