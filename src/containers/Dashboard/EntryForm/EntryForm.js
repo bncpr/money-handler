@@ -1,12 +1,12 @@
-import { useEffect, useReducer, useState } from 'react'
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Button } from '../../../components/UI/Button/Button'
 import { CheckboxItem } from '../../../components/UI/Form/CheckboxItem/CheckboxItem'
 import styles from './EntryForm.module.css'
-import { changeValue, tickSubcategoryValue, submitEntry } from '../../../store/actions/entry'
-import { addTag } from '../../../store/actions/data'
+import { changeValue, tickTagValue } from '../../../store/entrySlice'
+import { addTag, submitEntryThunk } from '../../../store/dataSlice'
 import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
-import { tagReducer, init } from './tagReducer'
+import { resetTagState, resetTagValue, setTagValue, toggleShowValue } from '../../../store/tagSlice'
 
 
 export const EntryForm = () => {
@@ -14,40 +14,33 @@ export const EntryForm = () => {
   const [showForm, setShowForm] = useState(false);
   const onShowForm = () => setShowForm(!showForm)
 
+  const { categories, subs } = useSelector(state => state.data)
+  
   const dispatch = useDispatch()
 
-  const { categories, subs, payers } = useSelector(state => state.data)
-  const entry = useSelector(state => state.entry) //TODO: move entry from redux to local state
+  const entry = useSelector(state => state.entry)
+  const onChangeHandler = (name, value) => dispatch(changeValue({ name, value }))
+  const onCheckHandler = (name, checked) => dispatch(tickTagValue({ name, checked }))
+  const onSubmitHandler = (entry) => dispatch(submitEntryThunk(entry))
 
-  const onChangeHandler = (name, value) => dispatch(changeValue(name, value))
-  const onCheckHandler = (name, checked) => dispatch(tickSubcategoryValue(name, checked))
-  const onSubmitHandler = (entry) => dispatch(submitEntry(entry))
-  const onAddTagHandler = (name, value) => dispatch(addTag(name, value))
-
-  const [tagState, tagDispatch] = useReducer(tagReducer, '', init)
-  const { showTag, tagValue } = tagState
-
+  const { showTag, tagValue } = useSelector(state => state.tag)
+  
   const onShowTag = (event, name) => {
     event.preventDefault()
-    tagDispatch({ type: 'RESET_TAG_VALUE' })
-    tagDispatch({ type: 'TOGGLE_SHOW_TAG', payload: { name } })
+    dispatch(resetTagValue)
+    dispatch(toggleShowValue(name))
   }
-  
-  const onChangeTagValue = (event) => {
-    tagDispatch({ type: 'SET_TAG_VALUE', payload: { value: event.target.value } })
-  }
+  const onChangeTagValue = (event) => { dispatch(setTagValue(event.target.value)) }
   
   const onKeyDown = (event, name, value) => {
     if (event.key === 'Enter') {
       event.preventDefault()
-      onAddTagHandler(name, value)
-      tagDispatch({ type: 'RESET' })
+      dispatch(addTag({ name, value }))
+      dispatch(resetTagState())
     } else if (event.key === 'Escape') {
-      tagDispatch({ type: 'RESET' })
+      dispatch(resetTagState())
     }
   }
-
-  useEffect(() => { console.log(tagValue) })
 
   return (
     <div className={styles.entryForm}>
