@@ -1,11 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const showTagHandler = (name) => {
-  return dispatch => {
-    dispatch(resetTagValue)
-    dispatch(toggleShowValue(name))
-  }
-}
 
 const tagSlice = createSlice({
   name: 'tag',
