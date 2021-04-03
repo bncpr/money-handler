@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from '../axios'
+import { resetEntryState } from './entrySlice'
 import { showError } from './errorSlice'
 
 export const getEntriesThunk = createAsyncThunk(
@@ -29,6 +30,7 @@ export const submitEntryThunk = createAsyncThunk(
         })
       newEntry.subcategories = subs
       await axios.post('entries/entries.json', newEntry)
+      dispatch(resetEntryState())
       return newEntry
     } catch (error) {
       dispatch(showError({ error: true, errorMessage: 'Failed to submit entry' }))

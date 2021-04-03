@@ -1,16 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { addTag } from "./dataSlice";
 
+const initialState = {
+  date: new Date().toJSON().slice(0, 10),
+  payer: '',
+  value: '',
+  category: '',
+  subcategories: {}
+}
+
 const entrySlice = createSlice({
   name: 'entry',
-  initialState: {
-    date: new Date().toJSON().slice(0, 10),
-    payer: '',
-    value: '',
-    category: '',
-    subcategories: {}
-  },
+  initialState,
   reducers: {
+    resetEntryState(state) { Object.assign(state, initialState) },
     changeValue(state, action) {
       let { name, value } = action.payload
       state[name] = value
@@ -33,4 +36,4 @@ const entrySlice = createSlice({
 })
 
 export const entryReducer = entrySlice.reducer
-export const { changeValue, tickTagValue } = entrySlice.actions
+export const { changeValue, tickTagValue, resetEntryState } = entrySlice.actions
