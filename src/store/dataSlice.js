@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from '../axios'
+import { showError } from './errorSlice'
 
 export const getEntriesThunk = createAsyncThunk(
   'data/getEntries',
@@ -10,6 +11,7 @@ export const getEntriesThunk = createAsyncThunk(
       dispatch(getInputsFromEntries(entries))
       return entries
     } catch (error) {
+      dispatch(showError({ error: true, errorMessage: 'Failed to fetch data' }))
       return rejectWithValue({ error: error.message })
     }
   }
@@ -17,7 +19,7 @@ export const getEntriesThunk = createAsyncThunk(
 
 export const submitEntryThunk = createAsyncThunk(
   'data/submitEntry',
-  async (entry, { rejectWithValue }) => {
+  async (entry, { dispatch, rejectWithValue }) => {
     try {
       const newEntry = { ...entry }
       const subs = []
@@ -29,6 +31,7 @@ export const submitEntryThunk = createAsyncThunk(
       await axios.post('entries/entries.json', newEntry)
       return newEntry
     } catch (error) {
+      dispatch(showError({ error: true, errorMessage: 'Failed to submit entry' }))
       return rejectWithValue({ error: error.message })
     }
   }

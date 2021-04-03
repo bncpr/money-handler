@@ -9,8 +9,9 @@ import { getEntriesThunk } from '../../store/dataSlice'
 export const Dashboard = () => {
   const dispatch = useDispatch()
   const entries = useSelector(state => state.data.entries)
+  const { attemptedFetch } = useSelector(state => state.error)
   useEffect(() => {
-    if (entries.length === 0) { dispatch(getEntriesThunk()) }
+    if (entries.length === 0 && !attemptedFetch) { dispatch(getEntriesThunk()) }
   })
 
   return (

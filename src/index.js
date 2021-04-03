@@ -9,13 +9,15 @@ import { BrowserRouter } from 'react-router-dom';
 import { dataReducer } from './store/dataSlice'
 import { entryReducer } from './store/entrySlice';
 import { tagReducer } from './store/tagSlice';
+import { errorReducer } from './store/errorSlice';
 
 
 const store = configureStore({
   reducer: {
     data: dataReducer,
     entry: entryReducer,
-    tag: tagReducer
+    tag: tagReducer,
+    error: errorReducer
   }
 })
 
