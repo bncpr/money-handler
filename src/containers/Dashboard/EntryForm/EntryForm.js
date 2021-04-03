@@ -101,35 +101,6 @@ export const EntryForm = () => {
           )}
         </ChoiceItem>
 
-        {/* <div className={`${styles.formDiv} ${styles.grid2}`}>
-          <label>Tags:</label>
-          <div className={styles.inputGroup}>
-            {subs.map(
-              sub =>
-                <CheckboxItem
-                  key={sub}
-                  name={sub}
-                  onTick={onCheckHandler}
-                  text={sub}
-                  checked={entry.subcategories[sub]}
-                />)}
-            {showTag === 'tag'
-              ?
-              <div className={styles.hiddenBox}>
-                <input
-                  autoFocus
-                  className={styles.hiddenInput}
-                  value={tagValue}
-                  onChange={onChangeTagValue}
-                  onKeyDown={event => onKeyDown(event, 'subs', tagValue)}
-                />
-                <span>Press enter to add.</span>
-              </div>
-              : null}
-          </div>
-          <Button onClick={(event) => onShowTag(event, 'tag')}>+</Button>
-        </div> */}
-
       </form>
 
       <Button onClick={onShowForm}>
