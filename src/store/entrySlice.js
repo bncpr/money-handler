@@ -26,10 +26,10 @@ const entrySlice = createSlice({
   extraReducers: {
     [addTag]: (state, action) => {
       const { name, value } = action.payload
-      if (name === 'subs') {
+      if (name === 'tag') {
         state.subcategories[value] = true
-      } else if (name === 'categories') {
-        state.category = value
+      } else {
+        state[name] = value
       }
     }
   }

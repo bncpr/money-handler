@@ -8,6 +8,7 @@ import { addTag, submitEntryThunk } from '../../../store/dataSlice'
 import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
 import { resetTagState, resetTagValue, setTagValue, toggleShowValue } from '../../../store/tagSlice'
 import { InputItem } from '../../../components/Form/InputItem/InputItem'
+import { ChoiceItem } from '../../../components/Form/ChoiceItem/ChoiceItem'
 
 
 export const EntryForm = () => {
@@ -15,7 +16,7 @@ export const EntryForm = () => {
   const [showForm, setShowForm] = useState(false);
   const onShowForm = () => setShowForm(!showForm)
 
-  const { categories, subs } = useSelector(state => state.data)
+  const { categories, subs, payers } = useSelector(state => state.data)
 
   const dispatch = useDispatch()
 
@@ -34,6 +35,7 @@ export const EntryForm = () => {
   const onChangeTagValue = (event) => { dispatch(setTagValue(event.target.value)) }
 
   const onKeyDown = (event, name, value) => {
+    console.log(name, value)
     if (event.key === 'Enter') {
       event.preventDefault()
       dispatch(addTag({ name, value }))
@@ -58,44 +60,48 @@ export const EntryForm = () => {
           onChange={onChangeHandler} placeholder='Enter value'
         />
 
-        <div className={styles.formDiv}>
-          <label>Paid:</label>
-          <div className={styles.inputGroup}>
-            <RadioButton text='ben' name='payer' value='ben' selected={entry.payer} onChange={onChangeHandler} />
-            <RadioButton text='ella' name='payer' value='ella' selected={entry.payer} onChange={onChangeHandler} />
-            {showTag === 'payer' ? <input autoFocus className={styles.hiddenInput} /> : null}
-          </div>
-          <Button onClick={(event) => onShowTag(event, 'payer')}>+</Button>
-        </div>
+        <ChoiceItem
+          text='Paid:' name='payer' value={tagValue} onChange={onChangeTagValue}
+          onKey={onKeyDown} onShow={onShowTag} stateValue={showTag}
+        >
+          {payers.map(payer => (
+            <RadioButton
+              key={payer}
+              text={payer} name={'payer'} value={payer}
+              selected={entry.payer}
+              onChange={onChangeHandler}
+            />
+          ))}
+        </ChoiceItem>
 
-        <div className={styles.formDiv}>
-          <label>Category:</label>
-          <div className={styles.inputGroup}>
-            {categories.map(category => (
-              <RadioButton
-                key={category}
-                text={category} name='category' value={category}
-                selected={entry.category}
-                onChange={onChangeHandler}
-              />))}
-            {showTag === 'category'
-              ?
-              <div className={styles.hiddenBox}>
-                <input
-                  autoFocus
-                  className={styles.hiddenInput}
-                  value={tagValue}
-                  onChange={onChangeTagValue}
-                  onKeyDown={event => onKeyDown(event, 'categories', tagValue)}
-                />
-                <span>Press enter to add.</span>
-              </div>
-              : null}
-          </div>
-          <Button onClick={(event) => onShowTag(event, 'category')}>+</Button>
-        </div>
+        <ChoiceItem
+          text='Category:' name='category' value={tagValue} onChange={onChangeTagValue}
+          onKey={onKeyDown} onShow={onShowTag} stateValue={showTag}
+        >
+          {categories.map(category => (
+            <RadioButton
+              key={category}
+              text={category} name='category' value={category}
+              selected={entry.category}
+              onChange={onChangeHandler}
+            />
+          ))}
+        </ChoiceItem>
 
-        <div className={`${styles.formDiv} ${styles.grid2}`}>
+        <ChoiceItem
+          text='Tags:' name='tag' value={tagValue} onChange={onChangeTagValue}
+          onKey={onKeyDown} onShow={onShowTag} stateValue={showTag} className={styles.grid2}
+        >
+          {subs.map(sub =>
+            <CheckboxItem
+              key={sub} name={sub}
+              onTick={onCheckHandler} text={sub}
+              checked={entry.subcategories[sub]}
+            />
+          )}
+        </ChoiceItem>
+
+        {/* <div className={`${styles.formDiv} ${styles.grid2}`}>
           <label>Tags:</label>
           <div className={styles.inputGroup}>
             {subs.map(
@@ -122,7 +128,7 @@ export const EntryForm = () => {
               : null}
           </div>
           <Button onClick={(event) => onShowTag(event, 'tag')}>+</Button>
-        </div>
+        </div> */}
 
       </form>
 

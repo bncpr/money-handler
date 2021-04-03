@@ -44,7 +44,8 @@ const dataSlice = createSlice({
   initialState: {
     entries: [],
     subs: [],
-    categories: []
+    categories: [],
+    payers: []
   },
   reducers: {
     getInputsFromEntries: {
@@ -66,7 +67,21 @@ const dataSlice = createSlice({
     },
     addTag(state, action) {
       const { name, value } = action.payload
-      state[name].push(value)
+      let dataName = '';
+      console.log(name, value)
+      switch (name) {
+        case 'category':
+          dataName = 'categories'
+          break
+        case 'payer':
+          dataName = 'payers'
+          break
+        case 'tag':
+          dataName = 'subs'
+          break
+        default: throw new Error
+      }
+      state[dataName].push(value)
     },
   },
   extraReducers: {
