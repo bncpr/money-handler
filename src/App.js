@@ -3,7 +3,7 @@ import { Login } from './containers/Login/Login'
 import { Route, Switch } from 'react-router';
 import { ContentBox } from './components/UI/ContentBox/ContentBox';
 import Dashboard from './containers/Dashboard/Dashboard'
-import { Modal } from './components/UI/Modal/Modal';
+import { ErrorModal } from './components/UI/Modal/ErrorModal/ErrorModal';
 
 const Welcome = () => {
   return <ContentBox>Welcome</ContentBox>
@@ -12,7 +12,7 @@ const Welcome = () => {
 export const App = () => {
   return (
     <Layout>
-      <Modal />
+      <ErrorModal />
       <Switch>
         <Route path='/user' component={Dashboard} />
         <Route path='/login' component={Login} />

@@ -1,5 +1,4 @@
 .modal {
-  display: none;
   position: fixed;
   z-index: 1;
   width: 100%;
@@ -7,16 +6,6 @@
   top: 0;
   left: 0;
   overflow: auto;
-}
-
-.backdrop {
- composes: modal;
- z-index: 2;
- background-color: rgba(0, 0, 0, 0.4);
-}
-
-.show {
-  display: block;
 }
 
 .content {

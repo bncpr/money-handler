@@ -33,6 +33,7 @@
   color: inherit;
   border: inherit;
   animation: show 1s forwards;
+  cursor: auto;
 }
 
 .hiddenInput:focus {
@@ -46,6 +47,7 @@
 
 .hiddenBox {
   position: relative;
+  z-index: 2;
 }
 
 .hiddenBox span {
