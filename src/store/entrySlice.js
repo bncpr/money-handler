@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { addTag } from "./dataSlice";
 
 const entrySlice = createSlice({
   name: 'entry',
@@ -17,6 +18,16 @@ const entrySlice = createSlice({
     tickTagValue(state, action) {
       const { name, checked } = action.payload
       state.subcategories[name] = !checked
+    }
+  },
+  extraReducers: {
+    [addTag]: (state, action) => {
+      const { name, value } = action.payload
+      if (name === 'subs') {
+        state.subcategories[value] = true
+      } else if (name === 'categories') {
+        state.category = value
+      }
     }
   }
 })
