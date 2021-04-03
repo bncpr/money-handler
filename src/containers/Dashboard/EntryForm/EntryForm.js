@@ -7,6 +7,7 @@ import { changeValue, tickTagValue } from '../../../store/entrySlice'
 import { addTag, submitEntryThunk } from '../../../store/dataSlice'
 import { RadioButton } from '../../../components/UI/Form/RadioButton/RadioButton'
 import { resetTagState, resetTagValue, setTagValue, toggleShowValue } from '../../../store/tagSlice'
+import { InputItem } from '../../../components/Form/InputItem/InputItem'
 
 
 export const EntryForm = () => {
@@ -15,7 +16,7 @@ export const EntryForm = () => {
   const onShowForm = () => setShowForm(!showForm)
 
   const { categories, subs } = useSelector(state => state.data)
-  
+
   const dispatch = useDispatch()
 
   const entry = useSelector(state => state.entry)
@@ -24,14 +25,14 @@ export const EntryForm = () => {
   const onSubmitHandler = (entry) => dispatch(submitEntryThunk(entry))
 
   const { showTag, tagValue } = useSelector(state => state.tag)
-  
+
   const onShowTag = (event, name) => {
     event.preventDefault()
     dispatch(resetTagValue)
     dispatch(toggleShowValue(name))
   }
   const onChangeTagValue = (event) => { dispatch(setTagValue(event.target.value)) }
-  
+
   const onKeyDown = (event, name, value) => {
     if (event.key === 'Enter') {
       event.preventDefault()
@@ -47,24 +48,15 @@ export const EntryForm = () => {
 
       <form className={!showForm ? styles.hide : ''}>
 
-        <div className={styles.formDiv}>
-          <label>Date:</label>
-          <input
-            className={styles.entryFormInput}
-            type='date' name='date' value={entry.date}
-            onChange={(event) => onChangeHandler('date', event.target.value)}
-          />
-        </div>
+        <InputItem
+          text='Date:' name='date' type='date' value={entry.date}
+          onChange={onChangeHandler}
+        />
 
-        <div className={styles.formDiv}>
-          <label>Value:</label>
-          <input
-            className={styles.entryFormInput}
-            type='number' name='value' value={entry.value}
-            placeholder='Enter value'
-            onChange={(event) => onChangeHandler('value', event.target.value)}
-          />
-        </div>
+        <InputItem
+          text='Value:' name='value' type='number' value={entry.value}
+          onChange={onChangeHandler} placeholder='Enter value'
+        />
 
         <div className={styles.formDiv}>
           <label>Paid:</label>
