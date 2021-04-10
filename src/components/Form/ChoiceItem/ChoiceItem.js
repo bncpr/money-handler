@@ -17,6 +17,7 @@ export const ChoiceItem = ({ children, className, text, name, value, stateValue,
               value={value}
               onChange={onChange}
               onKeyDown={event => onKey(event, name, value)}
+              onBlur={(event) => onShow(event, name)}
             />
             <span>Press enter to add.</span>
           </div>

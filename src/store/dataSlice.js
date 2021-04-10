@@ -79,7 +79,8 @@ const dataSlice = createSlice({
         case 'tag':
           dataName = 'subs'
           break
-        default: throw new Error
+        default:
+          throw new Error
       }
       state[dataName].push(value)
     },
