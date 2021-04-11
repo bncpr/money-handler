@@ -80,7 +80,7 @@ const dataSlice = createSlice({
           dataName = 'subs'
           break
         default:
-          throw new Error
+          throw new Error()
       }
       state[dataName].push(value)
     },
