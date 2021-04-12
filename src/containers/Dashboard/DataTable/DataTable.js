@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTable, useSortBy, useFilters } from 'react-table';
+import { isEmptyObj } from '../../../utility/utility';
 import styles from './DataTable.module.css'
 
 
@@ -19,28 +20,67 @@ const Subcategories = ({ values }) => {
   )
 }
 
+function getFirstMonth(datesObj, year) {
+  return Object.keys(datesObj[year]).sort((a, b) => a - b)[0]
+}
+
 function DateSelector({ column: { preFilteredRows, setFilter, id } }) {
-  const dateTypes = {}
-  preFilteredRows.forEach(row => {
-    const [year, month, day] = row.values[id].split('-')
-    if (!(year in dateTypes)) dateTypes[year] = {}
-    if (!(month in dateTypes[year])) dateTypes[year][month] = {}
-    if (!(day in dateTypes[year][month])) dateTypes[year][month][day] = true
-  })
-  console.log(dateTypes)
-  const [state, setState] = useState({ year: null, month: null, day: null })
+
+  const dateTypes = useMemo(() => {
+    const dateTypes = {}
+    preFilteredRows.forEach(row => {
+      const [year, month, day] = row.values[id].split('-')
+      if (!(year in dateTypes)) dateTypes[year] = {}
+      if (!(month in dateTypes[year])) dateTypes[year][month] = {}
+    })
+    return dateTypes
+  }, [preFilteredRows])
+
+  const [year, setYear] = useState()
+  const [month, setMonth] = useState()
+
+  function onChangeYear(event) {
+    const year = event.target.value
+    const defaultMonth = getFirstMonth(dateTypes, year)
+    setYear(year)
+    setMonth(defaultMonth)
+    setFilter(year + '-' + defaultMonth)
+  }
+
+  function onChangeMonth(event) {
+    const value = event.target.value
+    setMonth(value)
+    setFilter(year + '-' + value)
+  }
+
+  useEffect(() => {
+    if (!isEmptyObj(dateTypes)) {
+      const latestYear = '' + Math.max(...Object.keys(dateTypes))
+      const firstMonth = getFirstMonth(dateTypes, latestYear)
+      setYear(latestYear)
+      setMonth(firstMonth)
+      setFilter(latestYear + '-' + firstMonth)
+    }
+  }, [dateTypes])
+  
 
   return (
-    <label>
-      Year:
-      <input type='checkbox' name='2020' checked={state.year} />
-    </label>
+    <>
+      <select onChange={onChangeYear} value={year}>
+        {Object.keys(dateTypes).map(year => <option key={year} value={year}>{year}</option>)}
+      </select>
+      <select onChange={onChangeMonth} value={month} defaultValue=''>
+        <option key='none' value=''>all</option>
+        {year && Object.keys(dateTypes[year]).map(month => <option key={month} value={month}>{month}</option>)}
+      </select>
+      <button onClick={() => setFilter()}>reset</button>
+    </>
   )
 }
 
 function filterDates(rows, id, filterValue) {
   return rows.filter(row => {
-    // slice the necessary part of the date string, year/+month/+day
+    // slice the necessary part of the date string, year/+month
     const value = row.values[id].slice(0, filterValue.length)
     return value === filterValue
   })

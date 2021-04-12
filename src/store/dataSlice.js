@@ -12,7 +12,7 @@ export const getEntriesThunk = createAsyncThunk(
       dispatch(getInputsFromEntries(entries))
       return entries
     } catch (error) {
-      dispatch(showError({ error: true, errorMessage: 'Failed to fetch data' }))
+      dispatch(showError({ error: true, errorMessage: error.message }))
       return rejectWithValue({ error: error.message })
     }
   }
