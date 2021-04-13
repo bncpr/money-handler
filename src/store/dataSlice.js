@@ -7,7 +7,7 @@ export const getEntriesThunk = createAsyncThunk(
   'data/getEntries',
   async (_, { dispatch, rejectWithValue }) => {
     try {
-      const response = await axios.get('entries/entries.json')
+      const response = await axios.get('entries.json')
       const entries = Object.values(response.data)
       dispatch(getInputsFromEntries(entries))
       return entries
@@ -29,7 +29,7 @@ export const submitEntryThunk = createAsyncThunk(
           if (entry.subcategories[key]) subs.push(key)
         })
       newEntry.subcategories = subs
-      await axios.post('entries/entries.json', newEntry)
+      await axios.post('entries.json', newEntry)
       dispatch(resetEntryState())
       return newEntry
     } catch (error) {

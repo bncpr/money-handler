@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useTable, useFilters } from 'react-table';
+import { useTable, useFilters, usePagination } from 'react-table';
 import { Spinner } from '../../../components/UI/Spinner/Spinner';
 import { stringSorter } from '../../../utility/utility';
 import styles from './DataTable.module.css'
@@ -70,54 +70,111 @@ function Table({ columns, data }) {
     headerGroups,
     rows,
     prepareRow,
+    page,
+
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize }
   } = useTable(
     {
       columns,
       data,
+      initialState: { pageSize: 15 }
     },
     useFilters,
+    usePagination
   )
 
   return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              // Add the sorting props to control sorting. For this example
-              // we can add them into the header props
-              <th {...column.getHeaderProps()}>
-                {column.render('Header')}
-                <div>{column.canFilter ? column.render('Filter') : null}</div>
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map(
-          (row, i) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return (
-                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                  )
-                })}
-              </tr>
-            )
-          }
-        )}
-      </tbody>
-    </table>
+    <>
+      <table {...getTableProps()}>
+        <thead>
+          {headerGroups.map(headerGroup => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <th {...column.getHeaderProps()}>
+                  {column.render('Header')}
+                  <div>{column.canFilter ? column.render('Filter') : null}</div>
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {page.map(
+            (row, i) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return (
+                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    )
+                  })}
+                </tr>
+              )
+            }
+          )}
+        </tbody>
+      </table>
+      <hr />
+      <div>
+        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          {'<<'}
+        </button>{' '}
+        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          {'<'}
+        </button>{' '}
+        <button onClick={() => nextPage()} disabled={!canNextPage}>
+          {'>'}
+        </button>{' '}
+        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          {'>>'}
+        </button>{' '}
+        <span>
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+        <span>
+          | Go to page:{' '}
+          <input
+            type='number'
+            defaultValue={pageIndex + 1}
+            onChange={e => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0
+              gotoPage(page)
+            }}
+            style={{ width: '50px' }}
+          />
+        </span>{' '}
+        <select
+          value={pageSize}
+          onChange={e => {
+            setPageSize(Number(e.target.value))
+          }}
+        >
+          {[10, 15, 20, 30, 40, 50].map(pageSize => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+      </div>
+    </>
   )
 }
 
 
 export function DataTable() {
   const data = useSelector(state => state.data.entries)
-  const memData = useMemo(() => data, [data])
   const columns = useMemo(
     () => [
       {
@@ -158,7 +215,7 @@ export function DataTable() {
   return (
     <div className={styles.DataTable}>
       <h1>Entries</h1>
-      {data.length === 0 ? <Spinner /> : <Table columns={columns} data={memData} />}
+      {data.length === 0 ? <Spinner /> : <Table columns={columns} data={data} />}
     </div>
   )
 }
