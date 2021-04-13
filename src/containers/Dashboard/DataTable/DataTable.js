@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useTable, useSortBy, useFilters } from 'react-table';
+import { useTable, useFilters } from 'react-table';
 import { Spinner } from '../../../components/UI/Spinner/Spinner';
-import { isEmptyObj, stringSorter } from '../../../utility/utility';
+import { stringSorter } from '../../../utility/utility';
 import styles from './DataTable.module.css'
 import { DateSelector } from '../../../components/Form/Filters/DateSelector/DateSelector'
 
@@ -31,7 +31,7 @@ function filterDates(rows, id, filterValue) {
   })
 }
 
-function SelectFilter({ column: { preFilteredRows, setFilter, id } }) {
+function SelectFilter({ column: { preFilteredRows, setFilter, filterValue, id } }) {
 
   const options = useMemo(() => {
     const options = new Set()
@@ -44,16 +44,21 @@ function SelectFilter({ column: { preFilteredRows, setFilter, id } }) {
     return [...options.values()].sort(stringSorter())
   }, [id, preFilteredRows])
 
-  const [value, setValue] = useState()
   function onChange(event) {
     const value = event.target.value || undefined
-    setValue(value)
     setFilter(value)
   }
 
+  useEffect(() => {
+    if (filterValue && options.indexOf(filterValue) === -1) {
+      console.log('reset select', id)
+      setFilter()
+    }
+  })
+
   return (
-    <select onChange={onChange} value={value}>
-      <option key='none' value=''>all</option>
+    <select onChange={onChange}>
+      <option key='none' value=''></option>
       {options.map(option => (
         <option key={id + option} value={option}>
           {option}

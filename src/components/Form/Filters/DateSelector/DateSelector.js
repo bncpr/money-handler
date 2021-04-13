@@ -1,28 +1,16 @@
 import { useMemo, useEffect, useState } from "react"
-import { isEmptyObj, getMaxKey, getMinKey, updateObj, stringSorter } from '../../../../utility/utility'
-
-function getFirstMonth(obj) {
-  let month = getMinKey(obj)
-  if (month.length == 1) month = '0' + month
-  return month
-}
-
-function getLastMonth(obj) {
-  let month = getMaxKey(obj)
-  if (month.length == 1) month = '0' + month
-  return month
-}
+import { updateObj, stringSorter } from '../../../../utility/utility'
 
 const currentDate = new Date().toJSON().slice(0, 10)
-const [year, month, _] = currentDate.split('-')
+const [currentYear, currentMonth] = currentDate.split('-')
 console.log(currentDate)
 
-export function DateSelector({ column: { preFilteredRows, setFilter, id } }) {
+export function DateSelector({ column: { preFilteredRows, setFilter, filterValue, id } }) {
 
   const dateTypes = useMemo(() => {
     const dateTypes = {}
     preFilteredRows.forEach(row => {
-      const [year, month, _] = row.values[id].split('-')
+      const [year, month] = row.values[id].split('-')
       if (!(year in dateTypes)) dateTypes[year] = {}
       if (!(month in dateTypes[year])) dateTypes[year][month] = {}
     })
@@ -30,13 +18,24 @@ export function DateSelector({ column: { preFilteredRows, setFilter, id } }) {
   }, [preFilteredRows, id])
 
   const [state, setState] = useState({
-    year: year,
-    month: month
+    year: currentYear,
+    month: currentMonth
   })
 
   useEffect(() => {
-    setFilter(year + '-' + month)
-  }, [year, month])
+    setFilter(currentYear + '-' + currentMonth)
+  }, [])
+
+  useEffect(() => {
+    if (filterValue) {
+      const [year] = filterValue.split('-')
+      if (!(year in dateTypes)) {
+        console.log('RESET DATE FILTER')
+        setState(Object.assign(state, {year: '', month: ''}))
+        setFilter()
+      }
+    }
+  }, [filterValue, dateTypes])
 
   function onChangeYear(event) {
     const year = event.target.value
@@ -55,7 +54,7 @@ export function DateSelector({ column: { preFilteredRows, setFilter, id } }) {
     setState({ ...state, month })
     setFilter(state.year + '-' + month)
   }
-  
+
   return (
     <>
       <select onChange={onChangeYear} value={state.year}>
@@ -64,7 +63,7 @@ export function DateSelector({ column: { preFilteredRows, setFilter, id } }) {
       </select>
       <select onChange={onChangeMonth} value={state.month}>
         <option value=''>--</option>
-        {state.year && Object.keys(dateTypes[state.year]).sort(stringSorter(-1)).map(month => <option key={month} value={month}>{month}</option>)}
+        {state.year && state.year in dateTypes && Object.keys(dateTypes?.[state.year]).sort(stringSorter(-1)).map(month => <option key={month} value={month}>{month}</option>)}
       </select>
     </>
   )
