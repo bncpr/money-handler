@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTable, useSortBy, useFilters } from 'react-table';
-import { isEmptyObj } from '../../../utility/utility';
+import { Spinner } from '../../../components/UI/Spinner/Spinner';
+import { isEmptyObj, stringSorter } from '../../../utility/utility';
 import styles from './DataTable.module.css'
+import { DateSelector } from '../../../components/Form/Filters/DateSelector/DateSelector'
 
 
 
@@ -20,70 +22,45 @@ const Subcategories = ({ values }) => {
   )
 }
 
-function getFirstMonth(datesObj, year) {
-  return Object.keys(datesObj[year]).sort((a, b) => a - b)[0]
-}
-
-function DateSelector({ column: { preFilteredRows, setFilter, id } }) {
-
-  const dateTypes = useMemo(() => {
-    const dateTypes = {}
-    preFilteredRows.forEach(row => {
-      const [year, month, day] = row.values[id].split('-')
-      if (!(year in dateTypes)) dateTypes[year] = {}
-      if (!(month in dateTypes[year])) dateTypes[year][month] = {}
-    })
-    return dateTypes
-  }, [preFilteredRows])
-
-  const [year, setYear] = useState()
-  const [month, setMonth] = useState()
-
-  function onChangeYear(event) {
-    const year = event.target.value
-    const defaultMonth = getFirstMonth(dateTypes, year)
-    setYear(year)
-    setMonth(defaultMonth)
-    setFilter(year + '-' + defaultMonth)
-  }
-
-  function onChangeMonth(event) {
-    const value = event.target.value
-    setMonth(value)
-    setFilter(year + '-' + value)
-  }
-
-  useEffect(() => {
-    if (!isEmptyObj(dateTypes)) {
-      const latestYear = '' + Math.max(...Object.keys(dateTypes))
-      const firstMonth = getFirstMonth(dateTypes, latestYear)
-      setYear(latestYear)
-      setMonth(firstMonth)
-      setFilter(latestYear + '-' + firstMonth)
-    }
-  }, [dateTypes])
-  
-
-  return (
-    <>
-      <select onChange={onChangeYear} value={year}>
-        {Object.keys(dateTypes).map(year => <option key={year} value={year}>{year}</option>)}
-      </select>
-      <select onChange={onChangeMonth} value={month} defaultValue=''>
-        <option key='none' value=''>all</option>
-        {year && Object.keys(dateTypes[year]).map(month => <option key={month} value={month}>{month}</option>)}
-      </select>
-      <button onClick={() => setFilter()}>reset</button>
-    </>
-  )
-}
 
 function filterDates(rows, id, filterValue) {
   return rows.filter(row => {
-    // slice the necessary part of the date string, year/+month
+    // slice the necessary part of the date string, year/+month and compare
     const value = row.values[id].slice(0, filterValue.length)
     return value === filterValue
   })
+}
+
+function SelectFilter({ column: { preFilteredRows, setFilter, id } }) {
+
+  const options = useMemo(() => {
+    const options = new Set()
+    preFilteredRows.forEach(row => {
+      const items = row.values[id]
+      if (items instanceof Array) {
+        items.map(item => options.add(item))
+      } else items && options.add(items)
+    })
+    return [...options.values()].sort(stringSorter())
+  }, [id, preFilteredRows])
+
+  const [value, setValue] = useState()
+  function onChange(event) {
+    const value = event.target.value || undefined
+    setValue(value)
+    setFilter(value)
+  }
+
+  return (
+    <select onChange={onChange} value={value}>
+      <option key='none' value=''>all</option>
+      {options.map(option => (
+        <option key={id + option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  )
 }
 
 function Table({ columns, data }) {
@@ -140,8 +117,8 @@ function Table({ columns, data }) {
 
 
 export function DataTable() {
-  let data = useSelector(state => state.data.entries)
-  data = useMemo(() => data, [data])
+  const data = useSelector(state => state.data.entries)
+  const memData = useMemo(() => data, [data])
   const columns = useMemo(
     () => [
       {
@@ -158,27 +135,31 @@ export function DataTable() {
       {
         Header: 'Paid',
         accessor: 'payer',
-        disableFilters: true
+        Filter: SelectFilter,
+        filter: 'equals'
       },
       {
         Header: 'Category',
         accessor: 'category',
-        disableFilters: true
+        Filter: SelectFilter,
+        filter: 'equals'
       },
       {
         Header: 'Subcategories',
         accessor: 'subcategories',
-        disableFilters: true,
+        Filter: SelectFilter,
+        filter: 'equals',
         Cell: ({ cell: { value } }) => {
           return value ? <Subcategories values={value} /> : null
         }
       }
     ], []
   )
+
   return (
     <div className={styles.DataTable}>
       <h1>Entries</h1>
-      <Table columns={columns} data={data} />
+      {data.length === 0 ? <Spinner /> : <Table columns={columns} data={memData} />}
     </div>
   )
 }
