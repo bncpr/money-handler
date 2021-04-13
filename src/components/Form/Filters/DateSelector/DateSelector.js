@@ -63,7 +63,14 @@ export function DateSelector({ column: { preFilteredRows, setFilter, filterValue
       </select>
       <select onChange={onChangeMonth} value={state.month}>
         <option value=''>--</option>
-        {state.year && state.year in dateTypes && Object.keys(dateTypes?.[state.year]).sort(stringSorter(-1)).map(month => <option key={month} value={month}>{month}</option>)}
+        {state.year
+          && state.year in dateTypes
+          && Object.keys(
+            dateTypes?.[state.year])
+            .sort(stringSorter(-1))
+            .map(month => (
+              <option key={month} value={month}>{month}</option>
+        ))}
       </select>
     </>
   )

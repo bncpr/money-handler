@@ -22,7 +22,6 @@ const Subcategories = ({ values }) => {
   )
 }
 
-
 function filterDates(rows, id, filterValue) {
   return rows.filter(row => {
     // slice the necessary part of the date string, year/+month and compare
@@ -44,11 +43,6 @@ function SelectFilter({ column: { preFilteredRows, setFilter, filterValue, id } 
     return [...options.values()].sort(stringSorter())
   }, [id, preFilteredRows])
 
-  function onChange(event) {
-    const value = event.target.value || undefined
-    setFilter(value)
-  }
-
   useEffect(() => {
     if (filterValue && options.indexOf(filterValue) === -1) {
       console.log('reset select', id)
@@ -57,8 +51,8 @@ function SelectFilter({ column: { preFilteredRows, setFilter, filterValue, id } 
   })
 
   return (
-    <select onChange={onChange}>
-      <option key='none' value=''></option>
+    <select onChange={e => setFilter(e.target.value || undefined)}>
+      <option key='none' value=''>--</option>
       {options.map(option => (
         <option key={id + option} value={option}>
           {option}
