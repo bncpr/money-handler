@@ -16,7 +16,6 @@ export function SelectFilter({ column: { preFilteredRows, setFilter, filterValue
 
   useEffect(() => {
     if (filterValue && options.indexOf(filterValue) === -1) {
-      console.log('reset select', id)
       setFilter()
     }
   })

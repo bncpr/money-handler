@@ -93,7 +93,7 @@ function Table({ columns, data }) {
         </tbody>
       </table>
       <hr />
-      <div>
+      <div> {/* pagination */}
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>{' '}
