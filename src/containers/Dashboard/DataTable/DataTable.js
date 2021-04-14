@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useTable, useFilters, usePagination } from 'react-table';
 import { Spinner } from '../../../components/UI/Spinner/Spinner';
-import { stringSorter } from '../../../utility/utility';
 import styles from './DataTable.module.css'
 import { DateSelector } from '../../../components/Form/Filters/DateSelector/DateSelector'
+import { SelectFilter } from '../../../components/Form/Filters/SelectFilter/SelectFilter'
 
 
 
@@ -30,37 +30,7 @@ function filterDates(rows, id, filterValue) {
   })
 }
 
-function SelectFilter({ column: { preFilteredRows, setFilter, filterValue, id } }) {
 
-  const options = useMemo(() => {
-    const options = new Set()
-    preFilteredRows.forEach(row => {
-      const items = row.values[id]
-      if (items instanceof Array) {
-        items.map(item => options.add(item))
-      } else items && options.add(items)
-    })
-    return [...options.values()].sort(stringSorter())
-  }, [id, preFilteredRows])
-
-  useEffect(() => {
-    if (filterValue && options.indexOf(filterValue) === -1) {
-      console.log('reset select', id)
-      setFilter()
-    }
-  })
-
-  return (
-    <select onChange={e => setFilter(e.target.value || undefined)}>
-      <option key='none' value=''>--</option>
-      {options.map(option => (
-        <option key={id + option} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
-  )
-}
 
 function Table({ columns, data }) {
 
@@ -68,7 +38,6 @@ function Table({ columns, data }) {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
     prepareRow,
     page,
 

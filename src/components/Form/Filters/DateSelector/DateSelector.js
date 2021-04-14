@@ -3,7 +3,6 @@ import { updateObj, stringSorter } from '../../../../utility/utility'
 
 const currentDate = new Date().toJSON().slice(0, 10)
 const [currentYear, currentMonth] = currentDate.split('-')
-console.log(currentDate)
 
 export function DateSelector({ column: { preFilteredRows, setFilter, filterValue, id } }) {
 
@@ -30,7 +29,6 @@ export function DateSelector({ column: { preFilteredRows, setFilter, filterValue
     if (filterValue) {
       const [year] = filterValue.split('-')
       if (!(year in dateTypes)) {
-        console.log('RESET DATE FILTER')
         setState(Object.assign(state, {year: '', month: ''}))
         setFilter()
       }
