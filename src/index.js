@@ -7,16 +7,14 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { dataReducer } from './store/dataSlice'
-import { entryReducer } from './store/entrySlice';
-import { tagReducer } from './store/tagSlice';
 import { errorReducer } from './store/errorSlice';
+import { dashboardReducer } from './store/dashboardSlice';
 
 
 const store = configureStore({
   reducer: {
     data: dataReducer,
-    entry: entryReducer,
-    tag: tagReducer,
+    dashboard: dashboardReducer,
     error: errorReducer
   }
 })

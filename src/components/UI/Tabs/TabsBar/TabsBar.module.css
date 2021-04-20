@@ -1,0 +1,7 @@
+.tabsBar {
+  width: 600px;
+  padding: 0 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}

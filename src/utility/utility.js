@@ -11,6 +11,7 @@ export function getMinKey(obj) {
 }
 
 export function getMaxKey(obj) {
+  console.log(obj, Math.max(...Object.keys(obj)))
   return '' + Math.max(...Object.keys(obj))
 }
 

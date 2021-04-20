@@ -1,26 +1,30 @@
 import { ContentBox } from '../../components/UI/ContentBox/ContentBox';
-import { DataTable } from './DataTable/DataTable'
-import { useSelector, useDispatch } from 'react-redux'
-import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
 import styles from './Dashboard.module.css'
-import { EntryForm } from './EntryForm/EntryForm';
-import { getEntriesThunk } from '../../store/dataSlice'
+import { initData } from '../../store/thunks'
+import { TabsBar } from '../../components/UI/Tabs/TabsBar/TabsBar';
+import { getMaxKey } from '../../utility/utility';
+import { changeYear } from '../../store/dashboardSlice';
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
-  const entries = useSelector(state => state.data.entries)
-  const { attemptedFetch } = useSelector(state => state.error)
+  const data = useSelector(state => state.data)
+  const { year } = useSelector(state => state.dashboard)
+  
   useEffect(() => {
-    if (entries.length === 0 && !attemptedFetch) { dispatch(getEntriesThunk()) }
-  })
+    dispatch(initData())
+  }, [])
 
   return (
     <ContentBox className={styles.dashboard}>
-      <DataTable />
-      <EntryForm />
+      <TabsBar
+        tabs={Object.keys(data)}
+        current={year}
+        onClick={val => dispatch(changeYear(val))}
+      />
     </ContentBox>
   )
-
 }
 
 export default Dashboard
