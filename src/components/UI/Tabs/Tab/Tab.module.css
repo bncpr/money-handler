@@ -1,9 +1,16 @@
 .tab {
-  padding: 5px 10px;
+  font-size: 1em;
+  width: 40px;
+  padding: 2.5px 10px;
+  margin: 0 1px;
   cursor: pointer;
+  border: 1px solid #ddd;
+  background-color: white;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .current {
-  font-weight: bold;
   cursor: default;
+  border-bottom: none;
 }
