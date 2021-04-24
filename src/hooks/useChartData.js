@@ -13,13 +13,6 @@ const chartPipes = {
   barChart: curry((data, year) =>
     pipe(extractMonthsOfYear(year), sortBy(prop("month")), map(addSum))(data)
   ),
-  lineChart: curry((data, year) =>
-    pipe(
-      extractEntriesOfYear(year),
-      map(entryDateToDateObject),
-      sortBy(prop("date"))
-    )(data)
-  ),
 };
 const extractData = curry((chartType, data, year, setState) => {
   setState(chartPipes[chartType](data, year));
@@ -35,16 +28,6 @@ const chartScales = {
         .paddingOuter(0.05),
       yScale: scaleLinear()
         .domain([0, max(data, prop("sum"))])
-        .range([height, 0]),
-    };
-  }),
-  lineChart: curry((data, width, height) => {
-    return {
-      xScale: scaleTime()
-        .domain(extent(data, prop('date')))
-        .range([0, width]),
-      yScale: scaleLinear()
-        .domain(extent(data, prop('value')))
         .range([height, 0]),
     };
   }),
