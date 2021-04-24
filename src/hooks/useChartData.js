@@ -1,14 +1,24 @@
 import { useState, useEffect } from "react";
 
-import { extractMonthsOfYear, addSum, buildPipe } from "../utility/utility";
-import { curry, map, prop, sortBy } from "ramda";
-import { scaleBand, scaleLinear, max } from "d3";
+import {
+  extractMonthsOfYear,
+  addSum,
+  extractEntriesOfYear,
+  entryDateToDateObject,
+} from "../utility/utility";
+import { curry, map, pipe, prop, sortBy } from "ramda";
+import { scaleBand, scaleLinear, max, extent, scaleTime } from "d3";
 
 const chartPipes = {
   barChart: curry((data, year) =>
-    buildPipe([extractMonthsOfYear(year), sortBy(prop("month")), map(addSum)])(
-      data
-    )
+    pipe(extractMonthsOfYear(year), sortBy(prop("month")), map(addSum))(data)
+  ),
+  lineChart: curry((data, year) =>
+    pipe(
+      extractEntriesOfYear(year),
+      map(entryDateToDateObject),
+      sortBy(prop("date"))
+    )(data)
   ),
 };
 const extractData = curry((chartType, data, year, setState) => {
@@ -25,6 +35,16 @@ const chartScales = {
         .paddingOuter(0.05),
       yScale: scaleLinear()
         .domain([0, max(data, prop("sum"))])
+        .range([height, 0]),
+    };
+  }),
+  lineChart: curry((data, width, height) => {
+    return {
+      xScale: scaleTime()
+        .domain(extent(data, prop('date')))
+        .range([0, width]),
+      yScale: scaleLinear()
+        .domain(extent(data, prop('value')))
         .range([height, 0]),
     };
   }),

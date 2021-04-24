@@ -10,11 +10,11 @@
 .NavigationItem a {
     text-decoration: none;
     font-weight: bold;
-    color: #f0ead2;
+    color: #F5F3F2;
 }
 
 .NavigationItem a:hover,
 .NavigationItem a:active,
 .NavigationItem a.active {
-    color: #cb997e;
+    color: #E5E2E0;
 }

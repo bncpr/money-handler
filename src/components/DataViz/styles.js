@@ -18,5 +18,5 @@ export const TickLine = styled.line`
 `;
 
 export const Mark = styled.rect`
-  fill: #137b80;
+  fill: #0F8C79;
 `;
