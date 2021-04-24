@@ -12,7 +12,8 @@ export const TabsBar = ({ tabs, current, onClick }) => {
             value={key} key={key}
             current={current}
             onClick={() => onClick(key)}
-          />)
+          />
+        )
       }
     </div>
   )
