@@ -1,15 +1,15 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
-import styles from './Dashboard.module.css'
-import { getYearThunk, initData } from '../../store/thunks'
-import { TabsBar } from '../../components/UI/Tabs/TabsBar/TabsBar';
-import { changeYear } from '../../store/dashboardSlice';
-import { BarChart } from '../../components/DataViz/BarChart/BarChart';
+import { useDispatch, useSelector } from "react-redux"
+import { useEffect } from "react"
+import styles from "./Dashboard.module.css"
+import { getYearThunk, initData } from "../../store/thunks"
+import { TabsBar } from "../../components/UI/Tabs/TabsBar/TabsBar"
+import { changeYear, toggleWithPayers } from "../../store/dashboardSlice"
+import { BarChart } from "../../components/DataViz/BarChart/BarChart"
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
   const data = useSelector(state => state.data)
-  const { year } = useSelector(state => state.dashboard)
+  const { year, withPayers, payerColors } = useSelector(state => state.dashboard)
 
   const onChangeYearHandler = val => dispatch(changeYear(val))
 
@@ -28,9 +28,15 @@ export const Dashboard = () => {
         current={year}
         onClick={onChangeYearHandler}
       />
-      <BarChart data={data} year={year} />
+      <BarChart
+        data={data}
+        year={year}
+        chartType='barChart'
+        withPayers={withPayers}
+        payerColors={payerColors}
+      />
+      <button onClick={() => dispatch(toggleWithPayers())}>Payers</button>
     </div>
-
   )
 }
 

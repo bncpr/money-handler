@@ -1,41 +1,41 @@
-import { useState, useEffect } from "react";
-import * as R from 'ramda'
+import { useState, useEffect } from "react"
+import { assoc, curry, map, pipe, prop, sortBy } from "ramda"
+import { scaleBand, scaleLinear, max } from "d3"
 
-import { extractMonthsOfYear, addSum, addPayers, extractPayerSum, extractPayersSums, addPayersSums } from "../utility/utility";
-import { curry, map, pipe, prop, sortBy } from "ramda";
-import { scaleBand, scaleLinear, max } from "d3";
+import {
+  extractMonthsOfYear,
+  addSum,
+  addPayers,
+  addPayersSums,
+} from "../utility/utility"
 
-const chartPipes = {
-  barChart: curry((data, year) =>
-    pipe(
-      extractMonthsOfYear(year),
-      sortBy(prop("month")),
-      map(pipe(addSum, addPayers, addPayersSums))
-    )(data)
-  ),
-};
+const barChartPipe = curry((data, year) =>
+  pipe(
+    extractMonthsOfYear(year),
+    sortBy(prop("month")),
+    map(pipe(addSum, addPayers, addPayersSums))
+  )(data)
+)
+
+const chartPipesMap = {
+  barChart: barChartPipe,
+}
 const extractData = curry((chartType, data, year, setState) => {
-  setState(chartPipes[chartType](data, year));
-});
+  setState(chartPipesMap[chartType](data, year))
+})
 
-const chartScales = {
-  barChart: curry((data, width, height) => {
-    return {
-      xScale: scaleBand()
-        .domain(data.map(prop("month")))
-        .range([0, width])
-        .paddingInner(0.2)
-        .paddingOuter(0.05),
-      yScale: scaleLinear()
-        .domain([0, max(data, prop("sum"))])
-        .range([height, 0]),
-    };
-  }),
-};
-
-const getChartScales = curry((chartType, data, width, height) =>
-  chartScales[chartType](data, width, height)
-);
+const barChartScales = curry((data, width, height) => {
+  return {
+    xScale: scaleBand()
+      .domain(data.map(prop("month")))
+      .range([0, width])
+      .paddingInner(0.2)
+      .paddingOuter(0.05),
+    yScale: scaleLinear()
+      .domain([0, max(data, prop("sum"))])
+      .range([height, 0]),
+  }
+})
 
 export const useChartData = ({
   data,
@@ -44,28 +44,25 @@ export const useChartData = ({
   height,
   margin,
   chartType,
+  withPayers,
 }) => {
-  const innerHeight = height - margin.top - margin.bottom;
-  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom
+  const innerWidth = width - margin.left - margin.right
 
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState([])
 
   useEffect(() => {
     if (data && year && data[year] instanceof Object) {
-      extractData(chartType, data, year, setChartData);
+      extractData(chartType, data, year, setChartData)
+
     }
-  }, [data, year, chartType]);
+  }, [data, year, chartType, withPayers])
 
   useEffect(() => {
     console.log(chartData)
   }, [chartData])
 
-  const { xScale, yScale } = getChartScales(
-    chartType,
-    chartData,
-    innerWidth,
-    innerHeight
-  );
+  const { xScale, yScale } = barChartScales(chartData, innerWidth, innerHeight)
 
-  return { chartData, xScale, yScale, innerHeight, innerWidth };
-};
+  return { chartData, xScale, yScale, innerHeight, innerWidth }
+}
