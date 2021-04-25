@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
+import * as R from 'ramda'
 
-import {
-  extractMonthsOfYear,
-  addSum,
-  extractEntriesOfYear,
-  entryDateToDateObject,
-} from "../utility/utility";
+import { extractMonthsOfYear, addSum, addPayers, extractPayerSum, extractPayersSums, addPayersSums } from "../utility/utility";
 import { curry, map, pipe, prop, sortBy } from "ramda";
-import { scaleBand, scaleLinear, max, extent, scaleTime } from "d3";
+import { scaleBand, scaleLinear, max } from "d3";
 
 const chartPipes = {
   barChart: curry((data, year) =>
-    pipe(extractMonthsOfYear(year), sortBy(prop("month")), map(addSum))(data)
+    pipe(
+      extractMonthsOfYear(year),
+      sortBy(prop("month")),
+      map(pipe(addSum, addPayers, addPayersSums))
+    )(data)
   ),
 };
 const extractData = curry((chartType, data, year, setState) => {
@@ -55,6 +55,10 @@ export const useChartData = ({
       extractData(chartType, data, year, setChartData);
     }
   }, [data, year, chartType]);
+
+  useEffect(() => {
+    console.log(chartData)
+  }, [chartData])
 
   const { xScale, yScale } = getChartScales(
     chartType,

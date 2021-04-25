@@ -50,5 +50,29 @@ export const entriesLensOver = R.curry((setterLens, fn, obj) =>
 export const extractSum = R.pipe(R.map(R.prop("value")), R.sum);
 export const addSum = entriesLensOver(R.assoc("sum"), extractSum);
 
-export const entryDateLens = R.lensProp('date')
-export const entryDateToDateObject = R.curry(obj => R.over(entryDateLens, d => new Date(d), obj))
+export const extractPayers = R.pipe(R.map(R.prop("payer")), R.uniq);
+export const addPayers = entriesLensOver(R.assoc("payers"), extractPayers);
+
+export const extractPayerSum = R.curry((payer, obj) => {
+  return R.pipe(
+    R.prop('entries'),
+    R.values,
+    R.filter((o) => o.payer === payer),
+    R.map(R.prop("value")),
+    R.sum
+  )(obj);
+});
+
+export const extractPayersSums = R.curry((obj) => {
+  const { payers } = obj;
+  return R.zipObj(payers, R.map(extractPayerSum(R.__, obj), payers));
+});
+
+export const addPayersSums = R.curry((obj) =>
+  R.over(R.lens(R.identity, R.assoc("payersSums")), extractPayersSums, obj)
+);
+
+export const entryDateLens = R.lensProp("date");
+export const entryDateToDateObject = R.curry((obj) =>
+  R.over(entryDateLens, (d) => new Date(d), obj)
+);
