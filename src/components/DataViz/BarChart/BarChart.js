@@ -22,6 +22,9 @@ export const BarChart = ({
   chartType,
   withPayers,
   payerColors,
+  categoryColors,
+  withStacks,
+  withCategories,
 }) => {
   const [width, height] = [960, 500]
   const margin = { top: 40, right: 20, bottom: 40, left: 45 }
@@ -38,6 +41,71 @@ export const BarChart = ({
 
   const monthlyAverageSum = extractAverageSum(chartData)
 
+  const stackedPayers = (
+    <StackedMarks
+      data={chartData.map(m => ({ month: m.month, ...m.payersSums }))}
+      stacks={keys(payerColors)}
+      colors={payerColors}
+      xScale={xScale}
+      yScale={yScale}
+      tooltipFormat={format(",d")}
+    />
+  )
+  const sumsWithCategories = (
+    <StackedMarks
+      data={chartData.map(m => ({ month: m.month, ...m.categoriesSums }))}
+      stacks={keys(categoryColors)}
+      colors={categoryColors}
+      xScale={xScale}
+      yScale={yScale}
+      tooltipFormat={format(",d")}
+    />
+  )
+  const payersSeries = (
+    <SubMarks
+      data={chartData}
+      height={innerHeight}
+      yScale={yScale}
+      xScale={xScale}
+      tooltipFormat={format(",d")}
+      xAccessor={d => d.month}
+      yAccessor={(d, payer) => d.payersSums[payer]}
+      colors={payerColors}
+      series={"payers"}
+    />
+  )
+  const categoriesSeries = (
+    <SubMarks
+      data={chartData.map(m => ({
+        month: m.month,
+        categories: m.categories,
+        categoriesSums: m.categoriesSums,
+      }))}
+      height={innerHeight}
+      yScale={yScale}
+      xScale={xScale}
+      tooltipFormat={format(",d")}
+      xAccessor={d => d.month}
+      yAccessor={(d, category) => d.categoriesSums[category]}
+      colors={categoryColors}
+      series={"categories"}
+    />
+  )
+  const sums = (
+    <>
+      <AverageTick width={innerWidth} average={yScale(monthlyAverageSum)} />
+      <Marks
+        data={chartData}
+        height={innerHeight}
+        yScale={yScale}
+        xScale={xScale}
+        tooltipFormat={format(",d")}
+        xAccessor={d => d.month}
+        yAccessor={d => d.sum}
+      />
+    </>
+  )
+
   return (
     <Chart
       width={width}
@@ -51,38 +119,15 @@ export const BarChart = ({
         height={innerHeight}
         yOffset={margin.bottom / 2}
       />
-      {withPayers ? (
-        <StackedMarks
-          data={chartData.map(m => ({ month: m.month, ...m.payersSums }))}
-          payers={keys(payerColors)}
-          colors={payerColors}
-          xScale={xScale}
-          yScale={yScale}
-        />
-      ) : (
-        // <SubMarks
-        //   data={chartData}
-        //   height={innerHeight}
-        //   yScale={yScale}
-        //   xScale={xScale}
-        //   tooltipFormat={format(",d")}
-        //   xAccessor={d => d.month}
-        //   yAccessor={(d, payer) => d.payersSums[payer]}
-        //   colors={payerColors}
-        // />
-        <>
-          <AverageTick width={innerWidth} average={yScale(monthlyAverageSum)} />
-          <Marks
-            data={chartData}
-            height={innerHeight}
-            yScale={yScale}
-            xScale={xScale}
-            tooltipFormat={format(",d")}
-            xAccessor={d => d.month}
-            yAccessor={d => d.sum}
-          />
-        </>
-      )}
+      {withCategories
+        ? withStacks
+          ? sumsWithCategories
+          : categoriesSeries
+        : withPayers
+        ? withStacks
+          ? stackedPayers
+          : payersSeries
+        : sums}
     </Chart>
   )
 }

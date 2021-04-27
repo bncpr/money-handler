@@ -54,6 +54,9 @@ export const useChartData = ({
   height,
   margin,
   chartType,
+  withPayers,
+  withStacks,
+  withCategories,
 }) => {
   const innerHeight = height - margin.top - margin.bottom
   const innerWidth = width - margin.left - margin.right

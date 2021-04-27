@@ -16,12 +16,15 @@ export const SubMarks = ({
   xAccessor,
   yAccessor,
   colors,
+  series
 }) => {
+  console.log(data)
   return data.map(d => {
     const xSubScale = scaleBand()
-      .domain(d.payers || [])
+      .domain(d[series] || [])
       .range(subScaleRange(xScale, xAccessor(d)))
       .paddingInner(0.02)
+    console.log(xSubScale.domain())
     return xSubScale.domain().map(payer => (
       <rect
         key={xAccessor(d) + payer}

@@ -1,37 +1,30 @@
-import { scaleBand, scaleOrdinal } from "d3-scale"
 import { stack } from "d3-shape"
-import { Mark as StyledMark } from "../styles"
-
-const subScaleRange = (scale, accessor) => [
-  scale(accessor),
-  scale(accessor) + scale.bandwidth(),
-]
 
 export const StackedMarks = ({
   data,
   xScale,
   yScale,
-  payers,
+  stacks,
   tooltipFormat,
   colors,
 }) => {
-  const stacked = stack().keys(payers)(data)
-  console.log(stacked)
-  return stacked.map(payer =>
-    payer.map(month => {
+  const stacked = stack().keys(stacks)(data)
+  return stacked.map(brick =>
+    brick.map(month => {
       let [y1, y2] = month
       if (isNaN(y1) || isNaN(y2)) return null
       const x = month.data.month
+      const key = brick.key
       return (
         <rect
-          key={payer.key + month}
+          key={key + month}
           x={xScale(x)}
           y={yScale(y2)}
           width={xScale.bandwidth()}
           height={yScale(y1) - yScale(y2)}
-          fill={colors[payer.key]}
+          fill={colors[key]}
         >
-          <title>{payer.key}</title>
+          <title>{`${key}: ${tooltipFormat(month.data[key])}`}</title>
         </rect>
       )
     })

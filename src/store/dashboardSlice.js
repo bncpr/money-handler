@@ -11,15 +11,23 @@ const dashboardSlice = createSlice({
     year: null,
     month: null,
     withPayers: false,
+    withStacks: false,
+    withCategories: false,
     payerColors: {},
     categoryColors: {},
   },
   reducers: {
-    changeYear(state, action) {
-      state.year = action.payload
+    changeYear(state, { payload }) {
+      state.year = payload
     },
     toggleWithPayers(state) {
       state.withPayers = !state.withPayers
+    },
+    toggleWithStacks(state) {
+      state.withStacks = !state.withStacks
+    },
+    toggleWithCategories(state) {
+      state.withCategories = !state.withCategories
     },
   },
   extraReducers: {
@@ -37,11 +45,15 @@ const dashboardSlice = createSlice({
           state.payerColors[payer] = colorsGenerator.next().value
         }
       })
-
       return state
     },
   },
 })
 
 export const dashboardReducer = dashboardSlice.reducer
-export const { changeYear, toggleWithPayers } = dashboardSlice.actions
+export const {
+  changeYear,
+  toggleWithPayers,
+  toggleWithStacks,
+  toggleWithCategories,
+} = dashboardSlice.actions
