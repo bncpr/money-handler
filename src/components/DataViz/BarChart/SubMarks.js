@@ -1,4 +1,5 @@
 import { scaleBand, scaleOrdinal } from "d3-scale"
+import { stack } from "d3-shape"
 import { Mark as StyledMark } from "../styles"
 
 const subScaleRange = (scale, accessor) => [
@@ -18,7 +19,7 @@ export const SubMarks = ({
 }) => {
   return data.map(d => {
     const xSubScale = scaleBand()
-      .domain(d.payers)
+      .domain(d.payers || [])
       .range(subScaleRange(xScale, xAccessor(d)))
       .paddingInner(0.02)
     return xSubScale.domain().map(payer => (

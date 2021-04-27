@@ -50,42 +50,67 @@ export const entriesLensOver = R.curry((setterLens, fn, obj) =>
 export const extractSum = R.pipe(R.map(R.prop("value")), R.sum)
 export const addSum = entriesLensOver(R.assoc("sum"), extractSum)
 
-const extractPropFromYear = prop => R.pipe(
-  R.prop("months"),
-  R.values,
-  R.map(R.pipe(R.prop("entries"), R.values)),
-  R.flatten,
-  R.map(R.prop(prop)),
-  R.uniq
+const extractPropFromYear = prop =>
+  R.pipe(
+    R.prop("months"),
+    R.values,
+    R.map(R.pipe(R.prop("entries"), R.values)),
+    R.flatten,
+    R.map(R.prop(prop)),
+    R.uniq
+  )
+
+export const extractPayersFromYear = extractPropFromYear("payer")
+export const extractCategoriesFromYear = extractPropFromYear("category")
+
+const extractPayersFromMonth = R.pipe(R.map(R.prop("payer")), R.uniq)
+const extractCategoriesFromMonth = R.pipe(R.map(R.prop("category")), R.uniq)
+
+export const addPayers = entriesLensOver(
+  R.assoc("payers"),
+  extractPayersFromMonth
+)
+export const addCategories = entriesLensOver(
+  R.assoc("categories"),
+  extractCategoriesFromMonth
 )
 
-export const extractPayers = R.pipe(R.map(R.prop("payer")), R.uniq)
-export const extractPayersFromYear = extractPropFromYear('payer')
-
-export const extractCategoriesFromYear = extractPropFromYear('category')
-
-export const addPayers = entriesLensOver(R.assoc("payers"), extractPayers)
-
-export const extractPayerSum = R.curry((payer, obj) => {
+const extractPropSum = R.curry((prop, propValue, obj) => {
   return R.pipe(
     R.prop("entries"),
     R.values,
-    R.filter(o => o.payer === payer),
+    R.filter(o => o[prop] === propValue),
     R.map(R.prop("value")),
     R.sum
   )(obj)
 })
 
-export const extractPayersSums = R.curry(obj => {
-  const { payers } = obj
-  return R.zipObj(payers, R.map(extractPayerSum(R.__, obj), payers))
-})
+const extractPayerSum = extractPropSum("payer")
+const extractCategorySum = extractPropSum("category")
+
+const extractPropsSums = R.curry((prop, fn, obj) =>
+  R.zipObj(obj[prop], R.map(fn(R.__, obj), obj[prop]))
+)
+
+const extractPayersSums = extractPropsSums("payers", extractPayerSum)
+const extractCategoriesSums = extractPropsSums("categories", extractCategorySum)
 
 export const addPayersSums = R.curry(obj =>
   R.over(R.lens(R.identity, R.assoc("payersSums")), extractPayersSums, obj)
 )
 
-export const entryDateLens = R.lensProp("date")
-export const entryDateToDateObject = R.curry(obj =>
-  R.over(entryDateLens, d => new Date(d), obj)
+export const addCategoriesSums = R.curry(obj =>
+  R.over(
+    R.lens(R.identity, R.assoc("categoriesSums")),
+    extractCategoriesSums,
+    obj
+  )
 )
+
+const average = R.converge(R.divide, [R.sum, R.length])
+export const extractAverageSum = R.pipe(R.map(R.prop("sum")), average)
+
+const flattenPath = R.curry((path, obj) =>
+  R.merge(obj, R.pathOr({}, path, obj))
+)
+export const flattenProp = R.curry((prop, obj) => flattenPath(R.of(prop), obj))

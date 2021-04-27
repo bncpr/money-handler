@@ -24,8 +24,9 @@ const dashboardSlice = createSlice({
   },
   extraReducers: {
     "data/getYear/fulfilled": (state, action) => {
-      const categories = extractCategoriesFromYear(action.payload.data)
-      const payers = extractPayersFromYear(action.payload.data)
+      const { data } = action.payload
+      const categories = extractCategoriesFromYear(data)
+      const payers = extractPayersFromYear(data)
       categories.forEach(category => {
         if (!(category in state.categoryColors)) {
           state.categoryColors[category] = colorsGenerator.next().value

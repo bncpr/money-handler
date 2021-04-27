@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { assoc, curry, map, pipe, prop, sortBy } from "ramda"
+import { assoc, curry, identity, map, pipe, prop, sortBy, tap } from "ramda"
 import { scaleBand, scaleLinear, max } from "d3"
 
 import {
@@ -7,18 +7,28 @@ import {
   addSum,
   addPayers,
   addPayersSums,
+  average,
+  addCategories,
+  addCategoriesSums,
 } from "../utility/utility"
 
 const barChartPipe = curry((data, year) =>
   pipe(
     extractMonthsOfYear(year),
     sortBy(prop("month")),
-    map(pipe(addSum, addPayers, addPayersSums))
+    map(
+      pipe(addSum, addPayers, addPayersSums, addCategories, addCategoriesSums)
+    )
   )(data)
+)
+
+const barChartWithPayers = curry((data, year) =>
+  map(pipe(addPayers, addPayersSums), barChartPipe(data, year))
 )
 
 const chartPipesMap = {
   barChart: barChartPipe,
+  barChartWithPayers: barChartWithPayers, // Not used.
 }
 const extractData = curry((chartType, data, year, setState) => {
   setState(chartPipesMap[chartType](data, year))
@@ -44,7 +54,6 @@ export const useChartData = ({
   height,
   margin,
   chartType,
-  withPayers,
 }) => {
   const innerHeight = height - margin.top - margin.bottom
   const innerWidth = width - margin.left - margin.right
@@ -54,9 +63,8 @@ export const useChartData = ({
   useEffect(() => {
     if (data && year && data[year] instanceof Object) {
       extractData(chartType, data, year, setChartData)
-
     }
-  }, [data, year, chartType, withPayers])
+  }, [data, year, chartType])
 
   useEffect(() => {
     console.log(chartData)
@@ -64,5 +72,11 @@ export const useChartData = ({
 
   const { xScale, yScale } = barChartScales(chartData, innerWidth, innerHeight)
 
-  return { chartData, xScale, yScale, innerHeight, innerWidth }
+  return {
+    chartData,
+    xScale,
+    yScale,
+    innerHeight,
+    innerWidth,
+  }
 }
