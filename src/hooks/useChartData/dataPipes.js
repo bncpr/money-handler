@@ -1,4 +1,4 @@
-import * as R from 'ramda'
+import * as R from "ramda"
 
 const extractMonthsOfYear = R.curry(year =>
   R.pipe(R.prop(year), R.prop("months"), R.values)
@@ -60,6 +60,13 @@ export const seriesPipe = (propName, data, year) =>
 export const stackPipe = (propName, data, year) =>
   barChartPipe(
     [addSum, addSeries(propName), R.pick(["month", "sum", "sums", "series"])],
+    data,
+    year
+  )
+
+export const stackedSeriesPipe = (propName, data, year) =>
+  barChartPipe(
+    [addSeries(propName), R.pick(["month", "sums", "series"])],
     data,
     year
   )

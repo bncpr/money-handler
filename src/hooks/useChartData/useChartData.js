@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react"
 
-import { didFetchYear } from "./utility"
+import { didFetchYear } from "../../utility/utility"
 import { getChartDataAndScales } from './getChartDataAndScales'
 
 export const useChartData = ({
-  turnLoadingOn,
   turnLoadingOff,
   data,
   year,
@@ -22,8 +21,8 @@ export const useChartData = ({
   const [chartScales, setChartScales] = useState({})
 
   useEffect(() => {
-    console.log(withPayers, withStacks, withCategories)
-    console.log(`${+withPayers}${+withStacks}${+withCategories}`)
+    // console.log(withPayers, withStacks, withCategories)
+    // console.log(`${+withPayers}${+withStacks}${+withCategories}`)
     if (didFetchYear(data, year)) {
       const { chartData, chartScales } = getChartDataAndScales(
         data,
@@ -38,8 +37,8 @@ export const useChartData = ({
   }, [data, year, withPayers, withStacks, withCategories])
 
   useEffect(() => {
-    console.log("chartData", chartData)
-    console.log("chartScales", chartScales)
+    // console.log("chartData", chartData)
+    // console.log("chartScales", chartScales)
   }, [chartData])
 
   return {

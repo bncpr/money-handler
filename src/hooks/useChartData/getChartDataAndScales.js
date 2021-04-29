@@ -1,6 +1,11 @@
 import * as R from "ramda"
 
-import { monthlySumsPipe, seriesPipe, stackPipe } from "./dataPipes"
+import {
+  monthlySumsPipe,
+  seriesPipe,
+  stackPipe,
+  stackedSeriesPipe,
+} from "./dataPipes"
 
 import {
   barChartScales,
@@ -9,6 +14,7 @@ import {
 } from "./scales"
 
 const monthlySumsBars = R.curry((data, year, { innerWidth, innerHeight }) => {
+  console.log(stackedSeriesPipe("payer", data, year))
   const chartData = monthlySumsPipe(data, year)
   const chartScales = barChartScales(chartData, innerWidth, innerHeight)
   return { chartData, chartScales }
@@ -21,7 +27,6 @@ const seriesSumsBars = R.curry(
     return { chartData, chartScales }
   }
 )
-
 const stackedSumsBars = R.curry(
   (propName, data, year, { innerWidth, innerHeight }) => {
     const chartData = stackPipe(propName, data, year)
@@ -29,7 +34,6 @@ const stackedSumsBars = R.curry(
     return { chartData, chartScales }
   }
 )
-
 const barChartMap = new Map([
   ["000", monthlySumsBars],
   ["001", seriesSumsBars("category")],

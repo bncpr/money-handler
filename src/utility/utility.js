@@ -49,3 +49,6 @@ const flattenPath = R.curry((path, obj) =>
   R.merge(obj, R.pathOr({}, path, obj))
 )
 export const flattenProp = R.curry((prop, obj) => flattenPath(R.of(prop), obj))
+
+export const didFetchYear = (data, year) =>
+  data && year && data[year] instanceof Object
