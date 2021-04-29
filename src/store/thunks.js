@@ -2,7 +2,6 @@ import axios from "../axios"
 import { getMaxKey } from "../utility/utility"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { changeYear } from "./dashboardSlice"
-import { processYear } from "./dataSlice"
 
 const getYear = year => axios.get(`years/${year}.json`).then(res => res.data)
 const getShallowData = () =>
