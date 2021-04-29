@@ -1,40 +1,26 @@
-import { scaleBand, scaleOrdinal } from "d3-scale"
-import { stack } from "d3-shape"
-import { Mark as StyledMark } from "../styles"
-
-const subScaleRange = (scale, accessor) => [
-  scale(accessor),
-  scale(accessor) + scale.bandwidth(),
-]
 
 export const SubMarks = ({
   data,
   height,
-  xScale,
   yScale,
+  subScales,
   tooltipFormat,
   xAccessor,
-  yAccessor,
   colors,
-  series
 }) => {
-  console.log(data)
+  if (!subScales) return null
   return data.map(d => {
-    const xSubScale = scaleBand()
-      .domain(d[series] || [])
-      .range(subScaleRange(xScale, xAccessor(d)))
-      .paddingInner(0.02)
-    console.log(xSubScale.domain())
-    return xSubScale.domain().map(payer => (
+    const xSubScale = subScales[d.month]
+    return xSubScale.domain().map(key => (
       <rect
-        key={xAccessor(d) + payer}
-        x={xSubScale(payer)}
-        y={yScale(yAccessor(d, payer))}
-        height={height - yScale(yAccessor(d, payer))}
+        key={xAccessor(d) + key}
+        x={xSubScale(key)}
+        y={yScale(d.sums[key])}
+        height={height - yScale(d.sums[key])}
         width={xSubScale.bandwidth()}
-        fill={colors[payer]}
+        fill={colors[key]}
       >
-        <title>{`${payer}: ${tooltipFormat(yAccessor(d, payer))}`}</title>
+        <title>{`${key}: ${tooltipFormat(d.sums[key])}`}</title>
       </rect>
     ))
   })

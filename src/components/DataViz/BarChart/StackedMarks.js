@@ -1,20 +1,22 @@
 import { stack } from "d3-shape"
+import { prop } from "ramda"
 
 export const StackedMarks = ({
   data,
+  stacked,
   xScale,
   yScale,
-  stacks,
   tooltipFormat,
   colors,
 }) => {
-  const stacked = stack().keys(stacks)(data)
-  return stacked.map(brick =>
-    brick.map(month => {
+  console.log("StackedMarks", data)
+  console.log(stacked)
+  return stacked.map(series =>
+    series.map(month => {
       let [y1, y2] = month
       if (isNaN(y1) || isNaN(y2)) return null
       const x = month.data.month
-      const key = brick.key
+      const key = series.key
       return (
         <rect
           key={key + month}
@@ -24,7 +26,7 @@ export const StackedMarks = ({
           height={yScale(y1) - yScale(y2)}
           fill={colors[key]}
         >
-          <title>{`${key}: ${tooltipFormat(month.data[key])}`}</title>
+          <title>{`${key}: ${tooltipFormat(month.data.sums[key])}`}</title>
         </rect>
       )
     })

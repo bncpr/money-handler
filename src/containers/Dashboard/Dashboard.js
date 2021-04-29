@@ -8,6 +8,8 @@ import {
   toggleWithCategories,
   toggleWithPayers,
   toggleWithStacks,
+  turnLoadingOff,
+  turnLoadingOn,
 } from "../../store/dashboardSlice"
 import { BarChart } from "../../components/DataViz/BarChart/BarChart"
 import { keys } from "ramda"
@@ -16,6 +18,7 @@ export const Dashboard = () => {
   const dispatch = useDispatch()
   const data = useSelector(state => state.data)
   const {
+    isLoading,
     year,
     withPayers,
     payerColors,
@@ -24,10 +27,24 @@ export const Dashboard = () => {
     withCategories,
   } = useSelector(state => state.dashboard)
 
-  const onChangeYearHandler = val => dispatch(changeYear(val))
-  const onTogglePayersHandler = () => dispatch(toggleWithPayers())
-  const onToggleStacksHandler = () => dispatch(toggleWithStacks())
-  const onToggleCategoriesHandler = () => dispatch(toggleWithCategories())
+  const onChangeYearHandler = val => {
+    dispatch(turnLoadingOn())
+    dispatch(changeYear(val))
+  }
+  const onTogglePayersHandler = () => {
+    dispatch(turnLoadingOn())
+    dispatch(toggleWithPayers())
+  }
+  const onToggleStacksHandler = () => {
+    dispatch(turnLoadingOn())
+    dispatch(toggleWithStacks())
+  }
+  const onToggleCategoriesHandler = () => {
+    dispatch(turnLoadingOn())
+    dispatch(toggleWithCategories())
+  }
+  const turnLoadingOnHandler = () => dispatch(turnLoadingOn())
+  const turnLoadingOffHandler = () => dispatch(turnLoadingOff())
 
   useEffect(() => {
     if (year === null) {
@@ -41,6 +58,9 @@ export const Dashboard = () => {
     <div className={styles.dashboard}>
       <TabsBar tabs={keys(data)} current={year} onClick={onChangeYearHandler} />
       <BarChart
+        turnLoadingOff={turnLoadingOffHandler}
+        turnLoadingOn={turnLoadingOnHandler}
+        isLoading={isLoading}
         data={data}
         year={year}
         chartType='barChart'
@@ -50,9 +70,24 @@ export const Dashboard = () => {
         withStacks={withStacks}
         withCategories={withCategories}
       />
-      <button onClick={onTogglePayersHandler}>Payers</button>
-      <button onClick={onToggleStacksHandler}>Stack</button>
-      <button onClick={onToggleCategoriesHandler}>Categories</button>
+      <button
+        onClick={onTogglePayersHandler}
+        disabled={withStacks && !withCategories}
+      >
+        Payers
+      </button>
+      <button
+        onClick={onToggleStacksHandler}
+        disabled={!withPayers && !withCategories}
+      >
+        Stack
+      </button>
+      <button
+        onClick={onToggleCategoriesHandler}
+        disabled={withStacks && !withPayers}
+      >
+        Categories
+      </button>
     </div>
   )
 }

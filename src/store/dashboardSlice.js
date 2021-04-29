@@ -8,6 +8,7 @@ import {
 const dashboardSlice = createSlice({
   name: "dashboard",
   initialState: {
+    isLoading: false,
     year: null,
     month: null,
     withPayers: false,
@@ -17,6 +18,12 @@ const dashboardSlice = createSlice({
     categoryColors: {},
   },
   reducers: {
+    turnLoadingOn(state) {
+      state.isLoading = true
+    },
+    turnLoadingOff(state) {
+      state.isLoading = false
+    },
     changeYear(state, { payload }) {
       state.year = payload
     },
@@ -52,6 +59,8 @@ const dashboardSlice = createSlice({
 
 export const dashboardReducer = dashboardSlice.reducer
 export const {
+  turnLoadingOff,
+  turnLoadingOn,
   changeYear,
   toggleWithPayers,
   toggleWithStacks,

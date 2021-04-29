@@ -11,12 +11,13 @@ export const Marks = ({
   xAccessor,
   yAccessor,
 }) => {
+  if (!xScale || !yScale) return null
   return data.map(d => (
     <StyledMark
       key={xAccessor(d)}
       x={xScale(xAccessor(d))}
       y={yScale(yAccessor(d))}
-      height={height - yScale(yAccessor(d))}
+      height={(height - yScale(yAccessor(d))) || 0}
       width={xScale.bandwidth()}
     >
       <title>{tooltipFormat(yAccessor(d))}</title>
