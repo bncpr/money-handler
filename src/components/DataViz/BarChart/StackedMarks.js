@@ -13,7 +13,7 @@ export const StackedMarks = ({
   console.log(stacked)
   return stacked.map(series =>
     series.map(month => {
-      let [y1, y2] = month
+      const [y1, y2] = month
       if (isNaN(y1) || isNaN(y2)) return null
       const x = month.data.month
       const key = series.key

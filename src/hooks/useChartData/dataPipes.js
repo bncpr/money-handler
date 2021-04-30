@@ -40,6 +40,40 @@ const addSeries = R.curry(propName =>
   R.pipe(addSeriesToMonth(propName), addSumsOfSeries(propName))
 )
 
+const extractStackSeriesSum = R.curry((propN1, propN2, propV1, propV2, obj) =>
+  R.pipe(
+    R.prop("entries"),
+    R.values,
+    R.filter(o => o[propN1] === propV1),
+    R.filter(o => o[propN2] === propV2),
+    R.map(R.prop("value")),
+    R.sum
+  )(obj)
+)
+
+const extractSeriesFromObj = propName =>
+  R.pipe(R.prop("entries"), R.values, R.map(R.prop(propName)), R.uniq)
+
+const extractSumsOfSeriesForSeries = (series1, series2, propN1, propN2, obj) =>
+  series1.map(propV1 => ({
+    name: propV1,
+    sums: R.zipObj(
+      series2,
+      series2.map(propV2 =>
+        extractStackSeriesSum(propN1, propN2, propV1, propV2, obj)
+      )
+    ),
+  }))
+
+const extractSumsOfStackSeries = R.curry((propN1, propN2, obj) => {
+  const s1 = extractSeriesFromObj(propN1)(obj)
+  const s2 = extractSeriesFromObj(propN2)(obj)
+  return {
+    ...obj,
+    stackSeries: extractSumsOfSeriesForSeries(s1, s2, propN1, propN2, obj),
+  }
+})
+
 const barChartPipe = R.curry((fns, data, year) =>
   R.pipe(
     extractMonthsOfYear(year),
@@ -64,9 +98,13 @@ export const stackPipe = (propName, data, year) =>
     year
   )
 
-export const stackedSeriesPipe = (propName, data, year) =>
+export const stackedSeriesPipe = (propName1, propName2, data, year) =>
   barChartPipe(
-    [addSeries(propName), R.pick(["month", "sums", "series"])],
+    [
+      addSeries(propName1),
+      extractSumsOfStackSeries(propName1, propName2),
+      R.pick(["month", "stackSeries", "series", "sums"]),
+    ],
     data,
     year
   )

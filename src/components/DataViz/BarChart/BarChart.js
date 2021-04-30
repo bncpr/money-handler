@@ -1,3 +1,5 @@
+import { keys, map, objOf, pipe, prop, props } from "ramda"
+import { useCallback } from "react"
 import { format } from "d3"
 
 import { Chart } from "../Chart"
@@ -8,14 +10,13 @@ import { SubMarks } from "./SubMarks"
 import { StackedMarks } from "./StackedMarks"
 
 import { useChartData } from "../../../hooks/useChartData/useChartData"
-import { keys, map, objOf, pipe, prop, props } from "ramda"
 import {
   average,
   extractAverageSum,
   flattenProp,
 } from "../../../utility/utility"
 import { AverageTick } from "./AverageTick"
-import { useCallback } from "react"
+import { StackedSeriesMarks } from "./StackedSeriesMarks"
 
 export const BarChart = ({
   turnLoadingOn,
@@ -37,7 +38,7 @@ export const BarChart = ({
     chartData,
     innerHeight,
     innerWidth,
-    chartScales: { xScale, yScale, subScales, stackedData },
+    chartScales: { xScale, yScale, subScales, stackedData, stackedSeriesData },
   } = useChartData({
     turnLoadingOn,
     turnLoadingOff,
@@ -54,27 +55,6 @@ export const BarChart = ({
   })
 
   const monthlyAverageSum = extractAverageSum(chartData)
-
-  const stackedPayers = (
-    <StackedMarks
-      data={chartData.map(m => ({ month: m.month, ...m.payersSums }))}
-      stacks={keys(payerColors)}
-      colors={payerColors}
-      xScale={xScale}
-      yScale={yScale}
-      tooltipFormat={format(",d")}
-    />
-  )
-  const sumsWithCategories = (
-    <StackedMarks
-      data={chartData.map(m => ({ month: m.month, ...m.categoriesSums }))}
-      stacks={keys(categoryColors)}
-      colors={categoryColors}
-      xScale={xScale}
-      yScale={yScale}
-      tooltipFormat={format(",d")}
-    />
-  )
 
   let marks = null
   if (!withPayers && !withStacks && !withCategories) {
@@ -123,8 +103,19 @@ export const BarChart = ({
         tooltipFormat={format(",d")}
       />
     )
+  } else if (withPayers && withCategories) {
+    marks = (
+      <StackedSeriesMarks
+        data={chartData}
+        stackedSeries={stackedSeriesData}
+        subScales={subScales}
+        xScale={xScale}
+        yScale={yScale}
+        colors={categoryColors}
+        tooltipFormat={format(",d")}
+      />
+    )
   }
-
   return (
     <Chart
       width={width}

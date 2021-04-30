@@ -1,5 +1,5 @@
-import * as R from 'ramda'
-import * as d3 from 'd3'
+import * as R from "ramda"
+import * as d3 from "d3"
 
 const barChartXScale = (data, width) =>
   d3
@@ -62,5 +62,33 @@ export const barChartStackScales = (data, width, height) => {
     xScale,
     yScale,
     stackedData,
+  }
+}
+
+export const barChartStackSeriesScales = (data, width, height) => {
+  const { xScale, yScale, subScales } = barChartSeriesScales(
+    data,
+    width,
+    height
+  )
+  const keys = R.pipe(
+    R.map(R.prop("stackSeries")),
+    R.flatten,
+    R.map(R.pipe(R.prop("sums"), R.keys)),
+    R.flatten,
+    R.uniq
+  )(data)
+
+  const stackedSeriesData = data.map(m =>
+    d3
+      .stack()
+      .keys(keys)
+      .value((d, key) => d.sums[key])(m.stackSeries)
+  )
+  return {
+    xScale,
+    yScale,
+    stackedSeriesData,
+    subScales,
   }
 }

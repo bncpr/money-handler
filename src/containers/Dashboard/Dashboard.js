@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { useEffect } from "react"
+import { useEffect, useCallback } from "react"
 import styles from "./Dashboard.module.css"
 import { getYearThunk, initData } from "../../store/thunks"
 import { TabsBar } from "../../components/UI/Tabs/TabsBar/TabsBar"
@@ -78,7 +78,9 @@ export const Dashboard = () => {
       </button>
       <button
         onClick={onToggleStacksHandler}
-        disabled={!withPayers && !withCategories}
+        disabled={
+          (!withPayers && !withCategories) || (withPayers && withCategories)
+        }
       >
         Stack
       </button>
@@ -88,6 +90,7 @@ export const Dashboard = () => {
       >
         Categories
       </button>
+      {withPayers && withCategories ? <button>switch stack</button> : null}
     </div>
   )
 }
