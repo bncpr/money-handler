@@ -56,7 +56,12 @@ const barChartMap = new Map([
   ["010", null], // nothing to stack
 ])
 
-const getChartType = ({ withPayers, withStacks, withCategories }) => {
+const getChartType = ({
+  withPayers,
+  withStacks,
+  withCategories,
+  seriesStackOrder,
+}) => {
   const type = `${+withPayers}${+withStacks}${+withCategories}`
   if (type === "010") return "000"
   return type === "101" ? "111" : type

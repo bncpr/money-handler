@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { useEffect, useCallback } from "react"
+import { useEffect } from "react"
 import styles from "./Dashboard.module.css"
 import { getYearThunk, initData } from "../../store/thunks"
 import { TabsBar } from "../../components/UI/Tabs/TabsBar/TabsBar"
@@ -13,6 +13,7 @@ import {
 } from "../../store/dashboardSlice"
 import { BarChart } from "../../components/DataViz/BarChart/BarChart"
 import { keys } from "ramda"
+import { didFetchYear } from "../../utility/utility"
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
@@ -20,9 +21,9 @@ export const Dashboard = () => {
   const {
     isLoading,
     year,
-    withPayers,
     payerColors,
     categoryColors,
+    withPayers,
     withStacks,
     withCategories,
   } = useSelector(state => state.dashboard)
@@ -49,7 +50,7 @@ export const Dashboard = () => {
   useEffect(() => {
     if (year === null) {
       dispatch(initData())
-    } else if (!(data[year] instanceof Object)) {
+    } else if (!didFetchYear(data, year)) {
       dispatch(getYearThunk(year))
     }
   }, [year])
@@ -90,7 +91,6 @@ export const Dashboard = () => {
       >
         Categories
       </button>
-      {withPayers && withCategories ? <button>switch stack</button> : null}
     </div>
   )
 }

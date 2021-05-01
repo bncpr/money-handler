@@ -1,5 +1,3 @@
-import { map, pipe, prop } from "ramda"
-import { average } from "../../../utility/utility"
 import { Mark as StyledMark } from "../styles"
 
 export const Marks = ({

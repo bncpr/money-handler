@@ -57,7 +57,9 @@ export const barChartStackScales = (data, width, height) => {
   const stackedData = d3
     .stack()
     .keys(extractSeriesKeysUnique(data))
-    .value((d, key) => d.sums[key])(data)
+    .value((d, key) => d.sums[key])
+    .order(d3.stackOrderDescending)(data)
+
   return {
     xScale,
     yScale,
@@ -83,7 +85,8 @@ export const barChartStackSeriesScales = (data, width, height) => {
     d3
       .stack()
       .keys(keys)
-      .value((d, key) => d.sums[key])(m.stackSeries)
+      .value((d, key) => d.sums[key])
+      .order(d3.stackOrderDescending)(m.stackSeries)
   )
   return {
     xScale,

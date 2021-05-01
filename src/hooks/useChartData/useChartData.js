@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 
 import { didFetchYear } from "../../utility/utility"
-import { getChartDataAndScales } from './getChartDataAndScales'
+import { getChartDataAndScales } from "./getChartDataAndScales"
 
 export const useChartData = ({
   turnLoadingOff,

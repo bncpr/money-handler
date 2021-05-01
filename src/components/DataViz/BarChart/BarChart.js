@@ -1,5 +1,3 @@
-import { keys, map, objOf, pipe, prop, props } from "ramda"
-import { useCallback } from "react"
 import { format } from "d3"
 
 import { Chart } from "../Chart"
@@ -10,12 +8,7 @@ import { SubMarks } from "./SubMarks"
 import { StackedMarks } from "./StackedMarks"
 
 import { useChartData } from "../../../hooks/useChartData/useChartData"
-import {
-  average,
-  extractAverageSum,
-  flattenProp,
-} from "../../../utility/utility"
-import { AverageTick } from "./AverageTick"
+
 import { StackedSeriesMarks } from "./StackedSeriesMarks"
 
 export const BarChart = ({
@@ -54,13 +47,11 @@ export const BarChart = ({
     withStacks,
   })
 
-  const monthlyAverageSum = extractAverageSum(chartData)
 
   let marks = null
   if (!withPayers && !withStacks && !withCategories) {
     marks = (
       <>
-        {/* <AverageTick width={innerWidth} average={yScale(monthlyAverageSum)} /> */}
         <Marks
           data={chartData}
           height={innerHeight}
@@ -95,7 +86,6 @@ export const BarChart = ({
   ) {
     marks = (
       <StackedMarks
-        data={chartData}
         stacked={stackedData}
         colors={withPayers ? payerColors : categoryColors}
         xScale={xScale}

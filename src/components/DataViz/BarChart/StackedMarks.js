@@ -1,16 +1,12 @@
-import { stack } from "d3-shape"
-import { prop } from "ramda"
+
 
 export const StackedMarks = ({
-  data,
   stacked,
   xScale,
   yScale,
   tooltipFormat,
   colors,
 }) => {
-  console.log("StackedMarks", data)
-  console.log(stacked)
   return stacked.map(series =>
     series.map(month => {
       const [y1, y2] = month
