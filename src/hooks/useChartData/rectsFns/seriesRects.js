@@ -1,9 +1,11 @@
 import { format } from "d3"
 import { curry } from "ramda"
 import { createRef } from "react"
-import { getSubScale,
+import {
+  getSubScale,
   getSeriesCategoriesDescending,
-  getSeriesPayersDescending, } from "../utility/utilityFns"
+  getSeriesPayersDescending,
+} from "../utility/utilityFns"
 
 const seriesRects = curry(
   (

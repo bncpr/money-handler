@@ -1,11 +1,11 @@
 import { seriesPayerStackCategory } from "../barsFns/seriesPayerStackCategory"
 import {
   stackCategorySumsBars,
-  stackPayerSumsBars
+  stackPayerSumsBars,
 } from "../barsFns/stackPropSumsBars"
 import {
   seriesCategorySumsBars,
-  seriesPayerSumsBars
+  seriesPayerSumsBars,
 } from "../barsFns/seriesPropSumsBars"
 import { singleMonthlySumsBars } from "../barsFns/singleMonthlySumsBars"
 
@@ -26,5 +26,5 @@ const getOptionsType = ({ withPayers, withStacks, withCategories }) => {
   return type === "101" ? "111" : type
 }
 
-export const getProcessFunction = options =>
-  chartOptionsMap.get(getOptionsType(options))
+export const getChartData = (options, ...rest) =>
+  chartOptionsMap.get(getOptionsType(options))(...rest)

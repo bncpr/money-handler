@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getProcessFunction } from "./maps/maps"
+import { getChartData } from "./maps/maps"
 import * as R from "ramda"
 
 const getEntries = (data, year) =>
@@ -26,7 +26,8 @@ export const useChartData = ({
   useEffect(() => {
     const entries = getEntries(data, year)
     const options = { withPayers, withStacks, withCategories }
-    const { chartData, xScale, yScale, rects } = getProcessFunction(options)(
+    const { chartData, xScale, yScale, rects } = getChartData(
+      options,
       entries,
       innerWidth,
       innerHeight,
@@ -35,7 +36,16 @@ export const useChartData = ({
 
     console.log(chartData, xScale.domain(), yScale.domain(), rects)
     setRects(rects)
-  }, [data, year, withPayers, withStacks, withCategories, colors, innerHeight, innerWidth])
+  }, [
+    data,
+    year,
+    withPayers,
+    withStacks,
+    withCategories,
+    colors,
+    innerHeight,
+    innerWidth,
+  ])
 
   return rects
 }
