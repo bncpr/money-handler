@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from "react"
 import { useChartData } from "../../../hooks/useChartData/useChartData"
 import { Chart } from "../Chart"
 

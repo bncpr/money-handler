@@ -35,7 +35,7 @@ export const useChartData = ({
 
     console.log(chartData, xScale.domain(), yScale.domain(), rects)
     setRects(rects)
-  }, [data, year, withPayers, withStacks, withCategories, colors])
+  }, [data, year, withPayers, withStacks, withCategories, colors, innerHeight, innerWidth])
 
   return rects
 }
