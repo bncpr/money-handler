@@ -1,4 +1,4 @@
-import * as R from 'ramda'
+import * as R from "ramda"
 
 const getUniqueProps = R.curry((prop, entries) =>
   R.pipe(R.map(R.prop(prop)), R.uniq)(entries)

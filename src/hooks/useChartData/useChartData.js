@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getProcessFunction } from "./barsFns/barsFns"
+import { getProcessFunction } from "./maps/maps"
 import * as R from "ramda"
 
 const getEntries = (data, year) =>

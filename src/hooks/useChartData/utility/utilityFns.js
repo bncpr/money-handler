@@ -21,3 +21,16 @@ const getStack = R.curry((propKey, keys, data) =>
 
 export const getCategoryStack = getStack("byCategory")
 export const getPayerStack = getStack("byPayer")
+export const getSubScale = (series, x, bandwidth) =>
+  d3
+    .scaleBand()
+    .domain(series)
+    .range([x, x + bandwidth])
+const getSeriesKeysDescending = R.curry((seriesKey, month) => {
+  const seriesObj = month[seriesKey]
+  return R.pipe(R.keys, R.sort(R.descend(key => seriesObj[key])))(seriesObj)
+})
+export const getSeriesCategoriesDescending = getSeriesKeysDescending(
+  "byCategory"
+)
+export const getSeriesPayersDescending = getSeriesKeysDescending("byPayer")
