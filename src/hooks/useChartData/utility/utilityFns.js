@@ -8,6 +8,7 @@ export const maxSumMonth = R.pipe(propSum, d3.max)
 export const maxCategorySum = R.pipe(propCategoryValues, R.flatten, d3.max)
 export const maxPayerSum = R.pipe(propPayerValues, R.flatten, d3.max)
 export const getSortedMonths = R.pipe(propMonth, R.sortBy(R.identity))
+
 export const choosePayerColors = colors => colors.payerColors
 export const chooseCategoryColors = colors => colors.categoryColors
 

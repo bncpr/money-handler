@@ -1,11 +1,5 @@
 import * as R from "ramda"
-
-const getUniqueProps = R.curry((prop, entries) =>
-  R.pipe(R.map(R.prop(prop)), R.uniq)(entries)
-)
-const getMonths = getUniqueProps("month")
-export const getPayers = getUniqueProps("payer")
-export const getCategories = getUniqueProps("category")
+import { getMonths, getPayers, getCategories } from "../utility/getUniqueProps"
 
 const getSum = R.pipe(R.map(R.prop("value")), R.sum)
 

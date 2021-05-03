@@ -1,4 +1,4 @@
-import { getCategories } from "../processData/processData"
+import { getCategories } from "../utility/getUniqueProps"
 import { stackPayerRects, stackCategoryRects } from "../rectsFns/stackRects"
 import { getYScale } from "../scalesFns/scalesFns"
 import { processDataAndXScale } from "../utility/processDataAndXScale"
@@ -7,7 +7,7 @@ import {
   chooseCategoryColors,
   choosePayerColors,
 } from "../utility/utilityFns"
-import { getPayers } from "../processData/processData"
+import { getPayers } from "../utility/getUniqueProps"
 import * as R from "ramda"
 
 const stackPropSumsBars = R.curry(

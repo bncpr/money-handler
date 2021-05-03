@@ -1,4 +1,4 @@
-import { getCategories } from "../processData/processData"
+import { getCategories } from "../utility/getUniqueProps"
 import { seriesPayerStackCategoryRects } from "../rectsFns/seriesPayerStackCategoryRects"
 import { getYScale } from "../scalesFns/scalesFns"
 import { processDataAndXScale } from "../utility/processDataAndXScale"
