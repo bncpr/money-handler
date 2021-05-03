@@ -65,9 +65,9 @@ export const Dashboard = () => {
         data={data}
         year={year}
         chartType='barChart'
+        colors={{ payerColors, categoryColors }}
+        options={{ withPayers, withStacks, withCategories }}
         withPayers={withPayers}
-        payerColors={payerColors}
-        categoryColors={categoryColors}
         withStacks={withStacks}
         withCategories={withCategories}
       />
