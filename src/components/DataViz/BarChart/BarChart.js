@@ -1,3 +1,5 @@
+import { select, selectAll, transition } from "d3"
+import { useEffect } from "react"
 import { useChartData } from "../../../hooks/useChartData/useChartData"
 import { Chart } from "../Chart"
 
@@ -12,7 +14,7 @@ export const BarChart = ({
   const innerHeight = height - margin.top - margin.bottom
   const innerWidth = width - margin.left - margin.right
 
-  const rects = useChartData({
+  const { yScale, rects } = useChartData({
     data,
     year,
     innerWidth,
@@ -24,6 +26,19 @@ export const BarChart = ({
   })
   // console.log(rects);
 
+  useEffect(() => {
+    if (rects && rects.length !== 0) {
+      const refs = rects.map(r => r.props.ref)
+      refs.forEach((d, i) => {
+        select(d.current)
+          .transition()
+          .duration(1000)
+          .attr("y", rects[i].props.y)
+          .attr("height", rects[i].props.height)
+      })
+    }
+  }, [rects])
+
   return (
     <Chart
       width={width}
@@ -32,11 +47,14 @@ export const BarChart = ({
       marTop={margin.top}
     >
       {rects
-        ? rects.map(rect => (
-            <rect {...rect.props}>
-              <title>{rect.tooltip}</title>
-            </rect>
-          ))
+        ? rects.map(rect => {
+            const props = { ...rect.props, y: yScale(0), height: 0 }
+            return (
+              <rect {...props}>
+                <title>{rect.tooltip}</title>
+              </rect>
+            )
+          })
         : null}
     </Chart>
   )

@@ -7,7 +7,7 @@ const getEntries = (data, year) =>
     R.prop(year),
     R.prop("months"),
     R.values,
-    R.chain(R.pipe(R.prop("entries"), R.values)),
+    R.chain(R.pipe(R.prop("entries"), R.values))
   )(data)
 
 export const useChartData = ({
@@ -20,7 +20,7 @@ export const useChartData = ({
   withCategories,
   colors,
 }) => {
-  const [rects, setRects] = useState([])
+  const [state, setState] = useState([])
 
   useEffect(() => {
     const entries = getEntries(data, year)
@@ -34,7 +34,7 @@ export const useChartData = ({
     )
 
     // console.log(chartData, xScale.domain(), yScale.domain(), rects)
-    setRects(rects)
+    setState({ rects, yScale, xScale, chartData })
   }, [
     data,
     year,
@@ -46,5 +46,7 @@ export const useChartData = ({
     innerWidth,
   ])
 
-  return rects
+  const { rects, yScale } = state
+
+  return { rects, yScale }
 }
