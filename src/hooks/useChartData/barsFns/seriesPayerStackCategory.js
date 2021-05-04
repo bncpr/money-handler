@@ -3,6 +3,7 @@ import { seriesPayerStackCategoryRects } from "../rectsFns/seriesPayerStackCateg
 import { getYScale } from "../scalesFns/scalesFns"
 import { processDataAndXScale } from "../utility/processDataAndXScale"
 import { maxPayerSum } from "../utility/utilityFns"
+import { seriesPayerStackCategoryRectsNew } from "../rectsFns/seriesPayerStackCategoryRectsNew"
 
 export const seriesPayerStackCategory = (
   entries,
@@ -12,7 +13,7 @@ export const seriesPayerStackCategory = (
 ) => {
   const { chartData, xScale } = processDataAndXScale(entries, innerWidth)
   const yScale = getYScale(innerHeight, maxPayerSum(chartData))
-  const rects = seriesPayerStackCategoryRects(
+  const rects = seriesPayerStackCategoryRectsNew(
     chartData,
     xScale,
     yScale,

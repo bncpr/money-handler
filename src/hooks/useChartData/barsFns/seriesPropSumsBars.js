@@ -1,4 +1,5 @@
 import { seriesCategoryRects, seriesPayerRects } from "../rectsFns/seriesRects"
+import { seriesCategoryRectsNew, seriesPayerRectsNew } from "../rectsFns/seriesRectsNew"
 import { getYScale } from "../scalesFns/scalesFns"
 import { processDataAndXScale } from "../utility/processDataAndXScale"
 import {
@@ -20,7 +21,7 @@ const seriesPropSumsBars = R.curry(
 )
 export const seriesCategorySumsBars = seriesPropSumsBars(
   maxCategorySum,
-  seriesCategoryRects,
+  seriesCategoryRectsNew,
   chooseCategoryColors
 )
 export const seriesPayerSumsBars = seriesPropSumsBars(

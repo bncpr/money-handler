@@ -9,6 +9,7 @@ import {
 } from "../utility/utilityFns"
 import { getPayers } from "../utility/getUniqueProps"
 import * as R from "ramda"
+import { stackCategoryRectsNew, stackPayerRectsNew } from "../rectsFns/stackRectsNew"
 
 const stackPropSumsBars = R.curry(
   (
@@ -36,13 +37,13 @@ const stackPropSumsBars = R.curry(
 )
 export const stackPayerSumsBars = stackPropSumsBars(
   maxSumMonth,
-  stackPayerRects,
+  stackPayerRectsNew,
   getPayers,
   choosePayerColors
 )
 export const stackCategorySumsBars = stackPropSumsBars(
   maxSumMonth,
-  stackCategoryRects,
+  stackCategoryRectsNew,
   getCategories,
   chooseCategoryColors
 )

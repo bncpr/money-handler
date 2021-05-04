@@ -33,8 +33,7 @@ const extractPropFromYear = prop =>
   R.pipe(
     R.prop("months"),
     R.values,
-    R.map(R.pipe(R.prop("entries"), R.values)),
-    R.flatten,
+    R.chain(R.pipe(R.prop("entries"), R.values)),
     R.map(R.prop(prop)),
     R.uniq
   )

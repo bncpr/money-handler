@@ -7,8 +7,7 @@ const getEntries = (data, year) =>
     R.prop(year),
     R.prop("months"),
     R.values,
-    R.map(R.pipe(R.prop("entries"), R.values)),
-    R.flatten
+    R.chain(R.pipe(R.prop("entries"), R.values)),
   )(data)
 
 export const useChartData = ({
@@ -34,7 +33,7 @@ export const useChartData = ({
       colors
     )
 
-    console.log(chartData, xScale.domain(), yScale.domain(), rects)
+    // console.log(chartData, xScale.domain(), yScale.domain(), rects)
     setRects(rects)
   }, [
     data,

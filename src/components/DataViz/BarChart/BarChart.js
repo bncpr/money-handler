@@ -22,6 +22,7 @@ export const BarChart = ({
     withCategories,
     colors,
   })
+  // console.log(rects);
 
   return (
     <Chart

@@ -3,12 +3,12 @@ import * as d3 from "d3"
 
 const propMonth = R.map(R.prop("month"))
 const propSum = R.map(R.prop("sum"))
-const propCategoryValues = R.map(R.pipe(R.prop("byCategory"), R.values))
-const propPayerValues = R.map(R.pipe(R.prop("byPayer"), R.values))
+const propCategoryValues = R.chain(R.pipe(R.prop("byCategory"), R.values))
+const propPayerValues = R.chain(R.pipe(R.prop("byPayer"), R.values))
 
 export const maxSumMonth = R.pipe(propSum, d3.max)
-export const maxCategorySum = R.pipe(propCategoryValues, R.flatten, d3.max)
-export const maxPayerSum = R.pipe(propPayerValues, R.flatten, d3.max)
+export const maxCategorySum = R.pipe(propCategoryValues, d3.max)
+export const maxPayerSum = R.pipe(propPayerValues, d3.max)
 export const getSortedMonths = R.pipe(propMonth, R.sortBy(R.identity))
 
 export const choosePayerColors = colors => colors.payerColors
