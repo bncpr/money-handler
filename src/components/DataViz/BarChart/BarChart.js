@@ -31,9 +31,16 @@ export const BarChart = ({
     turnLoadingOff,
   })
 
+  const onHover = event => {
+    console.log(event.target.getAttribute("month"))
+    const s = select(event.target)
+    // console.log(s)
+  }
+
   useEffect(() => {
     if (!isLoading && rects && rects.length !== 0) {
       const refs = rects.map(r => r.props.ref)
+      // console.log(refs[0])
       refs.forEach((d, i) => {
         select(d.current)
           .transition()
@@ -62,7 +69,14 @@ export const BarChart = ({
         ? rects.map(rect => {
             const props = { ...rect.props, y: yScale(0), height: 0 }
             return (
-              <rect {...props}>
+              <rect
+                {...props}
+                id={props.key}
+                month={rect.month}
+                payer={rect.payer}
+                category={rect.category}
+                onMouseEnter={onHover}
+              >
                 <title>{rect.tooltip}</title>
               </rect>
             )
