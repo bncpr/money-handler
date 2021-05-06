@@ -7,7 +7,6 @@ import {
   changeYear,
   toggleWithCategories,
   toggleWithPayers,
-  toggleWithStacks,
   turnLoadingOff,
   turnLoadingOn,
 } from "../../store/dashboardSlice"
@@ -26,6 +25,9 @@ export const Dashboard = () => {
     withPayers,
     withStacks,
     withCategories,
+    showBy,
+    series,
+    chartType
   } = useSelector(state => state.dashboard)
 
   const onChangeYearHandler = val => {
@@ -35,10 +37,6 @@ export const Dashboard = () => {
   const onTogglePayersHandler = () => {
     dispatch(turnLoadingOn())
     dispatch(toggleWithPayers())
-  }
-  const onToggleStacksHandler = () => {
-    dispatch(turnLoadingOn())
-    dispatch(toggleWithStacks())
   }
   const onToggleCategoriesHandler = () => {
     dispatch(turnLoadingOn())
@@ -53,7 +51,7 @@ export const Dashboard = () => {
     } else if (!didFetchYear(data, year)) {
       dispatch(getYearThunk(year))
     }
-  }, [year])
+  }, [year, dispatch])
 
   return (
     <div className={styles.dashboard}>
@@ -64,30 +62,32 @@ export const Dashboard = () => {
         isLoading={isLoading}
         data={data}
         year={year}
-        chartType='barChart'
+        chartType={chartType}
         colors={{ payerColors, categoryColors }}
         options={{ withPayers, withStacks, withCategories }}
         withPayers={withPayers}
         withStacks={withStacks}
         withCategories={withCategories}
+        showBy={showBy}
+        series={series}
       />
       <button
         onClick={onTogglePayersHandler}
-        disabled={withStacks && !withCategories}
+        disabled={withCategories}
       >
         Payers
       </button>
-      <button
+      {/* <button
         onClick={onToggleStacksHandler}
         disabled={
           (!withPayers && !withCategories) || (withPayers && withCategories)
         }
       >
         Stack
-      </button>
+      </button> */}
       <button
         onClick={onToggleCategoriesHandler}
-        disabled={withStacks && !withPayers}
+        disabled={withPayers}
       >
         Categories
       </button>

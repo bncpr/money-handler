@@ -11,6 +11,9 @@ const dashboardSlice = createSlice({
     isLoading: false,
     year: null,
     month: null,
+    chartType: "bar",
+    showBy: "month",
+    series: false,
     withPayers: false,
     withStacks: false,
     withCategories: false,
@@ -29,12 +32,14 @@ const dashboardSlice = createSlice({
     },
     toggleWithPayers(state) {
       state.withPayers = !state.withPayers
+      state.series = state.withPayers ? "payer" : false
     },
     toggleWithStacks(state) {
       state.withStacks = !state.withStacks
     },
     toggleWithCategories(state) {
       state.withCategories = !state.withCategories
+      state.series = state.withCategories ? "category" : false
     },
   },
   extraReducers: {

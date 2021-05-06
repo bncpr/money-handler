@@ -1,56 +1,35 @@
-import { easeElastic, format, select } from "d3"
-import { useCallback, useEffect } from "react"
 import { useChartData } from "../../../hooks/useChartData/useChartData"
 import { Chart } from "../Chart"
 import { BottomAxis } from "./BottomAxis"
 import { LeftAxis } from "./LeftAxis"
+import { Unit } from "./Unit/Unit"
 
 export const BarChart = ({
   data,
   year,
-  options: { withPayers, withCategories, withStacks },
   colors,
   isLoading,
   turnLoadingOff,
+  showBy,
+  series,
+  chartType,
 }) => {
   const [width, height] = [960, 500]
   const margin = { top: 40, right: 20, bottom: 40, left: 45 }
   const innerHeight = height - margin.top - margin.bottom
   const innerWidth = width - margin.left - margin.right
 
-  const { xScale, yScale, rects } = useChartData({
+  const { chartData, xScale, yScale } = useChartData({
     data,
     year,
     innerWidth,
     innerHeight,
-    withPayers,
-    withStacks,
-    withCategories,
-    colors,
     isLoading,
     turnLoadingOff,
+    chartType,
+    showBy,
+    series,
   })
-
-  const onHover = event => {
-    console.log(event.target.getAttribute("month"))
-    const s = select(event.target)
-    // console.log(s)
-  }
-
-  useEffect(() => {
-    if (!isLoading && rects && rects.length !== 0) {
-      const refs = rects.map(r => r.props.ref)
-      // console.log(refs[0])
-      refs.forEach((d, i) => {
-        select(d.current)
-          .transition()
-          .ease(easeElastic.period(0.9))
-          .duration(900)
-          .attr("y", rects[i].props.y)
-          .attr("height", rects[i].props.height)
-      })
-    }
-  }, [rects, isLoading])
 
   return (
     <Chart
@@ -65,23 +44,28 @@ export const BarChart = ({
         yOffset={margin.bottom / 2}
       />
       <LeftAxis yScale={yScale} width={innerWidth} />
-      {!isLoading && rects
-        ? rects.map(rect => {
-            const props = { ...rect.props, y: yScale(0), height: 0 }
-            return (
-              <rect
-                {...props}
-                id={props.key}
-                month={rect.month}
-                payer={rect.payer}
-                category={rect.category}
-                onMouseEnter={onHover}
-              >
-                <title>{rect.tooltip}</title>
-              </rect>
-            )
-          })
-        : null}
+      {!isLoading &&
+        chartData &&
+        chartData.map(unit => (
+          <Unit
+            key={unit.unit}
+            unit={unit}
+            xScale={xScale}
+            yScale={yScale}
+            height={innerHeight}
+            colors={selectColorsSet(series, colors)}
+          />
+        ))}
     </Chart>
   )
+}
+
+function selectColorsSet(series, colors) {
+  return series
+    ? series === "payer"
+      ? colors.payerColors
+      : series === "category"
+      ? colors.categoryColors
+      : null
+    : null
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { getChartData } from "./maps/maps"
 import * as R from "ramda"
 import { didFetchYear } from "../../utility/utility"
+import { getChartData } from "./getChartData"
 
 const getEntries = (data, year) =>
   R.pipe(
@@ -16,45 +16,46 @@ export const useChartData = ({
   year,
   innerWidth,
   innerHeight,
-  withPayers,
-  withStacks,
-  withCategories,
-  colors,
   isLoading,
   turnLoadingOff,
+  showBy,
+  series,
+  chartType,
 }) => {
-  const [state, setState] = useState([])
+  const [state, setState] = useState({})
 
   useEffect(() => {
     if (didFetchYear(data, year)) {
       const entries = getEntries(data, year)
-      const options = { withPayers, withStacks, withCategories }
-      const { chartData, xScale, yScale, rects } = getChartData(
-        options,
+
+      const {
+        chartData,
+        chartScales: { xScale, yScale },
+      } = getChartData(
+        chartType,
+        showBy,
+        series,
         entries,
         innerWidth,
-        innerHeight,
-        colors
+        innerHeight
       )
 
-      // console.log(chartData, xScale.domain(), yScale.domain(), rects)
-      setState({ rects, yScale, xScale, chartData })
-      if (isLoading && rects) {
+      setState({ chartData, xScale, yScale })
+      if (isLoading && chartData) {
         turnLoadingOff()
       }
     }
   }, [
     data,
     year,
-    withPayers,
-    withStacks,
-    withCategories,
-    colors,
     innerHeight,
     innerWidth,
+    series,
+    showBy,
+    chartType,
+    isLoading,
+    turnLoadingOff,
   ])
-
-  const { rects, yScale, xScale } = state
-
-  return { rects, yScale, xScale }
+  const { chartData, xScale, yScale } = state
+  return { chartData, xScale, yScale }
 }
