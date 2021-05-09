@@ -1,11 +1,8 @@
-import { Layout } from './components/Layout/Layout'
-import { Login } from './containers/Login/Login'
-import { Route, Switch } from 'react-router';
-import { ContentBox } from './components/UI/ContentBox/ContentBox';
-import Dashboard from './containers/Dashboard/Dashboard'
-import { ErrorModal } from './components/UI/Modal/ErrorModal/ErrorModal';
-
-
+import { Layout } from "./components/Layout/Layout"
+import { Login } from "./containers/Login/Login"
+import { Route, Switch } from "react-router"
+import Dashboard from "./containers/Dashboard/Dashboard"
+import { ErrorModal } from "./components/UI/Modal/ErrorModal/ErrorModal"
 
 export const App = () => {
   return (
@@ -14,8 +11,8 @@ export const App = () => {
       <Switch>
         <Route path='/dashboard' component={Dashboard} />
         <Route path='/login' component={Login} />
-        <Route path='/' exact component={Dashboard} />
+        <Route path='/' exact component={null} />
       </Switch>
     </Layout>
-  );
+  )
 }

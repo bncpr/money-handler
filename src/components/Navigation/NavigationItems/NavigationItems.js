@@ -7,7 +7,7 @@ export const NavigationItems = () => {
     <ul className={styles.NavigationItems}>
       <NavigationItem path='/'>Home</NavigationItem>
       <NavigationItem path='/dashboard'>Dashboard</NavigationItem>
-      <NavigationItem path='/logout'>Logout</NavigationItem>
+      <NavigationItem path='/login'>Login</NavigationItem>
     </ul>
   )
 }

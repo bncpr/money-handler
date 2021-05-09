@@ -1,41 +1,39 @@
-import { Component } from 'react'
-import { ContentBox } from '../../components/UI/ContentBox/ContentBox'
-import styles from './Login.module.css'
+import { useDispatch, useSelector } from "react-redux"
+import { ContentBox } from "../../components/UI/ContentBox/ContentBox"
+import { changeInputValue } from "../../store/loginSlice"
+import styles from "./Login.module.css"
 
-export class Login extends Component {
-  state = {
-    userName: null,
-    password: null,
+export const Login = () => {
+  const { userName, password } = useSelector(state => state.login)
+  const dispatch = useDispatch()
+
+  const onChangeHandler = key => event =>
+    dispatch(changeInputValue({ key, value: event.target.value }))
+
+  const onSubmitHandler = event => {
+    event.preventDefault()
   }
 
-  componentDidUpdate() {
-    // console.log(this.state)
-  }
-
-  inputChangeHandler(event, id) {
-    this.setState({[id]: event.target.value})
-  }
-  render() {
-
-    return (
-      <ContentBox>
-        <form className={styles.Login}>
-          <h1>Login</h1>
-          <input
-            type='text'
-            name='username'
-            placeholder='Username'
-            value={this.props.userName}
-            onChange={(event) => this.inputChangeHandler(event, 'userName')} />
-          <input
-            type='password'
-            name='password'
-            placeholder='Password'
-            value={this.props.password}
-            onChange={(event) => this.inputChangeHandler(event, 'password')} />
-          <button>Login</button>
-        </form>
-      </ContentBox>
-    )
-  }
+  return (
+    <ContentBox>
+      <form className={styles.Login} onSubmit={onSubmitHandler}>
+        <h1>Login</h1>
+        <input
+          type='text'
+          name='username'
+          placeholder='Username'
+          value={userName}
+          onChange={onChangeHandler("username")}
+        />
+        <input
+          type='password'
+          name='password'
+          placeholder='Password'
+          value={password}
+          onChange={onChangeHandler("password")}
+        />
+        <button>Login</button>
+      </form>
+    </ContentBox>
+  )
 }

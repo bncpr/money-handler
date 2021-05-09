@@ -48,7 +48,7 @@ export const BarChart = ({
       }
     }, 0)
     return () => clearTimeout(t)
-  }, [hoveredUnit])
+  }, [hoveredUnit, focusedUnit])
 
   return (
     <Chart
