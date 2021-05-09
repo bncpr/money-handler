@@ -4,6 +4,7 @@ import styles from "./Dashboard.module.css"
 import { getYearThunk, initData } from "../../store/thunks"
 import { TabsBar } from "../../components/UI/Tabs/TabsBar/TabsBar"
 import {
+  changeShowBy,
   changeYear,
   toggleWithCategories,
   toggleWithPayers,
@@ -27,7 +28,7 @@ export const Dashboard = () => {
     withCategories,
     showBy,
     series,
-    chartType
+    chartType,
   } = useSelector(state => state.dashboard)
 
   const onChangeYearHandler = val => {
@@ -73,7 +74,7 @@ export const Dashboard = () => {
       />
       <button
         onClick={onTogglePayersHandler}
-        disabled={withCategories}
+        disabled={showBy !== "month"}
       >
         Payers
       </button>
@@ -87,10 +88,19 @@ export const Dashboard = () => {
       </button> */}
       <button
         onClick={onToggleCategoriesHandler}
-        disabled={withPayers}
+        disabled={showBy !== "month"}
       >
         Categories
       </button>
+      <select
+        value={showBy}
+        onChange={e => dispatch(changeShowBy(e.target.value))}
+      >
+        <label>Show by:</label>
+        <option value='month'>month</option>
+        <option value='category'>category</option>
+        <option value='payer'>payer</option>
+      </select>
     </div>
   )
 }

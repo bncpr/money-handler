@@ -30,9 +30,13 @@ const dashboardSlice = createSlice({
     changeYear(state, { payload }) {
       state.year = payload
     },
+    changeShowBy(state, { payload }) {
+      state.showBy = payload
+    },
     toggleWithPayers(state) {
       state.withPayers = !state.withPayers
       state.series = state.withPayers ? "payer" : false
+      state.withCategories = false
     },
     toggleWithStacks(state) {
       state.withStacks = !state.withStacks
@@ -40,6 +44,7 @@ const dashboardSlice = createSlice({
     toggleWithCategories(state) {
       state.withCategories = !state.withCategories
       state.series = state.withCategories ? "category" : false
+      state.withPayers = false
     },
   },
   extraReducers: {
@@ -70,4 +75,5 @@ export const {
   toggleWithPayers,
   toggleWithStacks,
   toggleWithCategories,
+  changeShowBy,
 } = dashboardSlice.actions

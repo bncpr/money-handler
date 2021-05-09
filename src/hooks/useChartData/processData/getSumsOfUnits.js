@@ -1,8 +1,9 @@
-import { getUniqueProps } from "../utility/getUniqueProps";
-import * as R from "ramda";
+import { getUniqueProps } from "../utility/getUniqueProps"
+import * as R from "ramda"
 
 export const getSumsOfUnits = (showBy, entries) => {
-  const units = getUniqueProps(showBy, entries);
+  console.log(showBy)
+  const units = getUniqueProps(showBy, entries)
   return units.map(item => ({
     unit: item,
     sum: R.pipe(
@@ -10,5 +11,5 @@ export const getSumsOfUnits = (showBy, entries) => {
       R.map(R.prop("value")),
       R.sum
     )(entries),
-  }));
-};
+  }))
+}

@@ -1,3 +1,4 @@
-import { scaleLinear } from "d3-scale";
+import { scaleLinear } from "d3-scale"
 
-export const getYScale = (maxDomain, height) => scaleLinear().domain([0, maxDomain]).range([height, 0]);
+export const getYScale = (maxDomain, height) =>
+  scaleLinear().domain([0, maxDomain]).range([height, 0])
