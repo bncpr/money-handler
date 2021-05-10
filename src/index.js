@@ -1,15 +1,26 @@
+import "./index.css"
+
 import React from "react"
 import ReactDOM from "react-dom"
-import { configureStore } from "@reduxjs/toolkit"
-import "./index.css"
-import { App } from "./App"
 import reportWebVitals from "./reportWebVitals"
-import { Provider } from "react-redux"
 import { BrowserRouter } from "react-router-dom"
+
+import { Provider } from "react-redux"
+import { configureStore } from "@reduxjs/toolkit"
+
+import { App } from "./App"
+
 import { dataReducer } from "./store/dataSlice"
 import { errorReducer } from "./store/errorSlice"
 import { dashboardReducer } from "./store/dashboardSlice"
 import { loginReducer } from "./store/loginSlice"
+import {
+  authenticationReducer,
+  signIn,
+  signOut,
+} from "./store/authenticationSlice"
+import { onAuthStateChanged } from "firebase/auth"
+import { auth } from "./firebase"
 
 const store = configureStore({
   reducer: {
@@ -17,7 +28,16 @@ const store = configureStore({
     dashboard: dashboardReducer,
     error: errorReducer,
     login: loginReducer,
+    authentication: authenticationReducer,
   },
+})
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    store.dispatch(signIn(user))
+  } else {
+    store.dispatch(signOut())
+  }
 })
 
 ReactDOM.render(

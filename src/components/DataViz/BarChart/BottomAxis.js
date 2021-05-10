@@ -13,7 +13,7 @@ export const BottomAxis = ({ xScale, height, yOffset, showBy }) => {
           ? `rotate(-10 ${xScale(tick) + xScale.bandwidth() / 2} ${
               height + yOffset
             })`
-          : "none"
+          : null
       }
     >
       {showBy === "month" ? monthsMap.get(tick) : tick}

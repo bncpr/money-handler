@@ -72,10 +72,7 @@ export const Dashboard = () => {
         showBy={showBy}
         series={series}
       />
-      <button
-        onClick={onTogglePayersHandler}
-        disabled={showBy !== "month"}
-      >
+      <button onClick={onTogglePayersHandler} disabled={showBy !== "month"}>
         Payers
       </button>
       {/* <button
@@ -86,17 +83,14 @@ export const Dashboard = () => {
       >
         Stack
       </button> */}
-      <button
-        onClick={onToggleCategoriesHandler}
-        disabled={showBy !== "month"}
-      >
+      <button onClick={onToggleCategoriesHandler} disabled={showBy !== "month"}>
         Categories
       </button>
+      <label>Show by:</label>
       <select
         value={showBy}
         onChange={e => dispatch(changeShowBy(e.target.value))}
       >
-        <label>Show by:</label>
         <option value='month'>month</option>
         <option value='category'>category</option>
         <option value='payer'>payer</option>
