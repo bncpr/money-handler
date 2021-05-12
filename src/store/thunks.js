@@ -2,7 +2,6 @@ import axios from "../axios"
 import { getMaxKey } from "../utility/utility"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { changeYear } from "./dashboardSlice"
-
 const getYear = year => axios.get(`years/${year}.json`).then(res => res.data)
 const getShallowData = () =>
   axios.get("years.json?shallow=true").then(res => res.data)
@@ -26,7 +25,7 @@ export const getYearThunk = createAsyncThunk(
   async (year, { rejectWithValue }) => {
     try {
       const data = await getYear(year)
-      // const touchedData = 
+      // const touchedData =
       return { year, data }
     } catch (error) {
       return rejectWithValue({ error: error.message })

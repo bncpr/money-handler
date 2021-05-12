@@ -14,6 +14,7 @@ import {
 import { BarChart } from "../../components/DataViz/BarChart/BarChart"
 import { keys } from "ramda"
 import { didFetchYear } from "../../utility/utility"
+import { Entries } from "../Entries/Entries"
 
 export const Dashboard = () => {
   const dispatch = useDispatch()

@@ -1,28 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit"
+const initialErrors = { email: "", password: "", other: "" }
 
 const loginSlice = createSlice({
   name: "login",
   initialState: {
     signIn: true,
-    signUp: false,
     email: "",
     password: "",
+    errors: { ...initialErrors },
   },
   reducers: {
     changeInputValue(state, { payload: { key, value } }) {
+      state.errors = { ...initialErrors }
       state[key] = value
     },
     toggleSignMode(state) {
-      if (state.signIn) {
-        state.signIn = false
-        state.signUp = true
-      } else {
-        state.signIn = true
-        state.signUp = false
-      }
+      state.errors = { ...initialErrors }
+      state.signIn = !state.signIn
+    },
+    updateError(state, { payload: { key, value } }) {
+      state.errors[key] = value
     },
   },
 })
 
 export const loginReducer = loginSlice.reducer
-export const { changeInputValue, toggleSignMode } = loginSlice.actions
+export const {
+  changeInputValue,
+  toggleSignMode,
+  updateError,
+} = loginSlice.actions

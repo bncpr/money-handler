@@ -5,6 +5,7 @@ import Dashboard from "./containers/Dashboard/Dashboard"
 import { ErrorModal } from "./components/UI/Modal/ErrorModal/ErrorModal"
 import { Profile } from "./components/Profile/Profile"
 import { Home } from "./components/Home/Home"
+import { Entries } from "./containers/Entries/Entries"
 
 export const App = () => {
   return (
@@ -13,6 +14,7 @@ export const App = () => {
       <Switch>
         <Route path='/dashboard' component={Dashboard} />
         <Route path='/profile' component={Profile} />
+        <Route path='/entries' component={Entries} />
         <Route path='/login' component={Login} />
         <Route path='/' exact component={Home} />
       </Switch>

@@ -34,7 +34,8 @@ const store = configureStore({
 
 onAuthStateChanged(auth, user => {
   if (user) {
-    store.dispatch(signIn(user))
+    const { uid, email } = user
+    store.dispatch(signIn({ uid, email }))
   } else {
     store.dispatch(signOut())
   }

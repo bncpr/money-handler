@@ -9,7 +9,12 @@ export const NavigationItems = () => {
       <NavigationItem path='/'>Home</NavigationItem>
       <NavigationItem path='/dashboard'>Dashboard</NavigationItem>
       {!signedIn && <NavigationItem path='/login'>Login</NavigationItem>}
-      {signedIn && <NavigationItem path='/profile'>Profile</NavigationItem>}
+      {signedIn && (
+        <>
+          <NavigationItem path='entries'>Entries</NavigationItem>
+          <NavigationItem path='/profile'>Profile</NavigationItem>
+        </>
+      )}
     </ul>
   )
 }
