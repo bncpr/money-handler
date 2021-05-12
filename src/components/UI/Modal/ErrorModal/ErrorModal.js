@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { hideError } from '../../../../store/errorSlice'
+import { hideError } from '../../../../store/slices/errorSlice'
 import { Backdrop } from '../Backdrop/Backdrop'
 import styles from './ErrorModal.module.css'
 

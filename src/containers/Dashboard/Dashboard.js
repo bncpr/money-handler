@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 import styles from "./Dashboard.module.css"
-import { getYearThunk, initData } from "../../store/thunks"
+import { getYearThunk, initData } from "../../store/thunks/thunks"
 import { TabsBar } from "../../components/UI/Tabs/TabsBar/TabsBar"
 import {
   changeShowBy,
@@ -10,11 +10,10 @@ import {
   toggleWithPayers,
   turnLoadingOff,
   turnLoadingOn,
-} from "../../store/dashboardSlice"
+} from "../../store/slices/dashboardSlice"
 import { BarChart } from "../../components/DataViz/BarChart/BarChart"
 import { keys } from "ramda"
 import { didFetchYear } from "../../utility/utility"
-import { Entries } from "../Entries/Entries"
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
@@ -99,5 +98,3 @@ export const Dashboard = () => {
     </div>
   )
 }
-
-export default Dashboard

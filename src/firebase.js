@@ -4,7 +4,7 @@ import {
   getAuth,
   signInWithEmailAndPassword,
 } from "firebase/auth"
-import { getDatabase } from "firebase/database"
+import { get, getDatabase, ref } from "firebase/database"
 
 const firebaseConfig = {
   apiKey: "AIzaSyAGtYJN9x3SesBvFrYejifUoS5XsFda0LY",
@@ -24,24 +24,19 @@ export const auth = getAuth()
 
 export const signInUser = (email, password) =>
   signInWithEmailAndPassword(auth, email, password)
-    // .then(userCredential => {
-    //   console.log("SignedIn", userCredential.user)
-    // })
-    // .catch(error => {
-    //   const errorCode = error.code
-    //   const errorMessage = error.message
-    //   console.log(errorCode, errorMessage)
-    // })
 
 export const createUser = (email, password) =>
   createUserWithEmailAndPassword(auth, email, password)
-    // .then(userCredential => {
-    //   const user = userCredential.user
-    //   console.log(user)
-    // })
-    // .catch(error => {
-    //   const errorMessage = error.message
-    //   console.log(errorMessage, error.code)
-    // })
 
 export const db = getDatabase()
+
+export const fetchUserEntries = uid => {
+  const p = get(ref(db, `users/${uid}`))
+  console.log(p)
+  return p
+  // .then(snapshot => {
+  //   if (snapshot.exists()) {
+  //     return snapshot.val()
+  //   }
+  // })
+}

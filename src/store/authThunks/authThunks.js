@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { createUser, signInUser } from "../../firebase"
-import { updateError } from "../loginSlice"
+import { updateError } from "../slices/loginSlice"
 import { extractErrorCode } from "./extractErrorCode"
 
 const authThunk = (type, asyncProcess) =>
@@ -8,7 +8,8 @@ const authThunk = (type, asyncProcess) =>
     type,
     async ({ email, password }, { dispatch, rejectWithValue }) => {
       try {
-        await asyncProcess(email, password)
+        const userCredentials = await asyncProcess(email, password)
+        console.log(userCredentials)
       } catch (error) {
         dispatch(updateError(extractErrorCode(error.code)))
         return rejectWithValue({ error: error.message })

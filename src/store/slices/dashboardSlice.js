@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { colorsGenerator } from "../utility/colors"
+import { colorsGenerator } from "../../utility/colors"
 import {
   extractCategoriesFromYear,
   extractPayersFromYear,
-} from "../utility/utility"
+} from "../../utility/utility"
 
 const dashboardSlice = createSlice({
   name: "dashboard",

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { changeInputValue, toggleSignMode } from "../../store/loginSlice"
+import { changeInputValue, toggleSignMode } from "../../store/slices/loginSlice"
 
 import { Redirect } from "react-router"
 import * as styles from "./styles"
