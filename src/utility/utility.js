@@ -51,3 +51,6 @@ export const flattenProp = R.curry((prop, obj) => flattenPath(R.of(prop), obj))
 
 export const didFetchYear = (data, year) =>
   data && year && data[year] instanceof Object
+
+export const withDefaultArrays = obj =>
+  R.map(val => (R.isNil(val) ? [] : val), obj)

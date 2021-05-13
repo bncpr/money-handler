@@ -5,9 +5,9 @@ import { dataReducer } from "./slices/dataSlice"
 import { errorReducer } from "./slices/errorSlice"
 import { dashboardReducer } from "./slices/dashboardSlice"
 import { loginReducer } from "./slices/loginSlice"
-import { authenticationReducer, signIn } from "./slices/authenticationSlice"
+import { authenticationReducer } from "./slices/authenticationSlice"
 
-import { rootEpic } from "./epics/rootEpic"
+import { rootEpic } from "./epics/_rootEpic"
 
 const epicMiddleware = createEpicMiddleware()
 
