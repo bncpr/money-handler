@@ -1,11 +1,11 @@
 import { combineEpics, ofType } from "redux-observable"
 import { map, withLatestFrom } from "rxjs/operators"
 import { setFilter } from "../slices/dataSlice"
-import { fetchUserEntriesEpic } from "./fetchUserEntriesEpic"
+import { getUserEntriesEpic } from "./getUserEntriesEpic"
 import { setInitialFiltersEpic } from "./setInitialFiltersEpic"
 
 export const rootEpic = combineEpics(
-  fetchUserEntriesEpic,
+  getUserEntriesEpic,
   setInitialFiltersEpic
 )
 

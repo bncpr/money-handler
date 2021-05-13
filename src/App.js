@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 
 import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { onAuthStateChanged } from "@firebase/auth"
-import { auth, fetchUserEntries } from "./firebase"
+import { auth, getUserEntries } from "./firebase"
 
 import { Layout } from "./components/Layout/Layout"
 import { Login } from "./containers/Login/Login"
@@ -21,7 +21,7 @@ export const App = () => {
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       if (user) {
-        // fetchUserEntries(user.uid)
+        // getUserEntries(user.uid)
         dispatch(signIn({ uid: user.uid, email: user.email }))
       } else {
         dispatch(signOut())

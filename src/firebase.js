@@ -30,7 +30,7 @@ export const createUser = (email, password) =>
 
 export const db = getDatabase()
 
-export const fetchUserEntries = uid =>
+export const getUserEntries = uid =>
   get(ref(db, `users/${uid}`)).then(snapshot =>
     snapshot.exists() ? snapshot.val() : {}
   )
