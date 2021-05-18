@@ -1,30 +1,60 @@
-import { createSlice } from "@reduxjs/toolkit"
-import { withDefaultArrays } from "../../utility/utility"
+import { createAction, createSlice } from "@reduxjs/toolkit"
+import { lensProp, merge, over, values } from "ramda"
+import * as R from "ramda"
+import { getInitFilterables } from "../modules/getInitFilterables"
+
+export const getUserEntriesFulfilled = createAction(
+  "data/getUserEntries/fulfilled"
+)
+export const getUserEntriesNoEntries = createAction(
+  "data/getUserEntries/noEntries"
+)
+
+const initialFilters = {
+  year: "",
+  month: "",
+  payer: "",
+  category: "",
+}
 
 const dataSlice = createSlice({
   name: "data",
   initialState: {
-    entries: {},
+    entries: [],
     categories: [],
     payers: [],
     years: [],
-    filteredData: [],
-    filters: { year: "", month: "", category: "", payer: "" },
+    surfaceData: [],
+    filters: initialFilters,
+    filteredStack: [],
     filterables: {
-      years: [],
-      categories: [],
-      payers: [],
+      year: { values: [] },
+      month: { values: [] },
+      category: { values: [] },
+      payer: { values: [] },
     },
   },
   reducers: {
-    getUserEntriesFulfilled(state, { payload }) {
-      return Object.assign(state, payload)
+    initFilterables(state) {
+      state.filterables = getInitFilterables(state)
     },
     setFilter(state, { payload: { key, value } }) {
-      state.filters[key] = value || ""
+      state.filters[key] = value
+    },
+    updateFilteredStack(state, { payload }) {
+      state.filteredStack = payload
+    },
+    updateSurfaceData(state, { payload }) {
+      state.surfaceData = payload
+    },
+    updateFilterables(state, { payload }) {
+      state.filterables = payload
     },
   },
   extraReducers: {
+    [getUserEntriesFulfilled]: (state, { payload }) => {
+      return merge(state, over(lensProp("entries"), values, payload))
+    },
     "data/initData/fulfilled": (_, action) => action.payload,
     "data/getYear/fulfilled": (state, action) => {
       const { year, data } = action.payload
@@ -34,4 +64,10 @@ const dataSlice = createSlice({
 })
 
 export const dataReducer = dataSlice.reducer
-export const { getUserEntriesFulfilled, setFilter } = dataSlice.actions
+export const {
+  setFilter,
+  updateSurfaceData,
+  updateFilteredStack,
+  updateFilterables,
+  initFilterables,
+} = dataSlice.actions

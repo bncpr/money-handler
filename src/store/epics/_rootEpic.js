@@ -1,17 +1,14 @@
-import { combineEpics, ofType } from "redux-observable"
-import { map, withLatestFrom } from "rxjs/operators"
-import { setFilter } from "../slices/dataSlice"
+import { combineEpics } from "redux-observable"
+import { filterDataEpic } from "./filterDataEpic/filterDataEpic"
+import { updateSurfaceDataEpic } from "./updateSurfaceDataEpic"
 import { getUserEntriesEpic } from "./getUserEntriesEpic"
 import { setInitialFiltersEpic } from "./setInitialFiltersEpic"
+import { logEpic } from "./logEpic"
 
 export const rootEpic = combineEpics(
+  // logEpic,
   getUserEntriesEpic,
-  setInitialFiltersEpic
+  setInitialFiltersEpic,
+  filterDataEpic,
+  updateSurfaceDataEpic
 )
-
-const filterDataEpic = (action$, state$) =>
-  action$.pipe(
-    ofType(setFilter.type),
-    withLatestFrom(state$),
-    map(([action, state]) => null)
-  )
