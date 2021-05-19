@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux"
+import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 import styles from "./Dashboard.module.css"
 import { getYearThunk, initData } from "../../store/thunks/thunks"
@@ -14,10 +14,14 @@ import {
 import { BarChart } from "../../components/DataViz/BarChart/BarChart"
 import { keys } from "ramda"
 import { didFetchYear } from "../../utility/utility"
+import { Entries } from "../Entries/Entries"
 
 export const Dashboard = () => {
   const dispatch = useDispatch()
-  const data = useSelector(state => state.data)
+  const { entries: data, years } = useSelector(
+    state => state.data,
+    shallowEqual
+  )
   const {
     isLoading,
     year,
@@ -29,7 +33,7 @@ export const Dashboard = () => {
     showBy,
     series,
     chartType,
-  } = useSelector(state => state.dashboard)
+  } = useSelector(state => state.dashboard, shallowEqual)
 
   const onChangeYearHandler = val => {
     dispatch(turnLoadingOn())
@@ -46,17 +50,11 @@ export const Dashboard = () => {
   const turnLoadingOnHandler = () => dispatch(turnLoadingOn())
   const turnLoadingOffHandler = () => dispatch(turnLoadingOff())
 
-  useEffect(() => {
-    if (year === null) {
-      dispatch(initData())
-    } else if (!didFetchYear(data, year)) {
-      dispatch(getYearThunk(year))
-    }
-  }, [year, dispatch])
+  useEffect(() => {}, [year, dispatch])
 
   return (
     <div className={styles.dashboard}>
-      <TabsBar tabs={keys(data)} current={year} onClick={onChangeYearHandler} />
+      <TabsBar tabs={years} current={year} onClick={onChangeYearHandler} />
       <BarChart
         turnLoadingOff={turnLoadingOffHandler}
         turnLoadingOn={turnLoadingOnHandler}
@@ -72,7 +70,9 @@ export const Dashboard = () => {
         showBy={showBy}
         series={series}
       />
-      <button onClick={onTogglePayersHandler} disabled={showBy !== "month"}>
+      <button
+        onClick={onTogglePayersHandler}
+        disabled={showBy !== "month"}>
         Payers
       </button>
       {/* <button
@@ -83,14 +83,15 @@ export const Dashboard = () => {
       >
         Stack
       </button> */}
-      <button onClick={onToggleCategoriesHandler} disabled={showBy !== "month"}>
+      <button
+        onClick={onToggleCategoriesHandler}
+        disabled={showBy !== "month"}>
         Categories
       </button>
       <label>Show by:</label>
       <select
         value={showBy}
-        onChange={e => dispatch(changeShowBy(e.target.value))}
-      >
+        onChange={e => dispatch(changeShowBy(e.target.value))}>
         <option value='month'>month</option>
         <option value='category'>category</option>
         <option value='payer'>payer</option>

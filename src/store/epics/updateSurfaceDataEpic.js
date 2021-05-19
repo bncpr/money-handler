@@ -8,7 +8,7 @@ import {
   updateFilteredStack,
   updateSurfaceData,
 } from "../slices/dataSlice"
-import { getInitFilterables } from "../modules/getInitFilterables"
+import { getInitFilterables } from "../_modules/getInitFilterables"
 import { getUpdatedFilterables } from "./modules/getUpdatedFilterables"
 import { getTopStackEntries } from "./modules/getUpdatedFilteredStack"
 

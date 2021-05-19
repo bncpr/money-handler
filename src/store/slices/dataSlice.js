@@ -1,7 +1,7 @@
 import { createAction, createSlice } from "@reduxjs/toolkit"
 import { lensProp, merge, over, values } from "ramda"
 import * as R from "ramda"
-import { getInitFilterables } from "../modules/getInitFilterables"
+import { getInitFilterables } from "../_modules/getInitFilterables"
 
 export const getUserEntriesFulfilled = createAction(
   "data/getUserEntries/fulfilled"
@@ -20,7 +20,7 @@ const initialFilters = {
 const dataSlice = createSlice({
   name: "data",
   initialState: {
-    entries: [],
+    entries: {},
     categories: [],
     payers: [],
     years: [],
@@ -53,7 +53,7 @@ const dataSlice = createSlice({
   },
   extraReducers: {
     [getUserEntriesFulfilled]: (state, { payload }) => {
-      return merge(state, over(lensProp("entries"), values, payload))
+      return merge(state, payload)
     },
     "data/initData/fulfilled": (_, action) => action.payload,
     "data/getYear/fulfilled": (state, action) => {

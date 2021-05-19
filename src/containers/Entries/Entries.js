@@ -1,27 +1,25 @@
-import { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { setFilter } from "../../store/slices/dataSlice"
+import { useEffect } from "react"
+import { useEntries } from "../../hooks/useEntries/useEntries"
+import { useFilters } from "../../hooks/useFilters/useFilters"
 import * as R from "ramda"
 
 const entryStr = (date, payer, value, category) =>
   `date: ${date} payer: ${payer} category: ${category} value: ${value}`
 
 export const Entries = () => {
-  const { surfaceData } = useSelector(state => state.data)
-  const { years, categories, payers, filters, filterables } = useSelector(
-    state => state.data
-  )
-  const dispatch = useDispatch()
+  const entries = useEntries()
+  const { surfaceData, setFilter, filters, filterables } =
+    useFilters(entries)
+
+  useEffect(() => {
+    console.log(surfaceData, filters, filterables)
+  }, [surfaceData, filters, filterables])
 
   return (
     <div>
-      <select
-        value={filters.year}
-        onChange={event =>
-          dispatch(setFilter({ key: "year", value: event.target.value }))
-        }>
+      <select value={filters.year} onChange={setFilter("year")}>
         <option value=''>--</option>
-        {years.map(year => (
+        {filterables.year.values.map(year => (
           <option key={year} value={year}>
             {year +
               `(${R.path(["year", "count", year], filterables) ?? ""})`}
@@ -29,13 +27,8 @@ export const Entries = () => {
         ))}
       </select>
       {!R.isEmpty(filterables.month.values) && (
-        <select
-          value={filters.month}
-          onChange={event =>
-            dispatch(
-              setFilter({ key: "month", value: event.target.value })
-            )
-          }>
+        <select value={filters.month} onChange={setFilter("month")}>
+          <option value=''>--</option>
           {filterables.month.values.map(month => (
             <option key={month} value={month}>
               {month +
@@ -46,28 +39,18 @@ export const Entries = () => {
           ))}
         </select>
       )}
-      <select
-        value={filters.payer}
-        onChange={event =>
-          dispatch(setFilter({ key: "payer", value: event.target.value }))
-        }>
+      <select value={filters.payer} onChange={setFilter("payer")}>
         <option value=''>--</option>
-        {payers.map(payer => (
+        {filterables.payer.values.map(payer => (
           <option value={payer} key={payer}>
             {payer +
               `(${R.path(["payer", "count", payer], filterables) ?? ""})`}
           </option>
         ))}
       </select>
-      <select
-        value={filters.category}
-        onChange={event =>
-          dispatch(
-            setFilter({ key: "category", value: event.target.value })
-          )
-        }>
+      <select value={filters.category} onChange={setFilter("category")}>
         <option value=''>--</option>
-        {categories.map(category => (
+        {filterables.category.values.map(category => (
           <option value={category} key={category}>
             {category +
               `(${

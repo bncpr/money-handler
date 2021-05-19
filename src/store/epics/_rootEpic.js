@@ -8,7 +8,4 @@ import { logEpic } from "./logEpic"
 export const rootEpic = combineEpics(
   // logEpic,
   getUserEntriesEpic,
-  setInitialFiltersEpic,
-  filterDataEpic,
-  updateSurfaceDataEpic
 )

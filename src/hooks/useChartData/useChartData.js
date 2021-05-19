@@ -26,7 +26,7 @@ export const useChartData = ({
 
   useEffect(() => {
     if (didFetchYear(data, year)) {
-      const entries = getEntries(data, year)
+      const entries = data
 
       const {
         chartData,
