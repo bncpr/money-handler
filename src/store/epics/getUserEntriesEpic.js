@@ -10,13 +10,14 @@ import {
   getUserEntriesFulfilled,
   getUserEntriesNoEntries,
 } from "../slices/dataSlice"
+import { showError } from "../slices/errorSlice"
 
 export const getUserEntriesEpic = action$ =>
   action$.pipe(
     ofType(signIn.type),
     switchMap(({ payload: { uid } }) =>
       from(getUserEntries(uid)).pipe(
-        catchError(console.log),
+        catchError(error => showError(error)),
         map(data =>
           ifElse(
             isEmpty,

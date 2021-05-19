@@ -1,97 +1,48 @@
-import { shallowEqual, useDispatch, useSelector } from "react-redux"
-import { useEffect } from "react"
 import styles from "./Dashboard.module.css"
-import { getYearThunk, initData } from "../../store/thunks/thunks"
 import { TabsBar } from "../../components/UI/Tabs/TabsBar/TabsBar"
-import {
-  changeShowBy,
-  changeYear,
-  toggleWithCategories,
-  toggleWithPayers,
-  turnLoadingOff,
-  turnLoadingOn,
-} from "../../store/slices/dashboardSlice"
 import { BarChart } from "../../components/DataViz/BarChart/BarChart"
-import { keys } from "ramda"
-import { didFetchYear } from "../../utility/utility"
-import { Entries } from "../Entries/Entries"
+import { useEntries } from "../../hooks/useEntries/useEntries"
+import { useYears } from "../../hooks/useYears/useYears"
+import { useChartControls } from "../../hooks/useChartControls/useChartControls"
+import { useLoading } from "../../hooks/useLoading/useLoading"
 
 export const Dashboard = () => {
-  const dispatch = useDispatch()
-  const { entries: data, years } = useSelector(
-    state => state.data,
-    shallowEqual
+  const data = useEntries()
+  const { isLoading, turnLoadingOffHandler, withActivateLoading } =
+    useLoading()
+  const { years, year, setYear } = useYears()
+  const { showBy, series, chartType, changeShowBy, changeOrToggleSeries } =
+    useChartControls("month", false, "bar")
+
+  const onChangeShowByHandler = withActivateLoading(changeShowBy)
+  const onChangeOrToggleSeriesHandler = withActivateLoading(
+    changeOrToggleSeries
   )
-  const {
-    isLoading,
-    year,
-    payerColors,
-    categoryColors,
-    withPayers,
-    withStacks,
-    withCategories,
-    showBy,
-    series,
-    chartType,
-  } = useSelector(state => state.dashboard, shallowEqual)
-
-  const onChangeYearHandler = val => {
-    dispatch(turnLoadingOn())
-    dispatch(changeYear(val))
-  }
-  const onTogglePayersHandler = () => {
-    dispatch(turnLoadingOn())
-    dispatch(toggleWithPayers())
-  }
-  const onToggleCategoriesHandler = () => {
-    dispatch(turnLoadingOn())
-    dispatch(toggleWithCategories())
-  }
-  const turnLoadingOnHandler = () => dispatch(turnLoadingOn())
-  const turnLoadingOffHandler = () => dispatch(turnLoadingOff())
-
-  useEffect(() => {}, [year, dispatch])
 
   return (
     <div className={styles.dashboard}>
-      <TabsBar tabs={years} current={year} onClick={onChangeYearHandler} />
+      <TabsBar tabs={years} current={year} onClick={setYear} />
       <BarChart
         turnLoadingOff={turnLoadingOffHandler}
-        turnLoadingOn={turnLoadingOnHandler}
         isLoading={isLoading}
         data={data}
         year={year}
         chartType={chartType}
-        colors={{ payerColors, categoryColors }}
-        options={{ withPayers, withStacks, withCategories }}
-        withPayers={withPayers}
-        withStacks={withStacks}
-        withCategories={withCategories}
         showBy={showBy}
         series={series}
       />
       <button
-        onClick={onTogglePayersHandler}
+        onClick={() => onChangeOrToggleSeriesHandler("payer")}
         disabled={showBy !== "month"}>
         Payers
       </button>
-      {/* <button
-        onClick={onToggleStacksHandler}
-        disabled={
-          (!withPayers && !withCategories) || (withPayers && withCategories)
-        }
-      >
-        Stack
-      </button> */}
       <button
-        onClick={onToggleCategoriesHandler}
+        onClick={() => onChangeOrToggleSeriesHandler("category")}
         disabled={showBy !== "month"}>
         Categories
       </button>
       <label>Show by:</label>
-      <select
-        value={showBy}
-        onChange={e => dispatch(changeShowBy(e.target.value))}>
+      <select value={showBy} onChange={onChangeShowByHandler}>
         <option value='month'>month</option>
         <option value='category'>category</option>
         <option value='payer'>payer</option>

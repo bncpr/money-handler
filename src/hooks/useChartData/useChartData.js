@@ -25,25 +25,22 @@ export const useChartData = ({
   const [state, setState] = useState({})
 
   useEffect(() => {
-    if (didFetchYear(data, year)) {
-      const entries = data
+    const entries = data.filter(R.propEq("year", year))
 
-      const {
-        chartData,
-        chartScales: { xScale, yScale },
-      } = getChartData(
-        chartType,
-        showBy,
-        series,
-        entries,
-        innerWidth,
-        innerHeight
-      )
-
-      setState({ chartData, xScale, yScale })
-      if (isLoading && chartData) {
-        turnLoadingOff()
-      }
+    const {
+      chartData,
+      chartScales: { xScale, yScale },
+    } = getChartData(
+      chartType,
+      showBy,
+      series,
+      entries,
+      innerWidth,
+      innerHeight
+    )
+    setState({ chartData, xScale, yScale })
+    if (isLoading && chartData) {
+      turnLoadingOff()
     }
   }, [
     data,

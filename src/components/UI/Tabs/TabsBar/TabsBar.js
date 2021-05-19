@@ -4,7 +4,6 @@ import styles from "./TabsBar.module.css"
 import * as R from "ramda"
 
 export const TabsBar = ({ tabs, current, onClick }) => {
-  console.log(tabs)
   return (
     <div className={styles.tabsBar}>
       {R.sortBy(R.identity, tabs).map(key => (

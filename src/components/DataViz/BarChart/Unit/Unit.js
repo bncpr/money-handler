@@ -15,7 +15,7 @@ export const Unit = ({
   focused,
 }) => {
   const rects = useRects({ unit, xScale, yScale, height, colors })
-
+  
   useInitialBarsAnimationEffect(rects)
 
   return (
@@ -23,8 +23,7 @@ export const Unit = ({
       onMouseOver={onMouseEnter}
       onMouseOut={onMouseOut}
       unit={unit.unit}
-      focused={focused}
-    >
+      focused={focused}>
       {keys(rects).map(key => {
         const props = { ...rects[key].props, y: yScale(0), height: 0 }
         return (

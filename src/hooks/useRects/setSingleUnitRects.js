@@ -1,4 +1,5 @@
 import { format } from "d3"
+import { isEmpty } from "ramda"
 import { createRef } from "react"
 
 export const setSingleUnitRects = (
@@ -11,7 +12,7 @@ export const setSingleUnitRects = (
 ) => {
   const { unit: key, sum } = unit
   const y = yScale(sum)
-
+  
   setRects({
     [key]: {
       props: {
@@ -20,7 +21,7 @@ export const setSingleUnitRects = (
         y,
         width: xScale.bandwidth(),
         height: height - y,
-        fill: colors ? colors[key] : "#5C8100",
+        fill: !isEmpty(colors) ? colors[key] : "",
         ref: createRef(),
       },
       tooltip: `${format(",d")(sum)}`,

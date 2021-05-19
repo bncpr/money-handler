@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react"
 import { useChartData } from "../../../hooks/useChartData/useChartData"
+import { useColors } from "../../../hooks/useColors/useColors"
 import { Chart } from "../Chart"
 import { BottomAxis } from "./BottomAxis"
 import { LeftAxis } from "./LeftAxis"
 import { Unit } from "./Unit/Unit"
+import { useFocus } from "../../../hooks/useFocus/useFocus"
+
+const isDoneLoading = (isLoading, chartData) => !isLoading && chartData
 
 export const BarChart = ({
   data,
   year,
-  colors,
   isLoading,
   turnLoadingOff,
   showBy,
@@ -32,31 +34,15 @@ export const BarChart = ({
     series,
   })
 
-  const [hoveredUnit, setHoveredUnit] = useState()
-  const [focusedUnit, setFocusedUnit] = useState()
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      if (hoveredUnit) {
-        if (hoveredUnit !== focusedUnit) {
-          setFocusedUnit(hoveredUnit)
-          // console.log("SET_FOCUS", hoveredUnit)
-        }
-      } else {
-        setFocusedUnit()
-        // console.log("UNSET_FOCUS")
-      }
-    }, 0)
-    return () => clearTimeout(t)
-  }, [hoveredUnit, focusedUnit])
-
+  const colors = useColors(series, showBy)
+  const { focusedUnit, onMouseEnter, onMouseOut } = useFocus()
+  
   return (
     <Chart
       width={width}
       height={height}
       marLeft={margin.left}
-      marTop={margin.top}
-    >
+      marTop={margin.top}>
       <BottomAxis
         xScale={xScale}
         height={innerHeight}
@@ -64,8 +50,7 @@ export const BarChart = ({
         showBy={showBy}
       />
       <LeftAxis yScale={yScale} width={innerWidth} />
-      {!isLoading &&
-        chartData &&
+      {isDoneLoading(isLoading, chartData) &&
         chartData.map(unit => (
           <Unit
             key={unit.unit}
@@ -73,22 +58,12 @@ export const BarChart = ({
             xScale={xScale}
             yScale={yScale}
             height={innerHeight}
-            colors={selectColorsSet(series, showBy, colors)}
-            onMouseEnter={() => {
-              setHoveredUnit(unit.unit)
-            }}
-            onMouseOut={() => {
-              setHoveredUnit()
-            }}
+            colors={colors}
+            onMouseEnter={onMouseEnter(unit.unit)}
+            onMouseOut={onMouseOut()}
             focused={focusedUnit}
           />
         ))}
     </Chart>
   )
-}
-
-function selectColorsSet(series, showBy, colors) {
-  if (showBy === "payer" || series === "payer") return colors.payerColors
-  if (showBy === "category" || series === "category")
-    return colors.categoryColors
 }

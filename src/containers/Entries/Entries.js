@@ -12,7 +12,7 @@ export const Entries = () => {
     useFilters(entries)
 
   useEffect(() => {
-    console.log(surfaceData, filters, filterables)
+    // console.log(surfaceData, filters, filterables)
   }, [surfaceData, filters, filterables])
 
   return (
