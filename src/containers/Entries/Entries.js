@@ -6,6 +6,24 @@ import * as R from "ramda"
 const entryStr = (date, payer, value, category) =>
   `date: ${date} payer: ${payer} category: ${category} value: ${value}`
 
+const createSelect = (statePath, onChange, array, count) => (
+  <select value={statePath} onChange={onChange}>
+    <option value=''>--</option>
+    {array.map(year => (
+      <option key={year} value={year}>
+        {year + `(${count?.[year] ?? ""})`}
+      </option>
+    ))}
+  </select>
+)
+const createSelectH = (filters, onChange, filterables, value) =>
+  createSelect(
+    filters[value],
+    onChange(value),
+    filterables[value].values,
+    filterables[value].count
+  )
+
 export const Entries = () => {
   const entries = useEntries()
   const { surfaceData, setFilter, filters, filterables } =
@@ -17,48 +35,11 @@ export const Entries = () => {
 
   return (
     <div>
-      <select value={filters.year} onChange={setFilter("year")}>
-        <option value=''>--</option>
-        {filterables.year.values.map(year => (
-          <option key={year} value={year}>
-            {year +
-              `(${R.path(["year", "count", year], filterables) ?? ""})`}
-          </option>
-        ))}
-      </select>
-      {!R.isEmpty(filterables.month.values) && (
-        <select value={filters.month} onChange={setFilter("month")}>
-          <option value=''>--</option>
-          {filterables.month.values.map(month => (
-            <option key={month} value={month}>
-              {month +
-                `(${
-                  R.path(["month", "count", month], filterables) ?? ""
-                })`}
-            </option>
-          ))}
-        </select>
-      )}
-      <select value={filters.payer} onChange={setFilter("payer")}>
-        <option value=''>--</option>
-        {filterables.payer.values.map(payer => (
-          <option value={payer} key={payer}>
-            {payer +
-              `(${R.path(["payer", "count", payer], filterables) ?? ""})`}
-          </option>
-        ))}
-      </select>
-      <select value={filters.category} onChange={setFilter("category")}>
-        <option value=''>--</option>
-        {filterables.category.values.map(category => (
-          <option value={category} key={category}>
-            {category +
-              `(${
-                R.path(["category", "count", category], filterables) ?? ""
-              })`}
-          </option>
-        ))}
-      </select>
+      {createSelectH(filters, setFilter, filterables, "year")}
+      {!R.isEmpty(filterables.month.values) &&
+        createSelectH(filters, setFilter, filterables, "month")}
+      {createSelectH(filters, setFilter, filterables, "payer")}
+      {createSelectH(filters, setFilter, filterables, "category")}
       {surfaceData.map(({ date, payer, value, category, id }) => (
         <p key={id}>{entryStr(date, payer, value, category)}</p>
       ))}
