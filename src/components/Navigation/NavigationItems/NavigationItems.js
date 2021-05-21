@@ -1,11 +1,11 @@
+import { Stack } from "@chakra-ui/layout"
 import { useSelector } from "react-redux"
 import { NavigationItem } from "./NavigationItem/NavigationItem"
-import styles from "./NavigationItems.module.css"
 
 export const NavigationItems = () => {
   const { signedIn } = useSelector(state => state.authentication)
   return (
-    <ul className={styles.NavigationItems}>
+    <Stack direction={["column", "row"]}>
       <NavigationItem path='/'>Home</NavigationItem>
       <NavigationItem path='/dashboard'>Dashboard</NavigationItem>
       {!signedIn && <NavigationItem path='/login'>Login</NavigationItem>}
@@ -15,6 +15,6 @@ export const NavigationItems = () => {
           <NavigationItem path='/profile'>Profile</NavigationItem>
         </>
       )}
-    </ul>
+    </Stack>
   )
 }

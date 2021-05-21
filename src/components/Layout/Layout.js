@@ -1,15 +1,16 @@
+import { Center } from "@chakra-ui/layout"
+import { NavigationItems } from "../Navigation/NavigationItems/NavigationItems"
 import { Toolbar } from "../Navigation/Toolbar/Toolbar"
-import styles from './Layout.module.css'
 
 export const Layout = ({ children }) => {
   return (
     <>
-      <Toolbar />
-      <main className={styles.Content}>
+      <Toolbar>
+        <NavigationItems />
+      </Toolbar>
+      <Center as='main' pt='45px'>
         {children}
-      </main>
+      </Center>
     </>
   )
 }
-
-

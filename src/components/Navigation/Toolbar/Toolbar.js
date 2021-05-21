@@ -1,12 +1,12 @@
-import styles from './Toolbar.module.css'
-import { NavigationItems } from '../NavigationItems/NavigationItems'
 
-export const Toolbar = () => {
+import { Box } from "@chakra-ui/layout"
+
+export const Toolbar = ({ children }) => {
   return (
-    <header className={styles.Toolbar}>
-      <nav className={styles.DesktopOnly}>
-        <NavigationItems />
-      </nav>
-    </header>
+    <Box as='header' w='full' h='min' bgColor='green.400' pos='fixed' zIndex={1}>
+      <Box as='nav' h='full'>
+        {children}
+      </Box>
+    </Box>
   )
 }

@@ -1,5 +1,3 @@
-import "./index.css"
-
 import React from "react"
 import ReactDOM from "react-dom"
 import reportWebVitals from "./reportWebVitals"
@@ -9,12 +7,13 @@ import { Provider } from "react-redux"
 import { App } from "./App"
 import { store } from "./store/store"
 import { ChakraProvider } from "@chakra-ui/react"
+import { customTheme } from "./theme"
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <ChakraProvider>
+        <ChakraProvider theme={customTheme}>
           <App />
         </ChakraProvider>
       </BrowserRouter>

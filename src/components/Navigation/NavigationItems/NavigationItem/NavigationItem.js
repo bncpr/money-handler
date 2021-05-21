@@ -1,12 +1,14 @@
-import { Link } from 'react-router-dom'
-import styles from './NavigationItem.module.css'
+import { StackItem } from "@chakra-ui/layout"
+import { Link } from "react-router-dom"
 
 export const NavigationItem = ({ children, path }) => {
   return (
-    <li className={styles.NavigationItem}>
-      <Link to={path}>
-        {children}
-      </Link>
-    </li>
+    <StackItem
+      p='1.5'
+      fontSize='lg'
+      fontWeight='700'
+      color='white'>
+      <Link to={path}>{children}</Link>
+    </StackItem>
   )
 }
