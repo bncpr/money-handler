@@ -8,12 +8,15 @@ import { Provider } from "react-redux"
 
 import { App } from "./App"
 import { store } from "./store/store"
+import { ChakraProvider } from "@chakra-ui/react"
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <ChakraProvider>
+          <App />
+        </ChakraProvider>
       </BrowserRouter>
     </Provider>
   </React.StrictMode>,
