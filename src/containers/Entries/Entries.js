@@ -1,10 +1,21 @@
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { useEntries } from "../../hooks/useEntries/useEntries"
 import { useFilters } from "../../hooks/useFilters/useFilters"
 import * as R from "ramda"
-import { Box, Container, Wrap, VStack } from "@chakra-ui/layout"
-import { Table, Thead, Tbody, Tr, Th, Td, Select } from "@chakra-ui/react"
+import { Box, Container, Wrap, VStack, Center } from "@chakra-ui/layout"
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Select,
+  NumberInput,
+} from "@chakra-ui/react"
 import { EditIcon } from "@chakra-ui/icons"
+import { usePagination } from "../../hooks/usePagination/usePagination"
+import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
 
 const createSelect = (statePath, onChange, array, count) => (
   <Select value={statePath} onChange={onChange}>
@@ -28,10 +39,29 @@ export const Entries = () => {
   const entries = useEntries()
   const { surfaceData, setFilter, filters, filterables } =
     useFilters(entries)
+  const { pageSize, page, pagesNum, onChangePage, onChangePageSize } =
+    usePagination(surfaceData, 24)
+
+  const memoizedData = useMemo(
+    () =>
+      surfaceData
+        .slice(page * pageSize, page * pageSize + pageSize)
+        .map(d => (
+          <Tr key={d.id} cursor='pointer' _hover={{ boxShadow: "inner" }}>
+            <Td isNumeric>{d.date}</Td>
+            <Td isNumeric>{d.value}</Td>
+            <Td>{d.payer}</Td>
+            <Td>{d.category}</Td>
+            <Td>{d.subcategories}</Td>
+            <Td>{d.more}</Td>
+          </Tr>
+        )),
+    [surfaceData, page, pageSize]
+  )
 
   useEffect(() => {
-    // console.log(surfaceData)
-  }, [surfaceData, filters, filterables])
+    // console.log(page, pagesNum, pageSize)
+  }, [surfaceData, filters, filterables, page, pagesNum, pageSize])
 
   return (
     <Wrap>
@@ -42,6 +72,7 @@ export const Entries = () => {
         {createSelectH(filters, setFilter, filterables, "payer")}
         {createSelectH(filters, setFilter, filterables, "category")}
       </VStack>
+
       <Box>
         <Table variant='simple' size='sm'>
           <Thead>
@@ -54,30 +85,23 @@ export const Entries = () => {
               <Th>More</Th>
             </Tr>
           </Thead>
-          <Tbody>
-            {surfaceData.map(
-              ({
-                id,
-                date,
-                value,
-                payer,
-                category,
-                subcategories,
-                more,
-              }) => (
-                <Tr key={id}>
-                  <Td>{date}</Td>
-                  <Td isNumeric>{value}</Td>
-                  <Td>{payer}</Td>
-                  <Td>{category}</Td>
-                  <Td>{subcategories}</Td>
-                  <Td>{more}</Td>
-                  <EditIcon />
-                </Tr>
-              )
-            )}
-          </Tbody>
+          <Tbody>{memoizedData}</Tbody>
         </Table>
+        <Center>
+          <PagePanel
+            style={{
+              padding: "6",
+              justifyContent: "center",
+              bottom: "0",
+              position: "fixed",
+            }}
+            page={page}
+            pagesNum={pagesNum}
+            pageSize={pageSize}
+            changePage={onChangePage}
+            changePageSize={onChangePageSize}
+          />
+        </Center>
       </Box>
     </Wrap>
   )
