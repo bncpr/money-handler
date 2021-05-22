@@ -43,13 +43,14 @@ export const Dashboard = () => {
           isDisabled={showBy !== "month"}
           isChecked={series === "payer"}
         />
+        <label>Categories</label>
         <Switch
           margin='2'
           onChange={() => onChangeOrToggleSeriesHandler("category")}
           isDisabled={showBy !== "month"}
-          isChecked={series === "category"}>
-          Categories
-        </Switch>
+          isChecked={series === "category"}
+        />
+
         <label>Show by:</label>
         <Select
           value={showBy}

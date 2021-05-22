@@ -2,26 +2,19 @@ import { useEffect } from "react"
 import { useEntries } from "../../hooks/useEntries/useEntries"
 import { useFilters } from "../../hooks/useFilters/useFilters"
 import * as R from "ramda"
-import { Box, Grid, GridItem, Wrap } from "@chakra-ui/layout"
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-} from "@chakra-ui/react"
+import { Box, Container, Wrap, VStack } from "@chakra-ui/layout"
+import { Table, Thead, Tbody, Tr, Th, Td, Select } from "@chakra-ui/react"
+import { EditIcon } from "@chakra-ui/icons"
 
 const createSelect = (statePath, onChange, array, count) => (
-  <select value={statePath} onChange={onChange}>
+  <Select value={statePath} onChange={onChange}>
     <option value=''>--</option>
     {array.map(year => (
       <option key={year} value={year}>
         {year + `(${count?.[year] ?? ""})`}
       </option>
     ))}
-  </select>
+  </Select>
 )
 const createSelectH = (filters, onChange, filterables, value) =>
   createSelect(
@@ -37,20 +30,20 @@ export const Entries = () => {
     useFilters(entries)
 
   useEffect(() => {
-    console.log(surfaceData)
+    // console.log(surfaceData)
   }, [surfaceData, filters, filterables])
 
   return (
     <Wrap>
-      <Box>
+      <VStack>
         {createSelectH(filters, setFilter, filterables, "year")}
         {!R.isEmpty(filterables.month.values) &&
           createSelectH(filters, setFilter, filterables, "month")}
         {createSelectH(filters, setFilter, filterables, "payer")}
         {createSelectH(filters, setFilter, filterables, "category")}
-      </Box>
+      </VStack>
       <Box>
-        <Table variant='simple'>
+        <Table variant='simple' size='sm'>
           <Thead>
             <Tr>
               <Th>Date</Th>
@@ -74,11 +67,12 @@ export const Entries = () => {
               }) => (
                 <Tr key={id}>
                   <Td>{date}</Td>
-                  <Td>{value}</Td>
+                  <Td isNumeric>{value}</Td>
                   <Td>{payer}</Td>
                   <Td>{category}</Td>
                   <Td>{subcategories}</Td>
                   <Td>{more}</Td>
+                  <EditIcon />
                 </Tr>
               )
             )}
