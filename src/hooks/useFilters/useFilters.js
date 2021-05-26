@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react"
-import * as R from "ramda"
+import { useCallback, useEffect, useState } from "react"
 import { getUpdatedFilteredStack } from "./modules/getUpdatedFilteredStack"
 import { getUpdatedFilterables } from "./modules/getUpdatedFilterables"
 import { shallowEqual, useSelector } from "react-redux"
+import * as R from "ramda"
+
+// REFACTOR: use grouping and memoization instead of filtering
 
 const getInitFilterables = (categories, payers, years) => ({
   category: { values: categories },
@@ -10,6 +12,9 @@ const getInitFilterables = (categories, payers, years) => ({
   month: { values: [] },
   payer: { values: payers },
 })
+
+const didNotInit = (filteredStack, surfaceData, entries) =>
+  R.isEmpty(filteredStack) && R.isEmpty(surfaceData) && !R.isEmpty(entries)
 
 export const useFilters = entries => {
   const { years, categories, payers } = useSelector(
@@ -30,19 +35,24 @@ export const useFilters = entries => {
     category: { values: [] },
     payer: { values: [] },
   })
-  const setFilter = R.curry((key, event) => {
-    setFilters({ ...filters, [key]: event.target.value })
-    const newStackedData = getUpdatedFilteredStack(
-      key,
-      event.target.value,
-      entries,
-      filteredStack
-    )
-    setFilteredStack(newStackedData)
-    setSurfaceData(
-      R.pipe(R.last, R.prop("entries"))(newStackedData) || entries
-    )
-  })
+
+  useEffect(() => {
+    if (didNotInit(filteredStack, surfaceData, entries)) {
+      const initFilter = years.reduce(R.max, "")
+      setFilters({ ...filters, year: initFilter })
+      const initSurfaceData = entries.filter(R.propEq("year", initFilter))
+      setSurfaceData(initSurfaceData)
+      const initStack = [
+        { entries },
+        { key: "year", value: initFilter, entries: initSurfaceData },
+      ]
+      setFilteredStack(initStack)
+    }
+  }, [filteredStack, surfaceData, entries])
+
+  useEffect(() => {
+    setSurfaceData(R.pipe(R.last, R.prop("entries"))(filteredStack) || [])
+  }, [filteredStack])
 
   useEffect(() => {
     setFilterables(
@@ -53,21 +63,36 @@ export const useFilters = entries => {
     )
   }, [categories, payers, years, filteredStack])
 
-  useEffect(() => {
-    if (
-      R.isEmpty(filteredStack) &&
-      R.isEmpty(surfaceData) &&
-      !R.isEmpty(entries)
-    ) {
-      const initFilter = years.reduce(R.max, "")
-      setFilters({ ...filters, year: initFilter })
-      const initSurfaceData = entries.filter(R.propEq("year", initFilter))
-      setSurfaceData(initSurfaceData)
-      const initStack = [
-        { key: "year", value: initFilter, entries: initSurfaceData },
-      ]
-      setFilteredStack(initStack)
-    }
-  }, [filteredStack, surfaceData, entries])
-  return { surfaceData, filters, setFilter, filterables }
+  const setFilter = useCallback(
+    R.curry((key, value) => {
+      setFilters({ ...filters, [key]: value })
+      setFilteredStack(getUpdatedFilteredStack(key, value, filteredStack))
+    }),
+    [
+      setFilters,
+      filters,
+      setFilteredStack,
+      getUpdatedFilteredStack,
+      filteredStack,
+    ]
+  )
+
+  const removeEntryFromStack = id => {
+    setFilteredStack(
+      filteredStack.map(
+        R.over(
+          R.lensProp("entries"),
+          R.filter(R.complement(R.propEq("id", id)))
+        )
+      )
+    )
+  }
+
+  return {
+    surfaceData,
+    filters,
+    setFilter,
+    filterables,
+    removeEntryFromStack,
+  }
 }

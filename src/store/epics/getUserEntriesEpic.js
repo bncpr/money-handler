@@ -1,6 +1,6 @@
 import { ifElse, isEmpty } from "ramda"
 import { ofType } from "redux-observable"
-import { from } from "rxjs"
+import { from, of } from "rxjs"
 import { catchError, map, startWith, switchMap } from "rxjs/operators"
 
 import { getUserEntries } from "../../firebase"
@@ -17,7 +17,6 @@ export const getUserEntriesEpic = action$ =>
     ofType(signIn.type),
     switchMap(({ payload: { uid } }) =>
       from(getUserEntries(uid)).pipe(
-        catchError(error => showError(error)),
         map(data =>
           ifElse(
             isEmpty,
@@ -25,6 +24,7 @@ export const getUserEntriesEpic = action$ =>
             getUserEntriesFulfilled
           )(data)
         ),
+        catchError(error => of(showError(error))),
         startWith({ type: "data/getUserEntries/pending" })
       )
     )

@@ -1,108 +1,125 @@
-import { useEffect, useMemo } from "react"
+import { useEffect, useState } from "react"
 import { useEntries } from "../../hooks/useEntries/useEntries"
 import { useFilters } from "../../hooks/useFilters/useFilters"
-import * as R from "ramda"
-import { Box, Container, Wrap, VStack, Center } from "@chakra-ui/layout"
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Select,
-  NumberInput,
-} from "@chakra-ui/react"
-import { EditIcon } from "@chakra-ui/icons"
-import { usePagination } from "../../hooks/usePagination/usePagination"
+import { Box, Stack } from "@chakra-ui/layout"
+import { Table, Tbody, Portal } from "@chakra-ui/react"
 import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
+import { usePagination } from "../../hooks/usePagination/usePagination"
+import { useDispatch } from "react-redux"
+import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
+import { DeleteEntryAlert } from "../../components/UI/Alert/DeleteEntryAlert"
+import { Filters } from "../../components/Filters/Filters"
+import { DrawerForm } from "../DrawerForm/DrawerForm"
+import { TableRow } from "../../components/UI/Table/TableRow"
+import { TableHead } from "../../components/UI/Table/TableHead"
 
-const createSelect = (statePath, onChange, array, count) => (
-  <Select value={statePath} onChange={onChange}>
-    <option value=''>--</option>
-    {array.map(year => (
-      <option key={year} value={year}>
-        {year + `(${count?.[year] ?? ""})`}
-      </option>
-    ))}
-  </Select>
-)
-const createSelectH = (filters, onChange, filterables, value) =>
-  createSelect(
-    filters[value],
-    onChange(value),
-    filterables[value].values,
-    filterables[value].count
-  )
+const headers = [
+  "Date",
+  "Value",
+  "Payer",
+  "Category",
+  "Subcategories",
+  "more",
+]
 
 export const Entries = () => {
   const entries = useEntries()
-  const { surfaceData, setFilter, filters, filterables } =
-    useFilters(entries)
-  const { pageSize, page, pagesNum, onChangePage, onChangePageSize } =
-    usePagination(surfaceData, 24)
+  const dispatch = useDispatch()
 
-  const memoizedData = useMemo(
-    () =>
-      surfaceData
-        .slice(page * pageSize, page * pageSize + pageSize)
-        .map(d => (
-          <Tr key={d.id} cursor='pointer' _hover={{ boxShadow: "inner" }}>
-            <Td isNumeric>{d.date}</Td>
-            <Td isNumeric>{d.value}</Td>
-            <Td>{d.payer}</Td>
-            <Td>{d.category}</Td>
-            <Td>{d.subcategories}</Td>
-            <Td>{d.more}</Td>
-          </Tr>
-        )),
-    [surfaceData, page, pageSize]
-  )
+  const {
+    surfaceData,
+    setFilter,
+    filters,
+    filterables,
+    removeEntryFromStack,
+  } = useFilters(entries)
+
+  const { pageSize, page, pagesNum, onChangePage, onChangePageSize } =
+    usePagination(surfaceData.length, 20, filters)
+
+  const [pickedEntry, setPickedEntry] = useState()
+
+  const onPickEntry = event => {
+    setPickedEntry(event.target.value)
+  }
+
+  const [isOpen, setIsOpen] = useState(false)
+  const onClose = () => setIsOpen()
+  const onOpenEdit = () => setIsOpen("edit")
+  const onOpenDel = () => setIsOpen("del")
+
+  const deleteEntry = async setIsLoading => {
+    setIsLoading(true)
+    await dispatch(removeEntryFromDbThunk(pickedEntry))
+    removeEntryFromStack(pickedEntry)
+    onClose()
+    setIsLoading(false)
+  }
 
   useEffect(() => {
-    // console.log(page, pagesNum, pageSize)
+    // console.log(surfaceData)
   }, [surfaceData, filters, filterables, page, pagesNum, pageSize])
 
   return (
-    <Wrap>
-      <VStack>
-        {createSelectH(filters, setFilter, filterables, "year")}
-        {!R.isEmpty(filterables.month.values) &&
-          createSelectH(filters, setFilter, filterables, "month")}
-        {createSelectH(filters, setFilter, filterables, "payer")}
-        {createSelectH(filters, setFilter, filterables, "category")}
-      </VStack>
-
-      <Box>
+    <Stack direction={["column", "row"]} pt={4} justify='center'>
+      <Filters
+        filters={filters}
+        filterables={filterables}
+        setFilter={setFilter}
+      />
+      <Box
+        width='max'
+        alignSelf='center'
+        boxShadow='md'
+        p={6}
+        borderRadius='lg'
+      >
         <Table variant='simple' size='sm'>
-          <Thead>
-            <Tr>
-              <Th>Date</Th>
-              <Th>Value</Th>
-              <Th>Payer</Th>
-              <Th>Category</Th>
-              <Th>Subcategories</Th>
-              <Th>More</Th>
-            </Tr>
-          </Thead>
-          <Tbody>{memoizedData}</Tbody>
+          <TableHead headers={headers} />
+          <Tbody>
+            {surfaceData
+              .slice(page * pageSize, page * pageSize + pageSize)
+              .map(d => (
+                <TableRow
+                  key={d.id}
+                  d={d}
+                  onDelete={onOpenDel}
+                  onEdit={onOpenEdit}
+                  onPick={onPickEntry}
+                />
+              ))}
+          </Tbody>
         </Table>
-        <Center>
-          <PagePanel
-            style={{
-              padding: "6",
-              justifyContent: "center",
-              bottom: "0",
-              position: "fixed",
-            }}
-            page={page}
-            pagesNum={pagesNum}
-            pageSize={pageSize}
-            changePage={onChangePage}
-            changePageSize={onChangePageSize}
-          />
-        </Center>
       </Box>
-    </Wrap>
+
+      <PagePanel
+        style={{
+          padding: "2",
+          position: "fixed",
+          bottom: 0,
+          left: "50%",
+          transform: "translate(-50%, 0)",
+        }}
+        page={page}
+        pagesNum={pagesNum}
+        pageSize={pageSize}
+        changePage={onChangePage}
+        changePageSize={onChangePageSize}
+      />
+      <Portal>
+        <DeleteEntryAlert
+          isOpen={isOpen === "del"}
+          onClose={onClose}
+          deleteEntry={deleteEntry}
+        />
+        <DrawerForm
+          isOpen={isOpen === "edit"}
+          onClose={onClose}
+          placement='left'
+          header='Edit Entry'
+          pickedEntry={pickedEntry}
+        />
+      </Portal>
+    </Stack>
   )
 }

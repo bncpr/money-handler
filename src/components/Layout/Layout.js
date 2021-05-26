@@ -1,4 +1,4 @@
-import { Center } from "@chakra-ui/layout"
+import { Box, Center, Flex, Stack } from "@chakra-ui/layout"
 import { NavigationItems } from "../Navigation/NavigationItems/NavigationItems"
 import { Toolbar } from "../Navigation/Toolbar/Toolbar"
 
@@ -8,9 +8,9 @@ export const Layout = ({ children }) => {
       <Toolbar>
         <NavigationItems />
       </Toolbar>
-      <Center as='main' pt='45px'>
+      <Box as='main' pt='45px'>
         {children}
-      </Center>
+      </Box>
     </>
   )
 }

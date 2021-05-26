@@ -23,7 +23,8 @@ export const TabsBar = ({ tabs, current, onChange }) => {
       colorScheme='green'
       align='end'
       variant='soft-rounded'
-      padding='2'>
+      padding='2'
+      >
       <TabList>
         {tabsList.map(key => (
           <Tab value={key} key={key} isSelected={current === key}>

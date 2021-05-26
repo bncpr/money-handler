@@ -4,11 +4,18 @@ import { useEntries } from "../../hooks/useEntries/useEntries"
 import { useYears } from "../../hooks/useYears/useYears"
 import { useChartControls } from "../../hooks/useChartControls/useChartControls"
 import { useLoading } from "../../hooks/useLoading/useLoading"
-import { Box, HStack } from "@chakra-ui/layout"
+import { Box, Flex, HStack, Stack, VStack } from "@chakra-ui/layout"
 import { Switch } from "@chakra-ui/switch"
-import { Select } from "@chakra-ui/select"
-import { Tab, TabList, Tabs } from "@chakra-ui/tabs"
-import { useEffect } from "react"
+import {
+  Menu,
+  MenuButton,
+  MenuItemOption,
+  MenuList,
+  MenuOptionGroup,
+} from "@chakra-ui/menu"
+import { ChevronDownIcon } from "@chakra-ui/icons"
+import { Button } from "@chakra-ui/button"
+import { capitalizeFirstChar } from "../../utility/utility"
 
 export const Dashboard = () => {
   const data = useEntries()
@@ -24,9 +31,10 @@ export const Dashboard = () => {
   )
 
   return (
-    <Box>
+    <Flex direction='column' width='min' margin='auto'>
       <TabsBar tabs={years} current={year} onChange={setYear} />
       <BarChart
+        style={{ margin: "auto" }}
         turnLoadingOff={turnLoadingOffHandler}
         isLoading={isLoading}
         data={data}
@@ -51,18 +59,27 @@ export const Dashboard = () => {
           isChecked={series === "category"}
         />
 
-        <label>Show by:</label>
-        <Select
-          value={showBy}
-          onChange={onChangeShowByHandler}
-          w='1xs'
-          padding='2'
-          variant='flushed'>
-          <option value='month'>month</option>
-          <option value='category'>category</option>
-          <option value='payer'>payer</option>
-        </Select>
+        <Menu closeOnBlur={true}>
+          <MenuButton
+            as={Button}
+            variant='unstyled'
+            rightIcon={<ChevronDownIcon />}
+            padding='2'
+            _focus={{ boxShadow: "none" }}>
+            {capitalizeFirstChar(showBy)}
+          </MenuButton>
+          <MenuList>
+            <MenuOptionGroup
+              defaultValue='month'
+              type='radio'
+              onChange={onChangeShowByHandler}>
+              <MenuItemOption value='month'>Month</MenuItemOption>
+              <MenuItemOption value='category'>Category</MenuItemOption>
+              <MenuItemOption value='payer'>Payer</MenuItemOption>
+            </MenuOptionGroup>
+          </MenuList>
+        </Menu>
       </HStack>
-    </Box>
+    </Flex>
   )
 }

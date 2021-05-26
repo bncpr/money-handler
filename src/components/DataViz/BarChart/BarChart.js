@@ -9,6 +9,7 @@ import { Box } from "@chakra-ui/layout"
 const isDoneLoading = (isLoading, chartData) => !isLoading && chartData
 
 export const BarChart = ({
+  style,
   data,
   year,
   isLoading,
@@ -39,6 +40,7 @@ export const BarChart = ({
 
   return (
     <Box
+      {...style}
       as='svg'
       h={height}
       w={width}

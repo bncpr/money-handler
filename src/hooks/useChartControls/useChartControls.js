@@ -9,8 +9,8 @@ export const useChartControls = (
   const [series, setSeries] = useState(initSeries)
   const [chartType, setChartType] = useState(initChartType)
 
-  const changeShowBy = event => {
-    setShowBy(event.target.value)
+  const changeShowBy = value => {
+    setShowBy(value)
   }
   const changeOrToggleSeries = value => {
     setSeries(series === value ? false : value)

@@ -18,15 +18,13 @@ const createNewFilteredLayer = (key, value, entries) => {
   return { key, value, entries: filteredEntries }
 }
 
-const appendNewFilteredLayer = R.curry(
-  (key, value, defaultEntries, stack) => {
-    const prevEntries = getTopStackEntries(stack) || defaultEntries
-    return stack.concat(createNewFilteredLayer(key, value, prevEntries))
-  }
-)
+const appendNewFilteredLayer = R.curry((key, value, stack) => {
+  const prevEntries = getTopStackEntries(stack)
+  return stack.concat(createNewFilteredLayer(key, value, prevEntries))
+})
 
-const updateStackIteratorWithDefault = defaultEntries => (acc, val) => {
-  const prevEntries = getTopStackEntries(acc) || defaultEntries
+const updateStackIterator = (acc, val) => {
+  const prevEntries = getTopStackEntries(acc)
   const { key, value } = val
   return acc.concat({
     ...val,
@@ -34,30 +32,20 @@ const updateStackIteratorWithDefault = defaultEntries => (acc, val) => {
   })
 }
 
-const unsetFilter = R.curry((key, defaultEntries, stack) => {
+const unsetFilter = R.curry((key, stack) => {
   const [head, tail] = removeAndSplitAtKey(key, stack)
-  const iterator = updateStackIteratorWithDefault(defaultEntries)
-  return R.reduce(iterator, head, tail)
+  return R.reduce(updateStackIterator, head, tail)
 })
 
-const unsetFilterAndAppendNewLayer = R.curry(
-  (key, value, defaultEntries, stack) =>
-    R.pipe(
-      unsetFilter(key, defaultEntries),
-      appendNewFilteredLayer(key, value, defaultEntries)
-    )(stack)
+const unsetFilterAndAppendNewLayer = R.curry((key, value, stack) =>
+  R.pipe(unsetFilter(key), appendNewFilteredLayer(key, value))(stack)
 )
 const keyNotInStack = (key, stack) => R.none(R.propEq("key", key), stack)
 
-export const getUpdatedFilteredStack = (
-  key,
-  value,
-  defaultEntries,
-  stack
-) => {
+export const getUpdatedFilteredStack = (key, value, stack) => {
   return keyNotInStack(key, stack)
-    ? appendNewFilteredLayer(key, value, defaultEntries, stack)
+    ? appendNewFilteredLayer(key, value, stack)
     : R.isEmpty(value)
-    ? unsetFilter(key, defaultEntries, stack)
-    : unsetFilterAndAppendNewLayer(key, value, defaultEntries, stack)
+    ? unsetFilter(key, stack)
+    : unsetFilterAndAppendNewLayer(key, value, stack)
 }

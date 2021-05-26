@@ -4,7 +4,7 @@ import {
   getAuth,
   signInWithEmailAndPassword,
 } from "firebase/auth"
-import { get, getDatabase, ref } from "firebase/database"
+import { get, getDatabase, ref, remove, update } from "firebase/database"
 
 const firebaseConfig = {
   apiKey: "AIzaSyAGtYJN9x3SesBvFrYejifUoS5XsFda0LY",
@@ -34,3 +34,9 @@ export const getUserEntries = uid =>
   get(ref(db, `users/${uid}`)).then(snapshot =>
     snapshot.exists() ? snapshot.val() : {}
   )
+
+export const removeEntry = (uid, entryId) =>
+  remove(ref(db, `users/${uid}/entries/${entryId}`))
+
+export const updateEntry = (uid, entryId, entry) =>
+  update(ref(db, `users/${uid}/entries/${entryId}`), entry)
