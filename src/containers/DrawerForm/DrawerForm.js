@@ -12,12 +12,14 @@ import {
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { updateEntryInDbThunk } from "../../store/thunks/updateEntryInDbThunk"
 import { useFormik } from "formik"
-import { EntryForm } from "../EntryForm/EntryForm"
 import * as R from "ramda"
 import * as yup from "yup"
 
 const entrySchema = yup.object().shape({
-  date: yup.date().required().max("2100/01/01", "That's way too far in the future."),
+  date: yup
+    .date()
+    .required()
+    .max("2100/01/01", "That's way too far in the future."),
   value: yup.number().required().positive(),
   payer: yup.string().required(),
   category: yup.string().required(),
@@ -31,6 +33,7 @@ export const DrawerForm = ({
   placement,
   header,
   pickedEntry,
+  component: Component,
 }) => {
   const entry = useSelector(state => state.data.entries[pickedEntry])
   const { categories, payers } = useSelector(
@@ -55,9 +58,8 @@ export const DrawerForm = ({
   }, [entry])
 
   useEffect(() => {
-    console.log(formik.values)
-    console.log(formik.errors)
-  }, [formik.values, formik.errors])
+    if (!isOpen) formik.resetForm()
+  }, [isOpen])
 
   return (
     <Drawer
@@ -71,7 +73,7 @@ export const DrawerForm = ({
         <DrawerCloseButton />
         <DrawerHeader>{header}</DrawerHeader>
         <DrawerBody>
-          <EntryForm
+          <Component
             formik={formik}
             payers={payers}
             categories={categories}

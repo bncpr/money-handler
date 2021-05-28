@@ -1,18 +1,24 @@
-import { FormControl, FormLabel, Input } from "@chakra-ui/react"
+import { FormControl, FormLabel, Input, Wrap } from "@chakra-ui/react"
 import { Field, Form, FormikProvider } from "formik"
-import { RadioContext } from "../../components/UI/Form/RadioContext/RadioContext"
-import { NumberInputContext } from "../../components/UI/Form/NumberInputContext/NumberInputContext"
-import { InputContext } from "../../components/UI/Form/InputContext/InputContext"
+import { NumberInputContext } from "../NumberInputContext/NumberInputContext"
+import { InputContext } from "../InputContext/InputContext"
+import { CustomRadioGroup } from "../RadioCard/CustomRadioGroup"
 
 export const EntryForm = ({ formik, payers, categories }) => {
   return (
     <FormikProvider value={formik}>
       <Form id='entry-form'>
-        <Field component={InputContext} name='date' type='date' />
-        <Field component={NumberInputContext} name='value' />
-        <Field component={RadioContext} name='payer' options={payers} />
+        <Wrap spacing={5}>
+          <Field component={InputContext} name='date' type='date' />
+          <Field component={NumberInputContext} name='value' />
+        </Wrap>
         <Field
-          component={RadioContext}
+          component={CustomRadioGroup}
+          name='payer'
+          options={payers}
+        />
+        <Field
+          component={CustomRadioGroup}
           name='category'
           options={categories}
         />

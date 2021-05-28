@@ -9,6 +9,7 @@ export const NumberInputContext = ({ field, form }) => {
         {...field}
         onChange={val => form.setFieldValue(name, val)}
         min={0}
+        width="max"
       />
     </FormControlContext>
   )

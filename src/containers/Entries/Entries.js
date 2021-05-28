@@ -12,6 +12,7 @@ import { Filters } from "../../components/Filters/Filters"
 import { DrawerForm } from "../DrawerForm/DrawerForm"
 import { TableRow } from "../../components/UI/Table/TableRow"
 import { TableHead } from "../../components/UI/Table/TableHead"
+import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
 
 const headers = [
   "Date",
@@ -67,6 +68,7 @@ export const Entries = () => {
         filterables={filterables}
         setFilter={setFilter}
       />
+
       <Box
         width='max'
         alignSelf='center'
@@ -118,6 +120,7 @@ export const Entries = () => {
           placement='left'
           header='Edit Entry'
           pickedEntry={pickedEntry}
+          component={EntryForm}
         />
       </Portal>
     </Stack>
