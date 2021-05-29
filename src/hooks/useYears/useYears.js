@@ -3,7 +3,10 @@ import { useEffect, useState } from "react"
 import * as R from "ramda"
 
 export const useYears = (withInitYear = true) => {
-  const { years } = useSelector(state => state.data, shallowEqual)
+  const { year: years } = useSelector(
+    state => state.data.fields,
+    shallowEqual
+  )
   const [year, setYear] = useState("")
 
   useEffect(() => {

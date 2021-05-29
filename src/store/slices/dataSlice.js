@@ -12,9 +12,12 @@ const dataSlice = createSlice({
   name: "data",
   initialState: {
     entries: {},
-    categories: [],
-    payers: [],
-    years: [],
+    fields: {
+      category: [],
+      payer: [],
+      year: [],
+      tags: []
+    }
   },
   reducers: {
     removeEntry(state, { payload }) {

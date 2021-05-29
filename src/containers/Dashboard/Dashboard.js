@@ -4,7 +4,7 @@ import { useEntries } from "../../hooks/useEntries/useEntries"
 import { useYears } from "../../hooks/useYears/useYears"
 import { useChartControls } from "../../hooks/useChartControls/useChartControls"
 import { useLoading } from "../../hooks/useLoading/useLoading"
-import { Box, Flex, HStack, Stack, VStack } from "@chakra-ui/layout"
+import { Flex, HStack } from "@chakra-ui/layout"
 import { Switch } from "@chakra-ui/switch"
 import {
   Menu,

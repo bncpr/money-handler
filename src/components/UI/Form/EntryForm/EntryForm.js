@@ -1,44 +1,60 @@
-import { FormControl, FormLabel, Input, Wrap } from "@chakra-ui/react"
+import {
+  Box,
+  Wrap,
+} from "@chakra-ui/react"
 import { Field, Form, FormikProvider } from "formik"
 import { NumberInputContext } from "../NumberInputContext/NumberInputContext"
 import { InputContext } from "../InputContext/InputContext"
-import { CustomRadioGroup } from "../RadioCard/CustomRadioGroup"
+import { RadioWithAddOption } from "../RadioWithAddOption/RadioWithAddOption"
+import { RadioCard } from "../RadioCard/RadioCard"
+import { useRef } from "react"
+import { InputTagsCheckbox } from "../InputTagsCheckbox/InputTagsCheckbox"
 
-export const EntryForm = ({ formik, payers, categories }) => {
+export const EntryForm = ({ formik, fields, addedFields, ...rest }) => {
+  const portalRef = useRef()
   return (
     <FormikProvider value={formik}>
-      <Form id='entry-form'>
+      <Form
+        id='entry-form'
+        onKeyPress={e => e.key === "Enter" && e.preventDefault()}
+      >
         <Wrap spacing={5}>
-          <Field component={InputContext} name='date' type='date' />
-          <Field component={NumberInputContext} name='value' />
+          <Field
+            component={InputContext}
+            name='date'
+            type='date'
+            label='Date'
+          />
+          <Field
+            component={NumberInputContext}
+            name='value'
+            label='Value'
+          />
         </Wrap>
+        {["payer", "category"].map(value => (
+          <Field
+            key={value}
+            name={value}
+            component={RadioWithAddOption}
+            radioComp={RadioCard}
+            options={fields[value]}
+            addedFields={addedFields[value]}
+            portalRef={portalRef}
+            {...rest}
+          />
+        ))}
+        <Field name='tags' component={InputTagsCheckbox} />
         <Field
-          component={CustomRadioGroup}
-          name='payer'
-          options={payers}
+          component={InputContext}
+          name='more'
+          label='More'
+          type='text'
+          helperText='free text for more information'
         />
-        <Field
-          component={CustomRadioGroup}
-          name='category'
-          options={categories}
-        />
-        <Field name='subcategories'>
-          {({ field }) => (
-            <FormControl id='subcategories'>
-              <FormLabel htmlFor='subcategories'>Subcategories</FormLabel>
-              <Input {...field} />
-            </FormControl>
-          )}
-        </Field>
-        <Field name='more'>
-          {({ field }) => (
-            <FormControl id='more'>
-              <FormLabel htmlFor='more'>More</FormLabel>
-              <Input {...field} />
-            </FormControl>
-          )}
-        </Field>
       </Form>
+      <Box ref={portalRef}></Box>
     </FormikProvider>
   )
 }
+
+

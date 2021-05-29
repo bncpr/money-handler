@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { createContext, useEffect, useState } from "react"
 import {
   Button,
   Drawer,
@@ -14,6 +14,7 @@ import { updateEntryInDbThunk } from "../../store/thunks/updateEntryInDbThunk"
 import { useFormik } from "formik"
 import * as R from "ramda"
 import * as yup from "yup"
+import { useResetFormOnClose } from "../../hooks/useResetFormOnClose/useResetFormOnClose"
 
 const entrySchema = yup.object().shape({
   date: yup
@@ -23,9 +24,10 @@ const entrySchema = yup.object().shape({
   value: yup.number().required().positive(),
   payer: yup.string().required(),
   category: yup.string().required(),
-  subcategories: yup.string(),
   more: yup.string(),
 })
+
+const initialValues = { tags: [], more: "" }
 
 export const DrawerForm = ({
   isOpen,
@@ -36,49 +38,86 @@ export const DrawerForm = ({
   component: Component,
 }) => {
   const entry = useSelector(state => state.data.entries[pickedEntry])
-  const { categories, payers } = useSelector(
-    state => state.data,
-    shallowEqual
-  )
+  const { fields } = useSelector(state => state.data, shallowEqual)
   const dispatch = useDispatch()
 
+  const [addedFields, setAddedFields] = useState({
+    payer: [],
+    category: [],
+    tags: [],
+  })
+
   const formik = useFormik({
-    initialValues: {},
+    initialValues,
     validationSchema: entrySchema,
     onSubmit: async values => {
       await dispatch(
-        updateEntryInDbThunk({ entryId: entry.id, entry: values })
+        updateEntryInDbThunk({
+          entryId: entry.id,
+          entry: values,
+        })
       )
       formik.setSubmitting(false)
     },
   })
 
-  useEffect(() => {
-    formik.setValues(R.omit(["year", "month", "id"], entry))
-  }, [entry])
+  const onAddField = (field, value) => {
+    setAddedFields(R.over(R.lensProp(field), R.append(value), addedFields))
+    formik.setFieldValue(field, value)
+  }
+
+  const onRemoveAddedField = (field, value) => {
+    setAddedFields(
+      R.over(R.lensProp(field), R.reject(R.equals(value)), addedFields)
+    )
+    if (formik.values[field] === value) {
+      formik.setFieldValue(field, "")
+    }
+  }
 
   useEffect(() => {
-    if (!isOpen) formik.resetForm()
+    console.log(formik.values)
+  }, [formik.values])
+
+  useEffect(() => {
+    formik.setValues(R.mergeRight(initialValues, entry))
+  }, [entry, formik.setValues])
+
+  useEffect(() => {
+    if (!isOpen) {
+      setAddedFields({
+        payer: [],
+        category: [],
+        tags: [],
+      })
+    }
   }, [isOpen])
+
+  useResetFormOnClose(isOpen, formik)
 
   return (
     <Drawer
       isOpen={isOpen}
       onClose={onClose}
       placement={placement}
-      size='lg'
+      size='md'
     >
       <DrawerOverlay />
+
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerHeader>{header}</DrawerHeader>
+
         <DrawerBody>
           <Component
             formik={formik}
-            payers={payers}
-            categories={categories}
+            fields={fields}
+            addedFields={addedFields}
+            onAddField={onAddField}
+            onRemoveAddedField={onRemoveAddedField}
           />
         </DrawerBody>
+
         <DrawerFooter>
           <Button onClick={onClose} colorScheme='red' mr={3}>
             Cancel

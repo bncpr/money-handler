@@ -19,7 +19,7 @@ const headers = [
   "Value",
   "Payer",
   "Category",
-  "Subcategories",
+  "Tags",
   "more",
 ]
 

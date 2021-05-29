@@ -17,10 +17,14 @@ const dashboardSlice = createSlice({
   extraReducers: {
     [getUserEntriesFulfilled]: (
       state,
-      { payload: { categories, payers } }
+      {
+        payload: {
+          fields: { payer, category },
+        },
+      }
     ) => {
-      const categoryColors = assignColors(categories, colorsGenerator)
-      const payerColors = assignColors(payers, colorsGenerator)
+      const categoryColors = assignColors(category, colorsGenerator)
+      const payerColors = assignColors(payer, colorsGenerator)
       state.colors = { categoryColors, payerColors }
     },
   },

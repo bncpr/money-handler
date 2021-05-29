@@ -17,10 +17,12 @@ const didNotInit = (filteredStack, surfaceData, entries) =>
   R.isEmpty(filteredStack) && R.isEmpty(surfaceData) && !R.isEmpty(entries)
 
 export const useFilters = entries => {
-  const { years, categories, payers } = useSelector(
-    state => state.data,
-    shallowEqual
-  )
+  const {
+    year: years,
+    category: categories,
+    payer: payers,
+  } = useSelector(state => state.data.fields, shallowEqual)
+  
   const [surfaceData, setSurfaceData] = useState([])
   const [filteredStack, setFilteredStack] = useState([])
   const [filters, setFilters] = useState({

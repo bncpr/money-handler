@@ -9,11 +9,22 @@ import {
   PopoverTrigger,
 } from "@chakra-ui/popover"
 import { useFormik } from "formik"
-import { useEffect, useRef, useState } from "react"
+import { useContext, useRef, useState } from "react"
 import { capitalizeFirstChar } from "../../utility/utility"
 import * as Yup from "yup"
+import { useResetFormOnClose } from "../../hooks/useResetFormOnClose/useResetFormOnClose"
+import { FieldsContext } from "../DrawerForm/DrawerForm"
+import { Portal } from "@chakra-ui/portal"
 
-export const PopoverFormContainer = ({ name, component: Component }) => {
+export const PopoverFormContainer = ({
+  name,
+  component: Component,
+  options,
+  addedFields,
+  portalRef,
+  onAddField,
+}) => {
+  const initialFocusRef = useRef()
   const [isOpen, setIsOpen] = useState(false)
   const toggleOpen = () => setIsOpen(!isOpen)
   const onClose = () => setIsOpen(false)
@@ -23,24 +34,28 @@ export const PopoverFormContainer = ({ name, component: Component }) => {
       [name]: "",
     },
     validationSchema: Yup.object().shape({
-      [name]: Yup.string().required().max(20),
+      [name]: Yup.string()
+        .required()
+        .max(20)
+        .notOneOf(options.concat(addedFields), `${name} already in use`)
+        .matches(/^\S*$/, "no whitespace"),
     }),
     onSubmit: values => {
-      alert(JSON.stringify(values, null, 2))
+      onAddField(name, values[name])
+      formik.setSubmitting(false)
+      onClose()
     },
     validateOnBlur: false,
   })
-  const initialFocusRef = useRef()
 
-  useEffect(() => {
-    if (!isOpen) formik.resetForm()
-  }, [isOpen])
+  useResetFormOnClose(isOpen, formik)
 
   return (
     <Popover
       initialFocusRef={initialFocusRef}
       isOpen={isOpen}
       onClose={onClose}
+      returnFocusOnClose={false}
     >
       <PopoverTrigger>
         <IconButton
@@ -51,18 +66,21 @@ export const PopoverFormContainer = ({ name, component: Component }) => {
           icon={<AddIcon />}
         />
       </PopoverTrigger>
-      <PopoverContent boxShadow='md' borderColor='gray.100' border='2px'>
-        <PopoverArrow />
-        <PopoverCloseButton mt={1} />
-        <PopoverHeader fontWeight='600'>{`Add New ${capitalizeFirstChar(
-          name
-        )}:`}</PopoverHeader>
-        <Component
-          form={formik}
-          name={name}
-          initialFocusRef={initialFocusRef}
-        />
-      </PopoverContent>
+      <Portal containerRef={portalRef}>
+        <PopoverContent boxShadow='md' borderColor='gray.100'>
+          <PopoverArrow />
+          <PopoverCloseButton />
+          <PopoverHeader fontWeight='600'>{`Add New ${capitalizeFirstChar(
+            name
+          )}:`}</PopoverHeader>
+
+          <Component
+            form={formik}
+            name={name}
+            initialFocusRef={initialFocusRef}
+          />
+        </PopoverContent>
+      </Portal>
     </Popover>
   )
 }
