@@ -10,5 +10,11 @@ export const useEntries = () => {
       setEntriesArr(R.values(entries))
     }
   }, [entries, entriesArr])
+
+  useEffect(() => {
+    if (!R.isEmpty(entriesArr)) {
+      
+    }
+  }, [entries, entriesArr])
   return entriesArr
 }

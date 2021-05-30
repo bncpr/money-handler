@@ -16,8 +16,8 @@ const dataSlice = createSlice({
       category: [],
       payer: [],
       year: [],
-      tags: []
-    }
+      tags: [],
+    },
   },
   reducers: {
     removeEntry(state, { payload }) {
@@ -25,6 +25,9 @@ const dataSlice = createSlice({
     },
     updateEntry(state, { payload: { entryId, entry } }) {
       state.entries[entryId] = entry
+    },
+    updateFields(state, { payload }) {
+      state.fields = payload
     },
   },
   extraReducers: {
@@ -35,4 +38,4 @@ const dataSlice = createSlice({
 })
 
 export const dataReducer = dataSlice.reducer
-export const { removeEntry, updateEntry } = dataSlice.actions
+export const { removeEntry, updateEntry, updateFields } = dataSlice.actions

@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   Button,
   Drawer,
@@ -8,13 +8,17 @@ import {
   DrawerHeader,
   DrawerBody,
   DrawerFooter,
+  Box,
+  Portal,
+  useDisclosure,
 } from "@chakra-ui/react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
-import { updateEntryInDbThunk } from "../../store/thunks/updateEntryInDbThunk"
+import { updateUserEntriesThunk } from "../../store/thunks/updateUserEntriesThunk"
 import { useFormik } from "formik"
 import * as R from "ramda"
 import * as yup from "yup"
 import { useResetFormOnClose } from "../../hooks/useResetFormOnClose/useResetFormOnClose"
+import { AlertYesNo } from "../../components/UI/Alert/AlertYesNo"
 
 const entrySchema = yup.object().shape({
   date: yup
@@ -24,12 +28,13 @@ const entrySchema = yup.object().shape({
   value: yup.number().required().positive(),
   payer: yup.string().required(),
   category: yup.string().required(),
+  tags: yup.array(),
   more: yup.string(),
 })
 
 const initialValues = { tags: [], more: "" }
 
-export const DrawerForm = ({
+export const UpdateEntryDrawerForm = ({
   isOpen,
   onClose,
   placement,
@@ -40,6 +45,12 @@ export const DrawerForm = ({
   const entry = useSelector(state => state.data.entries[pickedEntry])
   const { fields } = useSelector(state => state.data, shallowEqual)
   const dispatch = useDispatch()
+  const portalRef = useRef()
+  const {
+    isOpen: isOpenAlert,
+    onOpen: onOpenAlert,
+    onClose: onCloseAlert,
+  } = useDisclosure()
 
   const [addedFields, setAddedFields] = useState({
     payer: [],
@@ -52,12 +63,14 @@ export const DrawerForm = ({
     validationSchema: entrySchema,
     onSubmit: async values => {
       await dispatch(
-        updateEntryInDbThunk({
+        updateUserEntriesThunk({
           entryId: entry.id,
           entry: values,
+          addedFields,
         })
       )
       formik.setSubmitting(false)
+      onClose()
     },
   })
 
@@ -88,7 +101,6 @@ export const DrawerForm = ({
       setAddedFields({
         payer: [],
         category: [],
-        tags: [],
       })
     }
   }, [isOpen])
@@ -124,14 +136,26 @@ export const DrawerForm = ({
           </Button>
           <Button
             colorScheme='green'
-            type='submit'
-            form='entry-form'
+            onClick={onOpenAlert}
             isLoading={formik.isSubmitting}
           >
             Submit
           </Button>
         </DrawerFooter>
       </DrawerContent>
+      <Portal>
+        <AlertYesNo
+          isOpen={isOpenAlert}
+          onClose={onCloseAlert}
+          header='Update Entry'
+          body='Are you sure you want to update this entry?'
+          onYes={() => {
+            onCloseAlert()
+            formik.handleSubmit()
+          }}
+        />
+      </Portal>
+      <Box ref={portalRef}></Box>
     </Drawer>
   )
 }

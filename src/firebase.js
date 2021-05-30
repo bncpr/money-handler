@@ -40,3 +40,6 @@ export const removeEntry = (uid, entryId) =>
 
 export const updateEntry = (uid, entryId, entry) =>
   update(ref(db, `users/${uid}/entries/${entryId}`), entry)
+
+export const updateUserFields = (uid, updates) =>
+  update(ref(db, `users/${uid}`), updates)

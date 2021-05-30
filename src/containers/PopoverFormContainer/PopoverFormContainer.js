@@ -9,11 +9,10 @@ import {
   PopoverTrigger,
 } from "@chakra-ui/popover"
 import { useFormik } from "formik"
-import { useContext, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { capitalizeFirstChar } from "../../utility/utility"
 import * as Yup from "yup"
 import { useResetFormOnClose } from "../../hooks/useResetFormOnClose/useResetFormOnClose"
-import { FieldsContext } from "../DrawerForm/DrawerForm"
 import { Portal } from "@chakra-ui/portal"
 
 export const PopoverFormContainer = ({

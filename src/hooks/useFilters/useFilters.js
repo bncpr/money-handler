@@ -16,13 +16,19 @@ const getInitFilterables = (categories, payers, years) => ({
 const didNotInit = (filteredStack, surfaceData, entries) =>
   R.isEmpty(filteredStack) && R.isEmpty(surfaceData) && !R.isEmpty(entries)
 
-export const useFilters = entries => {
+export const useFilters = () => {
+  const entriesObj = useSelector(state => state.data.entries, shallowEqual)
   const {
     year: years,
     category: categories,
     payer: payers,
   } = useSelector(state => state.data.fields, shallowEqual)
-  
+
+  const [entries, setEntries] = useState([])
+  useEffect(() => {
+    setEntries(R.values(entriesObj))
+  }, [entriesObj])
+
   const [surfaceData, setSurfaceData] = useState([])
   const [filteredStack, setFilteredStack] = useState([])
   const [filters, setFilters] = useState({
@@ -49,6 +55,8 @@ export const useFilters = entries => {
         { key: "year", value: initFilter, entries: initSurfaceData },
       ]
       setFilteredStack(initStack)
+    } else {
+      const updatedS
     }
   }, [filteredStack, surfaceData, entries])
 

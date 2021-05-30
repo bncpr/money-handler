@@ -8,24 +8,18 @@ import {
   Button,
   AlertDialogOverlay,
 } from "@chakra-ui/react"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 
-export const AlertYesNo = ({
-  onClose,
-  isOpen,
-  deleteEntry,
-  header,
-  body,
-}) => {
+export const AlertYesNo = ({ onClose, isOpen, onYes, header, body }) => {
   const focusRef = useRef()
-  const [isLoading, setIsLoading] = useState(false)
   return (
     <AlertDialog
       leastDestructiveRef={focusRef}
       onClose={onClose}
       isOpen={isOpen}
       isCentered
-      isLazy>
+      isLazy
+    >
       <AlertDialogOverlay />
       <AlertDialogContent>
         <AlertDialogHeader fontSize='lg' fontWeight='bold'>
@@ -37,14 +31,17 @@ export const AlertYesNo = ({
           <Button
             ref={focusRef}
             onClick={onClose}
-            _focus={{ boxShadow: "outline" }}>
+            _focus={{ boxShadow: "outline" }}
+          >
             No
           </Button>
           <Button
             colorScheme='red'
             ml={3}
-            onClick={() => deleteEntry(setIsLoading)}
-            isLoading={isLoading}>
+            onClick={() => {
+              onYes()
+            }}
+          >
             Yes
           </Button>
         </AlertDialogFooter>

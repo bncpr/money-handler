@@ -13,10 +13,10 @@ import { TagCloseButton, TagLabel } from "@chakra-ui/tag"
 
 export const RadioWithAddOption = ({
   field: { name, value },
+  radioComp: RadioComp,
   form,
   options,
   addedFields,
-  radioComp: RadioComp,
   portalRef,
   onAddField,
   onRemoveAddedField,
@@ -27,25 +27,22 @@ export const RadioWithAddOption = ({
     onChange: val => form.setFieldValue(name, val),
   })
   const group = getRootProps()
+  const onRemove = val => () => onRemoveAddedField(name, val)
+
   return (
     <FormControl isInvalid={form.errors[name] && form.touched[name]}>
       <FormLabel mt={2}>{capitalizeFirstChar(name)}</FormLabel>
       <Wrap {...group}>
         {options.map(val => {
           const radio = getRadioProps({ value: val })
-          return (
-            <RadioComp key={val} {...radio}>
-              <TagLabel>{capitalizeFirstChar(val)}</TagLabel>
-            </RadioComp>
-          )
+          return <RadioComp key={val} label={val} {...radio} />
         })}
         {addedFields.map(val => {
           const radio = getRadioProps({ value: val })
           return (
-            <RadioComp key={val} {...radio}>
-              <TagLabel>{capitalizeFirstChar(val)}</TagLabel>
+            <RadioComp key={val} label={val} {...radio}>
               <TagCloseButton
-                onClick={() => onRemoveAddedField(name, val)}
+                onClick={onRemove(val)}
                 _focus={{ boxShadow: "none" }}
               />
             </RadioComp>

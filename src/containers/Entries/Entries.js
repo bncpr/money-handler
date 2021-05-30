@@ -9,19 +9,12 @@ import { useDispatch } from "react-redux"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
 import { DeleteEntryAlert } from "../../components/UI/Alert/DeleteEntryAlert"
 import { Filters } from "../../components/Filters/Filters"
-import { DrawerForm } from "../DrawerForm/DrawerForm"
 import { TableRow } from "../../components/UI/Table/TableRow"
 import { TableHead } from "../../components/UI/Table/TableHead"
 import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
+import { UpdateEntryDrawerForm } from "../UpdateEntryDrawerForm/UpdateEntryDrawerForm"
 
-const headers = [
-  "Date",
-  "Value",
-  "Payer",
-  "Category",
-  "Tags",
-  "more",
-]
+const headers = ["Date", "Value", "Payer", "Category", "Tags", "more"]
 
 export const Entries = () => {
   const entries = useEntries()
@@ -49,12 +42,10 @@ export const Entries = () => {
   const onOpenEdit = () => setIsOpen("edit")
   const onOpenDel = () => setIsOpen("del")
 
-  const deleteEntry = async setIsLoading => {
-    setIsLoading(true)
-    await dispatch(removeEntryFromDbThunk(pickedEntry))
+  const deleteEntry = async () => {
     removeEntryFromStack(pickedEntry)
+    dispatch(removeEntryFromDbThunk(pickedEntry))
     onClose()
-    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -112,9 +103,9 @@ export const Entries = () => {
         <DeleteEntryAlert
           isOpen={isOpen === "del"}
           onClose={onClose}
-          deleteEntry={deleteEntry}
+          onYes={deleteEntry}
         />
-        <DrawerForm
+        <UpdateEntryDrawerForm
           isOpen={isOpen === "edit"}
           onClose={onClose}
           placement='left'

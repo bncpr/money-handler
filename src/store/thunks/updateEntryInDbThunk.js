@@ -1,5 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
-import { updateEntry as updateEntryInDb } from "../../firebase"
+import {
+  updateEntry as updateEntryInDb,
+} from "../../firebase"
 import { updateEntry } from "../slices/dataSlice"
 
 export const updateEntryInDbThunk = createAsyncThunk(
