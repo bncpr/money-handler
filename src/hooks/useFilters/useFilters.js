@@ -55,8 +55,6 @@ export const useFilters = () => {
         { key: "year", value: initFilter, entries: initSurfaceData },
       ]
       setFilteredStack(initStack)
-    } else {
-      const updatedS
     }
   }, [filteredStack, surfaceData, entries])
 
