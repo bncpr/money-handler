@@ -74,7 +74,12 @@ export const InputTagsCheckbox = ({ field, form }) => {
           }}
           onKeyPress={e => e.key === "Enter" && handleSubmit()}
         />
-        <Button onClick={handleSubmit} variant='solid' colorScheme='green'>
+        <Button
+          onClick={handleSubmit}
+          isDisabled={input === ""}
+          variant='solid'
+          colorScheme='green'
+        >
           ADD
         </Button>
       </Wrap>
