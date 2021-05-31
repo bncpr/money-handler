@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useEntries } from "../../hooks/useEntries/useEntries"
 import { useFilters } from "../../hooks/useFilters/useFilters"
 import { Box, Stack } from "@chakra-ui/layout"
-import { Table, Tbody, Portal } from "@chakra-ui/react"
+import { Table, Tbody, Portal, Button } from "@chakra-ui/react"
 import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
 import { usePagination } from "../../hooks/usePagination/usePagination"
 import { useDispatch } from "react-redux"
@@ -12,7 +12,9 @@ import { Filters } from "../../components/Filters/Filters"
 import { TableRow } from "../../components/UI/Table/TableRow"
 import { TableHead } from "../../components/UI/Table/TableHead"
 import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
-import { UpdateEntryDrawerForm } from "../UpdateEntryDrawerForm/UpdateEntryDrawerForm"
+import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
+import { AddIcon } from "@chakra-ui/icons"
+import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
 
 const headers = ["Date", "Value", "Payer", "Category", "Tags", "more"]
 
@@ -41,10 +43,11 @@ export const Entries = () => {
   const onClose = () => setIsOpen()
   const onOpenEdit = () => setIsOpen("edit")
   const onOpenDel = () => setIsOpen("del")
+  const onOpenNew = () => setIsOpen("new")
 
   const deleteEntry = async () => {
+    await dispatch(removeEntryFromDbThunk(pickedEntry))
     removeEntryFromStack(pickedEntry)
-    dispatch(removeEntryFromDbThunk(pickedEntry))
     onClose()
   }
 
@@ -59,6 +62,13 @@ export const Entries = () => {
         filterables={filterables}
         setFilter={setFilter}
       />
+      <Button
+        onClick={onOpenNew}
+        leftIcon={<AddIcon />}
+        colorScheme='purple'
+      >
+        Add Entry
+      </Button>
 
       <Box
         width='max'
@@ -111,6 +121,13 @@ export const Entries = () => {
           placement='left'
           header='Edit Entry'
           pickedEntry={pickedEntry}
+          component={EntryForm}
+        />
+        <NewEntryDrawerForm
+          isOpen={isOpen === "new"}
+          onClose={onClose}
+          placement='right'
+          header='Create New Entry'
           component={EntryForm}
         />
       </Portal>

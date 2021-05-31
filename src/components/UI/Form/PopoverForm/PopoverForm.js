@@ -4,7 +4,6 @@ import { Input } from "@chakra-ui/input"
 import { Box, Wrap } from "@chakra-ui/layout"
 import { Portal } from "@chakra-ui/portal"
 import { Form, Field, FormikProvider } from "formik"
-import { includes } from "ramda"
 import { useRef } from "react"
 
 const preventDefAndSubmitOnEnt = handleSubmit => e => {

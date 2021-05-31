@@ -5,8 +5,8 @@ import { removeEntry } from "../slices/dataSlice"
 export const removeEntryFromDbThunk = createAsyncThunk(
   "data/removeEntryFromDb",
   async (entryId, { dispatch, getState, rejectWithValue }) => {
+    const uid = getState().authentication.uid
     try {
-      const uid = getState().authentication.uid
       await removeEntryFB(uid, entryId)
       dispatch(removeEntry(entryId))
     } catch (error) {
@@ -14,5 +14,3 @@ export const removeEntryFromDbThunk = createAsyncThunk(
     }
   }
 )
-
-

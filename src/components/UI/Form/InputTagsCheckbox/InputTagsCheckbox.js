@@ -32,6 +32,8 @@ export const InputTagsCheckbox = ({ field, form }) => {
       R.any(R.gt(R.__, 1), R.values(R.countBy(R.identity, cleaned)))
     ) {
       return "no duplicates"
+    } else if (cleaned.some(str => str.length > 15)) {
+      return "tag must be shorter than 15 characters"
     }
   }
   const handleSubmit = () => {
@@ -46,7 +48,7 @@ export const InputTagsCheckbox = ({ field, form }) => {
   }
 
   return (
-    <FormControl id='tags' isInvalid={error}>
+    <FormControl id='tags' isInvalid={error || form.errors.tags}>
       <FormLabel htmlFor='tags' mt={3}>
         Tags
       </FormLabel>
@@ -83,7 +85,7 @@ export const InputTagsCheckbox = ({ field, form }) => {
           ADD
         </Button>
       </Wrap>
-      <FormErrorMessage>{error}</FormErrorMessage>
+      <FormErrorMessage>{error || form.errors.tags}</FormErrorMessage>
       <FormHelperText>comma separated tags</FormHelperText>
     </FormControl>
   )

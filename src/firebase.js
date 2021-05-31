@@ -4,7 +4,14 @@ import {
   getAuth,
   signInWithEmailAndPassword,
 } from "firebase/auth"
-import { get, getDatabase, ref, remove, update } from "firebase/database"
+import {
+  get,
+  getDatabase,
+  push,
+  ref,
+  remove,
+  update,
+} from "firebase/database"
 
 const firebaseConfig = {
   apiKey: "AIzaSyAGtYJN9x3SesBvFrYejifUoS5XsFda0LY",
@@ -43,3 +50,5 @@ export const updateEntry = (uid, entryId, entry) =>
 
 export const updateUserFields = (uid, updates) =>
   update(ref(db, `users/${uid}`), updates)
+
+export const pushNewEntry = uid => push(ref(db, `users/${uid}/entries`))

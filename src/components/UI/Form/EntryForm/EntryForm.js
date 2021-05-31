@@ -1,7 +1,4 @@
-import {
-  Box,
-  Wrap,
-} from "@chakra-ui/react"
+import { Box, Wrap } from "@chakra-ui/react"
 import { Field, Form, FormikProvider } from "formik"
 import { NumberInputContext } from "../NumberInputContext/NumberInputContext"
 import { InputContext } from "../InputContext/InputContext"
@@ -10,7 +7,13 @@ import { RadioCard } from "../RadioCard/RadioCard"
 import { useRef } from "react"
 import { InputTagsCheckbox } from "../InputTagsCheckbox/InputTagsCheckbox"
 
-export const EntryForm = ({ formik, fields, addedFields, ...rest }) => {
+export const EntryForm = ({
+  formik,
+  fields,
+  addedFields,
+  initialFocusRef,
+  ...rest
+}) => {
   const portalRef = useRef()
   return (
     <FormikProvider value={formik}>
@@ -24,6 +27,7 @@ export const EntryForm = ({ formik, fields, addedFields, ...rest }) => {
             name='date'
             type='date'
             label='Date'
+            initialFocusRef={initialFocusRef}
           />
           <Field
             component={NumberInputContext}
@@ -56,5 +60,3 @@ export const EntryForm = ({ formik, fields, addedFields, ...rest }) => {
     </FormikProvider>
   )
 }
-
-

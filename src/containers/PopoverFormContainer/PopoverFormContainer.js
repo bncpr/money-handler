@@ -36,6 +36,7 @@ export const PopoverFormContainer = ({
       [name]: Yup.string()
         .required()
         .max(20)
+        .lowercase()
         .notOneOf(options.concat(addedFields), `${name} already in use`)
         .matches(/^\S*$/, "no whitespace"),
     }),
