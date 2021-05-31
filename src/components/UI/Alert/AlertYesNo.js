@@ -35,13 +35,7 @@ export const AlertYesNo = ({ onClose, isOpen, onYes, header, body }) => {
           >
             No
           </Button>
-          <Button
-            colorScheme='red'
-            ml={3}
-            onClick={() => {
-              onYes()
-            }}
-          >
+          <Button colorScheme='red' ml={3} onClick={onYes}>
             Yes
           </Button>
         </AlertDialogFooter>

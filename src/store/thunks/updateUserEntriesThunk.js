@@ -16,10 +16,10 @@ export const updateUserEntriesThunk = createAsyncThunk(
       "/fields": updatedFields,
     }
     const uid = getState().authentication.uid
-    dispatch(updateEntry({ entryId, entry }))
-    dispatch(updateFields(updatedFields))
     try {
       await updateUserFields(uid, updates)
+      dispatch(updateEntry({ entryId, entry }))
+      dispatch(updateFields(updatedFields))
     } catch (error) {
       return rejectWithValue({ error: error.message })
     }

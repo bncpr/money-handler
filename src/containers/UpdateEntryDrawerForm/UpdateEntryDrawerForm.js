@@ -62,6 +62,7 @@ export const UpdateEntryDrawerForm = ({
     initialValues,
     validationSchema: entrySchema,
     onSubmit: async values => {
+      onCloseAlert()
       await dispatch(
         updateUserEntriesThunk({
           entryId: entry.id,
@@ -149,10 +150,7 @@ export const UpdateEntryDrawerForm = ({
           onClose={onCloseAlert}
           header='Update Entry'
           body='Are you sure you want to update this entry?'
-          onYes={() => {
-            onCloseAlert()
-            formik.handleSubmit()
-          }}
+          onYes={formik.handleSubmit}
         />
       </Portal>
       <Box ref={portalRef}></Box>

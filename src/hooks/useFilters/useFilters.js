@@ -55,8 +55,19 @@ export const useFilters = () => {
         { key: "year", value: initFilter, entries: initSurfaceData },
       ]
       setFilteredStack(initStack)
+    } else {
+      const newFilteredStack = [{ entries }]
+      filteredStack.slice(1).forEach(({ key, value }) => {
+        const entries = R.last(newFilteredStack).entries
+        newFilteredStack.push({
+          key,
+          value,
+          entries: entries.filter(R.propEq(key, value)),
+        })
+      })
+      setFilteredStack(newFilteredStack)
     }
-  }, [filteredStack, surfaceData, entries])
+  }, [entries])
 
   useEffect(() => {
     setSurfaceData(R.pipe(R.last, R.prop("entries"))(filteredStack) || [])
