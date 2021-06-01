@@ -62,6 +62,7 @@ export const Entries = () => {
         filterables={filterables}
         setFilter={setFilter}
       />
+      
       <Button
         onClick={onOpenNew}
         leftIcon={<AddIcon />}
@@ -109,6 +110,7 @@ export const Entries = () => {
         changePage={onChangePage}
         changePageSize={onChangePageSize}
       />
+
       <Portal>
         <DeleteEntryAlert
           isOpen={isOpen === "del"}
