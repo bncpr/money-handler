@@ -1,5 +1,5 @@
-import * as R from "ramda"
 import { Stack } from "@chakra-ui/layout"
+import * as R from "ramda"
 import { SelectMenu } from "../../components/UI/Menu/SelectMenu"
 import { capitalizeFirstChar } from "../../utility/utility"
 
@@ -11,7 +11,7 @@ const selectStyle = {
   textAlign: "left",
   colorScheme: "pink",
 }
-
+//TODO: refactor
 export const Filters = ({ filters, filterables, setFilter }) => {
   return (
     <Stack>
