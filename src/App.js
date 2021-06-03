@@ -1,18 +1,18 @@
-import { useEffect } from "react"
-import { Route, Switch } from "react-router"
-import { useDispatch, useSelector } from "react-redux"
-
-import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { onAuthStateChanged } from "@firebase/auth"
-import { auth, getUserEntries } from "./firebase"
-
-import { Layout } from "./components/Layout/Layout"
-import { Login } from "./containers/Login/Login"
-import { Dashboard } from "./containers/Dashboard/Dashboard"
-import { ErrorModal } from "./components/UI/Modal/ErrorModal/ErrorModal"
-import { Profile } from "./components/Profile/Profile"
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Route, Switch } from "react-router"
 import { Home } from "./components/Home/Home"
+import { Layout } from "./components/Layout/Layout"
+import { Profile } from "./components/Profile/Profile"
+import { ErrorModal } from "./components/UI/Modal/ErrorModal/ErrorModal"
+import { Dashboard } from "./containers/Dashboard/Dashboard"
 import { Entries } from "./containers/Entries/Entries"
+import { LoginForm } from "./containers/Login/LoginForm"
+import { auth } from "./firebase"
+import { signIn, signOut } from "./store/slices/authenticationSlice"
+
+
 
 export const App = () => {
   const dispatch = useDispatch()
@@ -21,7 +21,6 @@ export const App = () => {
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       if (user) {
-        // getUserEntries(user.uid)
         dispatch(signIn({ uid: user.uid, email: user.email }))
       } else {
         dispatch(signOut())
@@ -36,7 +35,7 @@ export const App = () => {
         <Route path='/dashboard' component={Dashboard} />
         <Route path='/profile' component={Profile} />
         <Route path='/entries' component={Entries} />
-        <Route path='/login' component={Login} />
+        <Route path='/login' component={LoginForm} />
         <Route path='/' exact component={Home} />
       </Switch>
     </Layout>

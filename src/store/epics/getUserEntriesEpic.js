@@ -2,15 +2,15 @@ import { ifElse, isEmpty } from "ramda"
 import { ofType } from "redux-observable"
 import { from, of } from "rxjs"
 import { catchError, map, startWith, switchMap } from "rxjs/operators"
-
 import { getUserEntries } from "../../firebase"
-
 import { signIn } from "../slices/authenticationSlice"
 import {
   getUserEntriesFulfilled,
-  getUserEntriesNoEntries,
+  getUserEntriesNoEntries
 } from "../slices/dataSlice"
 import { showError } from "../slices/errorSlice"
+
+
 
 export const getUserEntriesEpic = action$ =>
   action$.pipe(
