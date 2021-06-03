@@ -1,37 +1,50 @@
-import { useEffect, useState } from "react"
-import { useEntries } from "../../hooks/useEntries/useEntries"
-import { useFilters } from "../../hooks/useFilters/useFilters"
-import { Box, Stack } from "@chakra-ui/layout"
-import { Table, Tbody, Portal, Button } from "@chakra-ui/react"
-import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
-import { usePagination } from "../../hooks/usePagination/usePagination"
-import { useDispatch } from "react-redux"
-import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
-import { DeleteEntryAlert } from "../../components/UI/Alert/DeleteEntryAlert"
-import { Filters } from "../../components/Filters/Filters"
-import { TableRow } from "../../components/UI/Table/TableRow"
-import { TableHead } from "../../components/UI/Table/TableHead"
-import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
-import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
 import { AddIcon } from "@chakra-ui/icons"
+import { Box, Stack } from "@chakra-ui/layout"
+import { Button, Portal, Table, Tbody } from "@chakra-ui/react"
+import { useEffect, useState } from "react"
+import { shallowEqual, useDispatch, useSelector } from "react-redux"
+import { Filters } from "../../components/Filters/Filters"
+import { DeleteEntryAlert } from "../../components/UI/Alert/DeleteEntryAlert"
+import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
+import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
+import { TableHead } from "../../components/UI/Table/TableHead"
+import { TableRow } from "../../components/UI/Table/TableRow"
+import { useFilters } from "../../hooks/useFilters/useFilters"
+import { usePagination } from "../../hooks/usePagination/usePagination"
+import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
 import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
+import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
 
 const headers = ["Date", "Value", "Payer", "Category", "Tags", "more"]
 
 export const Entries = () => {
-  const entries = useEntries()
   const dispatch = useDispatch()
+  const { entries, groupedTree, fields } = useSelector(
+    state => state.groupedEntries,
+    shallowEqual
+  )
+  const {
+    setFilter,
+    counts,
+    filteredEntries: surfaceData,
+    filters,
+  } = useFilters({
+    entries,
+    groupedTree,
+  })
 
   const {
-    surfaceData,
-    setFilter,
-    filters,
-    filterables,
-    removeEntryFromStack,
-  } = useFilters(entries)
+    pageSize,
+    page,
+    pagesNum,
+    onChangePage,
+    onChangePageSize,
+    resetPage,
+  } = usePagination(surfaceData.length, 20, filters)
 
-  const { pageSize, page, pagesNum, onChangePage, onChangePageSize } =
-    usePagination(surfaceData.length, 20, filters)
+  useEffect(() => {
+    resetPage()
+  }, [filters])
 
   const [pickedEntry, setPickedEntry] = useState()
 
@@ -47,22 +60,22 @@ export const Entries = () => {
 
   const deleteEntry = async () => {
     await dispatch(removeEntryFromDbThunk(pickedEntry))
-    removeEntryFromStack(pickedEntry)
     onClose()
   }
 
   useEffect(() => {
     // console.log(surfaceData)
-  }, [surfaceData, filters, filterables, page, pagesNum, pageSize])
+  }, [surfaceData, filters, page, pagesNum, pageSize])
 
   return (
     <Stack direction={["column", "row"]} pt={4} justify='center'>
       <Filters
         filters={filters}
-        filterables={filterables}
+        fields={fields}
+        counts={counts}
         setFilter={setFilter}
       />
-      
+
       <Button
         onClick={onOpenNew}
         leftIcon={<AddIcon />}
@@ -123,6 +136,7 @@ export const Entries = () => {
           placement='left'
           header='Edit Entry'
           pickedEntry={pickedEntry}
+          fields={fields}
           component={EntryForm}
         />
         <NewEntryDrawerForm
@@ -130,6 +144,7 @@ export const Entries = () => {
           onClose={onClose}
           placement='right'
           header='Create New Entry'
+          fields={fields}
           component={EntryForm}
         />
       </Portal>

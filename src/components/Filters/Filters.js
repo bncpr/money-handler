@@ -11,20 +11,59 @@ const selectStyle = {
   textAlign: "left",
   colorScheme: "pink",
 }
+const monthsArray = [
+  ["", "No Filter"],
+  ["01", "January"],
+  ["02", "February"],
+  ["03", "March"],
+  ["04", "April"],
+  ["05", "May"],
+  ["06", "June"],
+  ["07", "July"],
+  ["08", "August"],
+  ["09", "September"],
+  ["10", "October"],
+  ["11", "November"],
+  ["12", "December"],
+]
+
 //TODO: refactor
-export const Filters = ({ filters, filterables, setFilter }) => {
+export const Filters = ({ fields, filters, counts, setFilter }) => {
   return (
     <Stack>
-      {R.keys(filters).map(filter => (
-        <SelectMenu
-          key={filter}
-          style={selectStyle}
-          buttonVal={filters[filter]}
-          buttonDefault={capitalizeFirstChar(filter)}
-          array={getTuples(filterables[filter].values)}
-          onChange={setFilter(filter)}
-        />
-      ))}
+      <SelectMenu
+        buttonVal={filters.year}
+        buttonDefault='Year'
+        array={getTuples(fields.year)}
+        onChange={setFilter("year")}
+        counts={counts.year || {}}
+        style={selectStyle}
+      />
+      <SelectMenu
+        buttonVal={filters.month}
+        buttonDefault='Month'
+        array={monthsArray}
+        onChange={setFilter("month")}
+        style={selectStyle}
+        counts={counts.month || {}}
+        isDisabled={filters.year === ""}
+      />
+      <SelectMenu
+        buttonVal={filters.payer}
+        buttonDefault='Payer'
+        array={getTuples(fields.payer)}
+        onChange={setFilter("payer")}
+        counts={counts.payer || {}}
+        style={selectStyle}
+      />
+      <SelectMenu
+        buttonVal={filters.category}
+        buttonDefault='Category'
+        array={getTuples(fields.category)}
+        onChange={setFilter("category")}
+        counts={counts.category || {}}
+        style={selectStyle}
+      />
     </Stack>
   )
 }

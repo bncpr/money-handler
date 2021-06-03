@@ -36,9 +36,9 @@ export const NewEntryDrawerForm = ({
   onClose,
   placement,
   header,
+  fields,
   component: Component,
 }) => {
-  const { fields } = useSelector(state => state.data, shallowEqual)
   const dispatch = useDispatch()
   const initialFocusRef = useRef()
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import * as R from "ramda"
 
-export const usePagination = (length, size, filters) => {
+export const usePagination = (length, size) => {
   const [pageSize, setPageSize] = useState(size)
   const [page, setPage] = useState(0)
   const [pagesNum, setPagesNum] = useState(0)
@@ -9,10 +9,6 @@ export const usePagination = (length, size, filters) => {
   useEffect(() => {
     setPagesNum(Math.floor(length / pageSize))
   }, [length, pageSize])
-
-  useEffect(() => {
-    setPage(0)
-  }, [filters])
 
   const onChangePage = n => () => {
     setPage(R.clamp(0, pagesNum, page + n))
@@ -23,11 +19,14 @@ export const usePagination = (length, size, filters) => {
     setPageSize(+value)
   }
 
+  const resetPage = () => setPage(0)
+
   return {
     pageSize,
     page,
     pagesNum,
     onChangePage,
     onChangePageSize,
+    resetPage
   }
 }

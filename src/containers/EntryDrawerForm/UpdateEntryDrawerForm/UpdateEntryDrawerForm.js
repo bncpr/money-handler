@@ -29,10 +29,10 @@ export const UpdateEntryDrawerForm = ({
   placement,
   header,
   pickedEntry,
+  fields,
   component: Component,
 }) => {
   const entry = useSelector(state => state.data.entries[pickedEntry])
-  const { fields } = useSelector(state => state.data, shallowEqual)
   const dispatch = useDispatch()
 
   const {
