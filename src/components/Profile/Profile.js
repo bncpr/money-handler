@@ -1,10 +1,13 @@
-import { useDispatch, useSelector } from "react-redux"
+import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { Redirect } from "react-router"
 import styled from "styled-components"
 import { auth } from "../../firebase"
 
 export const Profile = () => {
-  const { uid, email, signedIn } = useSelector(state => state.authentication)
+  const { uid, email, signedIn } = useSelector(
+    state => state.authentication,
+    shallowEqual
+  )
   const dispatch = useDispatch()
   console.log(uid)
   return (
