@@ -11,12 +11,14 @@ export const FormControlContext = ({
   children,
   label,
   helperText,
+  ...rest
 }) => {
   return (
     <FormControl
       id={name}
       isInvalid={form.errors[name] && form.touched[name]}
       width='max'
+      {...rest}
     >
       <FormLabel htmlFor={name} mt={3}>
         {label}

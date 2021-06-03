@@ -1,5 +1,6 @@
 import { createAction, createSlice } from "@reduxjs/toolkit"
 import * as R from "ramda"
+import { signOut } from "./authenticationSlice"
 
 export const getUserEntriesFulfilled = createAction(
   "data/getUserEntries/fulfilled"
@@ -8,17 +9,19 @@ export const getUserEntriesNoEntries = createAction(
   "data/getUserEntries/noEntries"
 )
 
+const initialState = {
+  entries: {},
+  fields: {
+    category: [],
+    payer: [],
+    year: [],
+    tags: [],
+  },
+}
+
 const dataSlice = createSlice({
   name: "data",
-  initialState: {
-    entries: {},
-    fields: {
-      category: [],
-      payer: [],
-      year: [],
-      tags: [],
-    },
-  },
+  initialState,
   reducers: {
     removeEntry(state, { payload }) {
       state.entries = R.omit([payload], state.entries)
@@ -32,8 +35,9 @@ const dataSlice = createSlice({
   },
   extraReducers: {
     [getUserEntriesFulfilled]: (state, { payload }) => {
-      return Object.assign(state, payload)
+      return R.mergeDeepRight(state, payload)
     },
+    [signOut]: state => initialState,
   },
 })
 
