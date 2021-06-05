@@ -107,7 +107,6 @@ export const Entries = ({ isOpenSide, onOpenSide, top }) => {
       <Flex
         direction='column'
         align='center'
-        ml={isOpenSide ? "320px" : "0"}
         pt={6}
       >
         <Box width='max' shadow='md' p={6} borderRadius='lg'>
