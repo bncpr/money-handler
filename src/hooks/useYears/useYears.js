@@ -1,18 +1,12 @@
+import { useState } from "react"
 import { shallowEqual, useSelector } from "react-redux"
-import { useEffect, useState } from "react"
-import * as R from "ramda"
 
-export const useYears = (withInitYear = true) => {
+export const useYears = () => {
   const { year: years } = useSelector(
-    state => state.data.fields,
-    shallowEqual
+    state => state.groupedEntries.fields,
+    shallowEqual,
   )
   const [year, setYear] = useState("")
 
-  useEffect(() => {
-    if (R.isEmpty(year) && !R.isEmpty(years) && withInitYear) {
-      setYear(years.reduce(R.max, ""))
-    }
-  }, [year, years])
   return { years, year, setYear }
 }

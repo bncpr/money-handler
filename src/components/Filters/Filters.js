@@ -1,15 +1,14 @@
 import { Stack } from "@chakra-ui/layout"
 import * as R from "ramda"
 import { SelectMenu } from "../../components/UI/Menu/SelectMenu"
-import { capitalizeFirstChar } from "../../utility/utility"
+import { sortDescendList, sortAscendList } from "../../utility/utility"
 
-const getTuples = array =>
-  R.prepend(["", "No Filter"], R.zip(array, array))
+const getTuples = array => R.prepend(["", "No Filter"], R.zip(array, array))
 
 const selectStyle = {
-  variant: "ghost",
+  variant: "solid",
   textAlign: "left",
-  colorScheme: "pink",
+  px: 6,
 }
 const monthsArray = [
   ["", "No Filter"],
@@ -27,14 +26,21 @@ const monthsArray = [
   ["12", "December"],
 ]
 
-//TODO: refactor
-export const Filters = ({ fields, filters, counts, setFilter }) => {
+export const Filters = ({
+  children,
+  fields,
+  filters,
+  counts,
+  setFilter,
+  ...rest
+}) => {
   return (
-    <Stack>
+    <Stack {...rest}>
+      {children}
       <SelectMenu
         buttonVal={filters.year}
         buttonDefault='Year'
-        array={getTuples(fields.year)}
+        array={getTuples(sortDescendList(fields.year))}
         onChange={setFilter("year")}
         counts={counts.year || {}}
         style={selectStyle}
@@ -51,7 +57,7 @@ export const Filters = ({ fields, filters, counts, setFilter }) => {
       <SelectMenu
         buttonVal={filters.payer}
         buttonDefault='Payer'
-        array={getTuples(fields.payer)}
+        array={getTuples(sortAscendList(fields.payer))}
         onChange={setFilter("payer")}
         counts={counts.payer || {}}
         style={selectStyle}
@@ -59,7 +65,7 @@ export const Filters = ({ fields, filters, counts, setFilter }) => {
       <SelectMenu
         buttonVal={filters.category}
         buttonDefault='Category'
-        array={getTuples(fields.category)}
+        array={getTuples(sortAscendList(fields.category))}
         onChange={setFilter("category")}
         counts={counts.category || {}}
         style={selectStyle}

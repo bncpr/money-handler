@@ -4,13 +4,13 @@ import { Toolbar } from "../Navigation/Toolbar/Toolbar"
 
 export const Layout = ({ children }) => {
   return (
-    <>
+    <Box>
       <Toolbar>
         <NavigationItems />
       </Toolbar>
-      <Box as='main' pt='45px'>
+      <Box as='main' pt='72px'>
         {children}
       </Box>
-    </>
+    </Box>
   )
 }

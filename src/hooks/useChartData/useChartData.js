@@ -8,7 +8,7 @@ const getEntries = (data, year) =>
     R.prop(year),
     R.prop("months"),
     R.values,
-    R.chain(R.pipe(R.prop("entries"), R.values))
+    R.chain(R.pipe(R.prop("entries"), R.values)),
   )(data)
 
 export const useChartData = ({
@@ -36,7 +36,7 @@ export const useChartData = ({
       series,
       entries,
       innerWidth,
-      innerHeight
+      innerHeight,
     )
     setState({ chartData, xScale, yScale })
     if (isLoading && chartData) {

@@ -1,11 +1,6 @@
-import { TabsBar } from "../../components/UI/Tabs/TabsBar/TabsBar"
-import { BarChart } from "../../components/DataViz/BarChart/BarChart"
-import { useEntries } from "../../hooks/useEntries/useEntries"
-import { useYears } from "../../hooks/useYears/useYears"
-import { useChartControls } from "../../hooks/useChartControls/useChartControls"
-import { useLoading } from "../../hooks/useLoading/useLoading"
+import { Button } from "@chakra-ui/button"
+import { ChevronDownIcon } from "@chakra-ui/icons"
 import { Flex, HStack } from "@chakra-ui/layout"
-import { Switch } from "@chakra-ui/switch"
 import {
   Menu,
   MenuButton,
@@ -13,22 +8,31 @@ import {
   MenuList,
   MenuOptionGroup,
 } from "@chakra-ui/menu"
-import { ChevronDownIcon } from "@chakra-ui/icons"
-import { Button } from "@chakra-ui/button"
+import { Switch } from "@chakra-ui/switch"
+import { shallowEqual, useSelector } from "react-redux"
+import { BarChart } from "../../components/DataViz/BarChart/BarChart"
+import { TabsBar } from "../../components/UI/Tabs/TabsBar/TabsBar"
+import { useChartControls } from "../../hooks/useChartControls/useChartControls"
+import { useInitialPick } from "../../hooks/useInitialPick/useInitialPick"
+import { useLoading } from "../../hooks/useLoading/useLoading"
+import { useYears } from "../../hooks/useYears/useYears"
 import { capitalizeFirstChar } from "../../utility/utility"
 
 export const Dashboard = () => {
-  const data = useEntries()
-  const { isLoading, turnLoadingOffHandler, withActivateLoading } =
-    useLoading()
+  const data = useSelector(state => state.groupedEntries.entries, shallowEqual)
+
   const { years, year, setYear } = useYears()
+  
+  useInitialPick(years, setYear)
+
+  const { isLoading, turnLoadingOffHandler, withActivateLoading } = useLoading()
+
   const { showBy, series, chartType, changeShowBy, changeOrToggleSeries } =
     useChartControls("month", false, "bar")
 
   const onChangeShowByHandler = withActivateLoading(changeShowBy)
-  const onChangeOrToggleSeriesHandler = withActivateLoading(
-    changeOrToggleSeries
-  )
+  const onChangeOrToggleSeriesHandler =
+    withActivateLoading(changeOrToggleSeries)
 
   return (
     <Flex direction='column' width='min' margin='auto'>
@@ -65,14 +69,16 @@ export const Dashboard = () => {
             variant='unstyled'
             rightIcon={<ChevronDownIcon />}
             padding='2'
-            _focus={{ boxShadow: "none" }}>
+            _focus={{ boxShadow: "none" }}
+          >
             {capitalizeFirstChar(showBy)}
           </MenuButton>
           <MenuList>
             <MenuOptionGroup
               defaultValue='month'
               type='radio'
-              onChange={onChangeShowByHandler}>
+              onChange={onChangeShowByHandler}
+            >
               <MenuItemOption value='month'>Month</MenuItemOption>
               <MenuItemOption value='category'>Category</MenuItemOption>
               <MenuItemOption value='payer'>Payer</MenuItemOption>

@@ -9,10 +9,10 @@ export const PagePanel = ({
   pageSize,
   changePage,
   changePageSize,
-  style,
+  ...rest
 }) => {
   return (
-    <HStack {...style}>
+    <HStack {...rest}>
       <IconButton
         variant='link'
         onClick={changePage(-1)}

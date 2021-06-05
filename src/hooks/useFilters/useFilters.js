@@ -43,9 +43,10 @@ export const useFilters = ({ groupedTree, entries }) => {
   //   console.log(filterStack)
   // }, [filterStack])
 
-  const setFilter = key => value => {
+  const setFilter = R.curry((key, value) => {
+    console.log("SET_FILTER", key, value)
     setFilterStack(updateFilterStack(key, value, filterStack))
     setFilters(updateFilters(key, value, filters))
-  }
+  })
   return { setFilter, counts, filteredEntries, filters }
 }

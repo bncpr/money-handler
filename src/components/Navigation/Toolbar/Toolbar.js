@@ -1,12 +1,20 @@
+import { Box, Stack } from "@chakra-ui/layout"
+import { forwardRef } from "react"
 
-import { Box } from "@chakra-ui/layout"
-
-export const Toolbar = ({ children }) => {
+export const Toolbar = forwardRef(({ children, ...rest }, ref) => {
   return (
-    <Box as='header' w='full' h='min' bgColor='green.400' pos='fixed' zIndex={1}>
-      <Box as='nav' h='full'>
-        {children}
-      </Box>
-    </Box>
+    <Stack
+      direction={["column", "row"]}
+      pos='fixed'
+      top={0}
+      left={0}
+      w='full'
+      h='min'
+      zIndex={1300}
+      {...rest}
+      ref={ref}
+    >
+      {children}
+    </Stack>
   )
-}
+})

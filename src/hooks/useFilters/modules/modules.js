@@ -23,7 +23,6 @@ const removeAndAppend = R.curry((key, value, stack) =>
   R.pipe(
     removeFilter(key),
     appendFilter(key, value),
-    R.tap(console.log),
   )(stack),
 )
 

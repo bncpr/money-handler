@@ -60,7 +60,7 @@ export const LoginForm = () => {
       p={8}
       borderRadius='md'
       mx='auto'
-      mt={4}
+      mt={28}
     >
       {signedIn && <Redirect to='/profile' />}
       <FormikProvider value={formik}>

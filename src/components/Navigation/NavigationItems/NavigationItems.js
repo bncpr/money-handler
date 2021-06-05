@@ -1,3 +1,4 @@
+import { HamburgerIcon } from "@chakra-ui/icons"
 import { Stack } from "@chakra-ui/layout"
 import { useSelector } from "react-redux"
 import { NavigationItem } from "./NavigationItem/NavigationItem"
@@ -6,6 +7,9 @@ export const NavigationItems = () => {
   const { signedIn } = useSelector(state => state.authentication)
   return (
     <Stack direction={["column", "row"]}>
+      <NavigationItem>
+        <HamburgerIcon />
+      </NavigationItem>
       <NavigationItem path='/'>Home</NavigationItem>
       <NavigationItem path='/dashboard'>Dashboard</NavigationItem>
       {!signedIn && <NavigationItem path='/login'>Login</NavigationItem>}
