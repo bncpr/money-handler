@@ -1,7 +1,4 @@
-import {
-  extendTheme,
-  withDefaultColorScheme,
-} from "@chakra-ui/react"
+import { extendTheme, withDefaultColorScheme } from "@chakra-ui/react"
 
 export const customTheme = extendTheme(
   {
@@ -34,10 +31,15 @@ export const customTheme = extendTheme(
           },
         },
       },
+      Heading: {
+        variants: {
+          label: { size: "md", fontWeight: "normal" },
+        },
+      },
     },
   },
   withDefaultColorScheme({
     colorScheme: "green",
     components: ["Select", "Switch", "Radio"],
-  })
+  }),
 )

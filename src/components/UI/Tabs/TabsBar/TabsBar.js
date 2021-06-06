@@ -2,7 +2,7 @@ import * as R from "ramda"
 import { Tab, TabList, Tabs } from "@chakra-ui/tabs"
 import { useEffect, useState } from "react"
 
-export const TabsBar = ({ tabs, current, onChange }) => {
+export const TabsBar = ({ tabs, current, onChange, ...rest }) => {
   const [tabsIndex, setTabsIndex] = useState(0)
   const [tabsList, setTabsList] = useState([])
   const onChangeHandler = index => {
@@ -20,10 +20,9 @@ export const TabsBar = ({ tabs, current, onChange }) => {
     <Tabs
       index={tabsIndex}
       onChange={onChangeHandler}
-      colorScheme='green'
-      align='end'
-      variant='soft-rounded'
+      alignSelf='flex-end'
       padding='2'
+      {...rest}
       >
       <TabList>
         {tabsList.map(key => (

@@ -12,7 +12,6 @@ import { capitalizeFirstChar } from "../../../utility/utility"
 import { monthsMap } from "../../../utility/maps"
 
 export const SelectMenu = ({
-  style,
   buttonVal,
   buttonDefault,
   array,
@@ -28,7 +27,6 @@ export const SelectMenu = ({
           rightIcon={<ChevronDownIcon />}
           fontWeight={buttonVal ? "bold" : "normal"}
           variant={buttonVal ? "solid" : "ghost"}
-          {...style}
           {...rest}
         >
           {(buttonDefault === "Month"
@@ -36,17 +34,15 @@ export const SelectMenu = ({
             : capitalizeFirstChar(buttonVal)) || buttonDefault}
         </MenuButton>
         <MenuList maxH={96} overflow='auto'>
-          <MenuOptionGroup
-            value={buttonVal}
-            onChange={onChange}
-            type='radio'
-          >
+          <MenuOptionGroup value={buttonVal} onChange={onChange} type='radio'>
             {array.map(([a, b]) => (
               <MenuItemOption key={a} value={a} onClick={onClose}>
                 {capitalizeFirstChar(b)}
-                <Badge colorScheme='purple' fontSize='xs' m={2}>
-                  {counts[a]}
-                </Badge>
+                {counts && (
+                  <Badge colorScheme='purple' fontSize='xs' m={2}>
+                    {counts[a]}
+                  </Badge>
+                )}
               </MenuItemOption>
             ))}
           </MenuOptionGroup>

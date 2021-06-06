@@ -9,7 +9,6 @@ import { Box } from "@chakra-ui/layout"
 const isDoneLoading = (isLoading, chartData) => !isLoading && chartData
 
 export const BarChart = ({
-  style,
   data,
   year,
   isLoading,
@@ -17,6 +16,7 @@ export const BarChart = ({
   showBy,
   series,
   chartType,
+  ...rest
 }) => {
   const [width, height] = [960, 500]
   const margin = { top: 40, right: 20, bottom: 55, left: 45 }
@@ -40,13 +40,15 @@ export const BarChart = ({
 
   return (
     <Box
-      {...style}
       as='svg'
       h={height}
       w={width}
       shadow='2xl'
       borderRadius='xl'
-      bgColor='gray.50'>
+      bgColor='gray.50'
+      m='auto'
+      {...rest}
+    >
       <g transform={`translate(${margin.left},${margin.top})`}>
         <BottomAxis
           xScale={xScale}

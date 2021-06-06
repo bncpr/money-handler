@@ -20,32 +20,8 @@ import { PermanentDrawer } from "../../components/UI/Drawer/PermanentDrawer/Perm
 
 const headers = ["Date", "Value", "Payer", "Category", "Tags", "more"]
 
-export const Entries = ({ isOpenSide, onOpenSide, top }) => {
+export const Entries = ({ surfaceData, fields, filters }) => {
   const dispatch = useDispatch()
-  const { entries, groupedTree, fields } = useSelector(
-    state => state.groupedEntries,
-    shallowEqual,
-  )
-  const {
-    setFilter,
-    counts,
-    filteredEntries: surfaceData,
-    filters,
-  } = useFilters({
-    entries,
-    groupedTree,
-  })
-
-  useInitialPick(fields.year, setFilter("year"))
-  useInitialPick(R.keys(counts.month), setFilter("month"))
-
-  useEffect(() => {
-    console.log(filters)
-  }, [filters])
-
-  useEffect(() => {
-    onOpenSide()
-  }, [])
 
   const {
     pageSize,
@@ -54,7 +30,7 @@ export const Entries = ({ isOpenSide, onOpenSide, top }) => {
     onChangePage,
     onChangePageSize,
     resetPage,
-  } = usePagination(surfaceData.length, 12, filters)
+  } = usePagination(surfaceData.length, 20, filters)
 
   useEffect(() => {
     resetPage()
@@ -77,40 +53,11 @@ export const Entries = ({ isOpenSide, onOpenSide, top }) => {
     onClose()
   }
 
-  useEffect(() => {
-    // console.log(surfaceData)
-  }, [surfaceData, filters, page, pagesNum, pageSize])
-
   return (
     <Box>
-      <PermanentDrawer
-        isOpen={isOpenSide}
-        top={`${top}px`}
-        p={6}
-        width='320px'
-        align='stretch'
-      >
-        <Filters
-          filters={filters}
-          fields={fields}
-          counts={counts}
-          setFilter={setFilter}
-          spacing={3}
-          p={3}
-        >
-          <Heading size='md' fontWeight='normal'>
-            Filters
-          </Heading>
-        </Filters>
-      </PermanentDrawer>
-
-      <Flex
-        direction='column'
-        align='center'
-        pt={6}
-      >
-        <Box width='max' shadow='md' p={6} borderRadius='lg'>
-          <Table variant='simple' size='md'>
+      <Flex direction='column' align='center' pt={6}>
+        <Box shadow='md' p={6} borderRadius='lg'>
+          <Table variant='simple' size='sm'>
             <TableHead headers={headers} />
             <Tbody>
               {surfaceData

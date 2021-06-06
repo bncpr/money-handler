@@ -43,14 +43,14 @@ export const Filters = ({
         array={getTuples(sortDescendList(fields.year))}
         onChange={setFilter("year")}
         counts={counts.year || {}}
-        style={selectStyle}
+        {...selectStyle}
       />
       <SelectMenu
         buttonVal={filters.month}
         buttonDefault='Month'
         array={monthsArray}
         onChange={setFilter("month")}
-        style={selectStyle}
+        {...selectStyle}
         counts={counts.month || {}}
         isDisabled={filters.year === ""}
       />
@@ -60,7 +60,7 @@ export const Filters = ({
         array={getTuples(sortAscendList(fields.payer))}
         onChange={setFilter("payer")}
         counts={counts.payer || {}}
-        style={selectStyle}
+        {...selectStyle}
       />
       <SelectMenu
         buttonVal={filters.category}
@@ -68,7 +68,7 @@ export const Filters = ({
         array={getTuples(sortAscendList(fields.category))}
         onChange={setFilter("category")}
         counts={counts.category || {}}
-        style={selectStyle}
+        {...selectStyle}
       />
     </Stack>
   )
