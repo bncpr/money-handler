@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { zipObj } from "ramda"
-import { colorsGenerator } from "../../utility/colors"
 import { getUserEntriesFulfilled } from "./dataSlice"
+import { colorsGenerator } from "../../utility/colors"
 
 const assignColors = (array, colorsGen) =>
   zipObj(
@@ -14,20 +14,20 @@ const dashboardSlice = createSlice({
   initialState: {
     colors: {},
   },
-  extraReducers: {
-    [getUserEntriesFulfilled]: (
-      state,
-      {
-        payload: {
-          fields: { payer, category },
-        },
-      }
-    ) => {
-      const categoryColors = assignColors(category, colorsGenerator)
-      const payerColors = assignColors(payer, colorsGenerator)
-      state.colors = { categoryColors, payerColors }
-    },
-  },
+  // extraReducers: {
+  //   [getUserEntriesFulfilled]: (
+  //     state,
+  //     {
+  //       payload: {
+  //         fields: { payer, category },
+  //       },
+  //     }
+  //   ) => {
+  //     const categoryColors = assignColors(category, colorsGenerator)
+  //     const payerColors = assignColors(payer, colorsGenerator)
+  //     state.colors = { categoryColors, payerColors }
+  //   },
+  // },
 })
 
 export const dashboardReducer = dashboardSlice.reducer

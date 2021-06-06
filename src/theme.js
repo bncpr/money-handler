@@ -31,15 +31,17 @@ export const customTheme = extendTheme(
           },
         },
       },
-      Heading: {
-        variants: {
-          label: { size: "md", fontWeight: "normal" },
+      Radio: {
+        baseStyle: {
+          container: {
+            cursor: "pointer",
+          },
         },
       },
     },
   },
   withDefaultColorScheme({
     colorScheme: "green",
-    components: ["Select", "Switch", "Radio"],
+    components: ["Radio"],
   }),
 )

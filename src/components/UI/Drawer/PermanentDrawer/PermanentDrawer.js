@@ -1,11 +1,10 @@
-import { Flex } from "@chakra-ui/layout"
+import { Box, Flex } from "@chakra-ui/layout"
 import { forwardRef } from "react"
 
 export const PermanentDrawer = forwardRef(
   ({ children, isOpen, ...rest }, ref) => {
     return (
-      <Flex
-        direction='column'
+      <Box
         position='fixed'
         left='0'
         bottom='0'
@@ -15,7 +14,9 @@ export const PermanentDrawer = forwardRef(
         ref={ref}
       >
         {children}
-      </Flex>
+      </Box>
     )
   },
 )
+
+

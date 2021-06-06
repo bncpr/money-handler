@@ -1,10 +1,10 @@
 import { useChartData } from "../../../hooks/useChartData/useChartData"
-import { useColors } from "../../../hooks/useColors/useColors"
+import { selectColorsSet } from "../../../hooks/useColors/useColors"
 import { BottomAxis } from "./BottomAxis"
 import { LeftAxis } from "./LeftAxis"
 import { Unit } from "./Unit/Unit"
 import { useFocus } from "../../../hooks/useFocus/useFocus"
-import { Box } from "@chakra-ui/layout"
+import { Box, Heading } from "@chakra-ui/layout"
 
 const isDoneLoading = (isLoading, chartData) => !isLoading && chartData
 
@@ -16,6 +16,7 @@ export const BarChart = ({
   showBy,
   series,
   chartType,
+  colors,
   ...rest
 }) => {
   const [width, height] = [960, 500]
@@ -35,7 +36,7 @@ export const BarChart = ({
     series,
   })
 
-  const colors = useColors(series, showBy)
+  const colorsSet = selectColorsSet(series, showBy, colors)
   const { focusedUnit, onMouseEnter, onMouseOut } = useFocus()
 
   return (
@@ -65,7 +66,7 @@ export const BarChart = ({
               xScale={xScale}
               yScale={yScale}
               height={innerHeight}
-              colors={colors}
+              colors={colorsSet}
               onMouseEnter={onMouseEnter(unit.unit)}
               onMouseOut={onMouseOut()}
               focused={focusedUnit}

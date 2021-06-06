@@ -1,42 +1,45 @@
-import { IconButton } from "@chakra-ui/button"
+import { FormLabel } from "@chakra-ui/form-control"
 import { useDisclosure } from "@chakra-ui/hooks"
-import { HamburgerIcon } from "@chakra-ui/icons"
-import { Box, Flex, Heading, VStack } from "@chakra-ui/layout"
+import { Box, Flex, Heading, Spacer, VStack } from "@chakra-ui/layout"
+import { Radio, RadioGroup } from "@chakra-ui/radio"
 import { onAuthStateChanged } from "@firebase/auth"
 import * as R from "ramda"
 import { useEffect, useRef, useState } from "react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { Route, Switch, useLocation } from "react-router"
+import { BarChart } from "./components/DataViz/BarChart/BarChart"
+import { Legend } from "./components/DataViz/Legend/Legend"
+import { Filters } from "./components/Filters/Filters"
 import { Home } from "./components/Home/Home"
 import { NavigationItem } from "./components/Navigation/NavigationItems/NavigationItem/NavigationItem"
 import { Toolbar } from "./components/Navigation/Toolbar/Toolbar"
-import { Profile } from "./components/Profile/Profile"
 import { ProfilePopover } from "./components/Profile/ProfilePopover/ProfilePopover"
+import { ToolbarBurgerButton } from "./components/UI/Button/ToolbarHamburgerButton/ToolbarBurgerButton"
 import { PermanentDrawer } from "./components/UI/Drawer/PermanentDrawer/PermanentDrawer"
-import { Dashboard } from "./containers/Dashboard/Dashboard"
+import { PermanentDrawerContent } from "./components/UI/Drawer/PermanentDrawer/PermanentDrawerContent"
+import { TabsBar } from "./components/UI/Tabs/TabsBar/TabsBar"
 import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
-import { EntriesDrawer } from "./components/UI/Drawer/EntriesDrawer/EntriesDrawer"
 import { auth } from "./firebase"
+import { useChartControls } from "./hooks/useChartControls/useChartControls"
+import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
 import { useInitialPick } from "./hooks/useInitialPick/useInitialPick"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
-import { useChartControls } from "./hooks/useChartControls/useChartControls"
-import { BarChart } from "./components/DataViz/BarChart/BarChart"
-import { TabsBar } from "./components/UI/Tabs/TabsBar/TabsBar"
-import { SelectMenu } from "./components/UI/Menu/SelectMenu"
-import { FormLabel } from "@chakra-ui/form-control"
-import { Radio, RadioGroup } from "@chakra-ui/radio"
+import { capitalizeFirstChar } from "./utility/utility"
+
+const doShowLegend = (showBy, series, value) =>
+  (showBy === "month" && series === value) || showBy === value
 
 export const App = () => {
   const dispatch = useDispatch()
   const signedIn = useSelector(state => state.authentication.signedIn)
-  const { isOpen, onToggle, onOpen } = useDisclosure({ defaultIsOpen: true })
+  const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: true })
 
   const headerRef = useRef()
   const top = headerRef.current?.clientHeight
 
-  const location = useLocation()
+  const { pathname } = useLocation()
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
@@ -71,28 +74,33 @@ export const App = () => {
   const { showBy, series, chartType, changeShowBy, changeOrToggleSeries } =
     useChartControls()
 
+  const colors = useColors({
+    payers: fields.payer,
+    categories: fields.category,
+  })
+
   return (
     <Box>
-      <Toolbar bgColor='purple.400' spacing={8} ref={headerRef}>
-        {location.pathname === "/about" || (
-          <IconButton
-            variant='subtle'
-            colorScheme='purple'
-            color='purple'
-            fontSize='3xl'
-            icon={<HamburgerIcon />}
-            _focus={{ boxShadow: "none" }}
-            onClick={onToggle}
-          />
-        )}
-
-        <NavigationItem path='/'>HOME</NavigationItem>
-        <NavigationItem path='/charts'>CHARTS</NavigationItem>
-        {signedIn && <NavigationItem path='/entries'>ENTRIES</NavigationItem>}
-        <NavigationItem path='/about' flexGrow='1'>
+      <Toolbar bgColor='purple.500' spacing={8} ref={headerRef}>
+        <ToolbarBurgerButton onClick={onToggle} color='purple.800' />
+        <NavigationItem path='/' current={pathname}>
+          HOME
+        </NavigationItem>
+        <NavigationItem path='/charts' current={pathname}>
+          CHARTS
+        </NavigationItem>
+        <NavigationItem path='/entries' current={pathname}>
+          ENTRIES
+        </NavigationItem>
+        <NavigationItem path='/about' current={pathname}>
           ABOUT
         </NavigationItem>
-        {signedIn || <NavigationItem path='/login'>LOGIN</NavigationItem>}
+        {signedIn || (
+          <NavigationItem path='/login' current={pathname}>
+            LOGIN
+          </NavigationItem>
+        )}
+        <Spacer />
         {signedIn && (
           <ProfilePopover
             variant='subtle'
@@ -103,24 +111,20 @@ export const App = () => {
       </Toolbar>
       <Box mt={`${top}px`}>
         {isOpen && (
-          <PermanentDrawer
-            isOpen={isOpen}
-            top={`${top}px`}
-            p={9}
-            width='320px'
-            align='stretch'
-          >
-            <Switch>
-              <Route path='/entries'>
-                <EntriesDrawer
-                  filters={filters}
-                  counts={counts}
-                  fields={fields}
-                  setFilter={setFilter}
-                />
-              </Route>
-              <Route path='/charts'>
-                <VStack align='flex-start' spacing={3}>
+          <PermanentDrawer isOpen={isOpen} top={`${top}px`} width='320px'>
+            <PermanentDrawerContent>
+              <Switch>
+                <Route path='/entries'>
+                  <FormLabel fontSize='xl'>Filters</FormLabel>
+                  <Filters
+                    filters={filters}
+                    counts={counts}
+                    fields={fields}
+                    setFilter={setFilter}
+                    px={3}
+                  />
+                </Route>
+                <Route path='/charts'>
                   <RadioGroup onChange={changeShowBy} value={showBy} size='lg'>
                     <FormLabel fontSize='xl'>Show By</FormLabel>
                     <VStack align='flex-start' px={3}>
@@ -136,6 +140,9 @@ export const App = () => {
                   >
                     <FormLabel fontSize='xl'>Series</FormLabel>
                     <VStack align='flex-start' px={3}>
+                      <Radio value='' isDisabled={showBy !== "month"}>
+                        None
+                      </Radio>
                       <Radio value='category' isDisabled={showBy !== "month"}>
                         Category
                       </Radio>
@@ -144,14 +151,13 @@ export const App = () => {
                       </Radio>
                     </VStack>
                   </RadioGroup>
-                </VStack>
-              </Route>
-            </Switch>
+                </Route>
+              </Switch>
+            </PermanentDrawerContent>
           </PermanentDrawer>
         )}
         <Box ml={isOpen ? "320px" : "0"} transition='all ease-out 200ms'>
           <Switch>
-            <Route path='/dashboard' component={Dashboard} />
             <Route path='/charts'>
               <Flex direction='column' width='min' margin='auto' pt={3}>
                 <TabsBar
@@ -167,7 +173,23 @@ export const App = () => {
                   chartType={chartType}
                   showBy={showBy}
                   series={series}
+                  colors={colors}
                 />
+                <Heading p={6} mx='auto'>
+                  {capitalizeFirstChar(showBy)}
+                </Heading>
+                {doShowLegend(showBy, series, "payer") && (
+                  <Legend
+                    array={fields.payer}
+                    colors={colors.payerColors || {}}
+                  />
+                )}
+                {doShowLegend(showBy, series, "category") && (
+                  <Legend
+                    array={fields.category}
+                    colors={colors.categoryColors || {}}
+                  />
+                )}
               </Flex>
             </Route>
             <Route path='/entries'>

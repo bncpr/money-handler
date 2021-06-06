@@ -35,7 +35,7 @@ export const Filters = ({
   ...rest
 }) => {
   return (
-    <Stack {...rest}>
+    <Stack width='full' {...rest}>
       {children}
       <SelectMenu
         buttonVal={filters.year}
