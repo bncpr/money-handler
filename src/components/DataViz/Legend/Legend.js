@@ -6,6 +6,7 @@ export const Legend = ({ array, colors, ...rest }) => {
     <Wrap {...rest}>
       {array.map(value => (
         <Box
+          key={value}
           as='span'
           _before={{
             display: "inline-block",

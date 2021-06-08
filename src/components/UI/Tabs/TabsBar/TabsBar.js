@@ -13,8 +13,8 @@ export const TabsBar = ({ tabs, current, onChange, ...rest }) => {
   useEffect(() => {
     const tl = R.sortBy(R.identity, tabs)
     setTabsList(tl)
-    setTabsIndex(tl.length - 1)
-  }, [tabs])
+    setTabsIndex(tl.indexOf(current))
+  }, [tabs, current])
 
   return (
     <Tabs
@@ -23,7 +23,7 @@ export const TabsBar = ({ tabs, current, onChange, ...rest }) => {
       alignSelf='flex-end'
       padding='2'
       {...rest}
-      >
+    >
       <TabList>
         {tabsList.map(key => (
           <Tab value={key} key={key} isSelected={current === key}>

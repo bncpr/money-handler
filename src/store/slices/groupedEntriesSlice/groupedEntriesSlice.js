@@ -4,7 +4,6 @@ import { getUserEntriesFulfilled } from "../dataSlice"
 import {
   getFields,
   getInitialGroupedTree,
-  groupMonths
 } from "./modules/modules"
 
 const groupedEntriesSlice = createSlice({
@@ -19,7 +18,6 @@ const groupedEntriesSlice = createSlice({
       const entriesArr = R.values(entries)
       const groupedTree = R.pipe(
         getInitialGroupedTree,
-        // groupMonths
       )(entriesArr)
       const fields = getFields(groupedTree)
       state.entries = entriesArr

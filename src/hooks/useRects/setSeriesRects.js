@@ -13,7 +13,7 @@ export const setSeriesRects = (
   setRects
 ) => {
   const { series, unit: name } = unit
-  // console.log(unit);
+  // console.log(series);
   const subScale = getSubScale(
     getSeriesKeysDescending(series),
     xScale(name),

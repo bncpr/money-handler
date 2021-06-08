@@ -1,7 +1,5 @@
-import { FormLabel } from "@chakra-ui/form-control"
 import { useDisclosure } from "@chakra-ui/hooks"
-import { Box, Flex, Heading, Spacer, VStack } from "@chakra-ui/layout"
-import { Radio, RadioGroup } from "@chakra-ui/radio"
+import { Box, Flex, Heading, Spacer } from "@chakra-ui/layout"
 import { onAuthStateChanged } from "@firebase/auth"
 import * as R from "ramda"
 import { useEffect, useRef, useState } from "react"
@@ -9,14 +7,14 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { Route, Switch, useLocation } from "react-router"
 import { BarChart } from "./components/DataViz/BarChart/BarChart"
 import { Legend } from "./components/DataViz/Legend/Legend"
-import { Filters } from "./components/Filters/Filters"
 import { Home } from "./components/Home/Home"
+import { ChartDrawerContent } from "./components/Layout/DrawerContent/ChartsDrawerConent/ChartDrawerContent"
+import { EntriesDrawerContent } from "./components/Layout/DrawerContent/EntriesDrawerContent/EntriesDrawerContent"
 import { NavigationItem } from "./components/Navigation/NavigationItems/NavigationItem/NavigationItem"
 import { Toolbar } from "./components/Navigation/Toolbar/Toolbar"
 import { ProfilePopover } from "./components/Profile/ProfilePopover/ProfilePopover"
 import { ToolbarBurgerButton } from "./components/UI/Button/ToolbarHamburgerButton/ToolbarBurgerButton"
 import { PermanentDrawer } from "./components/UI/Drawer/PermanentDrawer/PermanentDrawer"
-import { PermanentDrawerContent } from "./components/UI/Drawer/PermanentDrawer/PermanentDrawerContent"
 import { TabsBar } from "./components/UI/Tabs/TabsBar/TabsBar"
 import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
@@ -28,13 +26,16 @@ import { useInitialPick } from "./hooks/useInitialPick/useInitialPick"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { capitalizeFirstChar } from "./utility/utility"
 
-const doShowLegend = (showBy, series, value) =>
+const isShownLegend = (showBy, series, value) =>
   (showBy === "month" && series === value) || showBy === value
+
+const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
+console.log(currentYear, currentMonth)
 
 export const App = () => {
   const dispatch = useDispatch()
   const signedIn = useSelector(state => state.authentication.signedIn)
-  const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: true })
+  const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: false })
 
   const headerRef = useRef()
   const top = headerRef.current?.clientHeight
@@ -55,6 +56,7 @@ export const App = () => {
     state => state.groupedEntries,
     shallowEqual,
   )
+
   const {
     setFilter,
     counts,
@@ -83,22 +85,12 @@ export const App = () => {
     <Box>
       <Toolbar bgColor='purple.500' spacing={8} ref={headerRef}>
         <ToolbarBurgerButton onClick={onToggle} color='purple.800' />
-        <NavigationItem path='/' current={pathname}>
-          HOME
-        </NavigationItem>
-        <NavigationItem path='/charts' current={pathname}>
-          CHARTS
-        </NavigationItem>
-        <NavigationItem path='/entries' current={pathname}>
-          ENTRIES
-        </NavigationItem>
-        <NavigationItem path='/about' current={pathname}>
-          ABOUT
-        </NavigationItem>
-        {signedIn || (
-          <NavigationItem path='/login' current={pathname}>
-            LOGIN
-          </NavigationItem>
+        <NavigationItem path='/' current={pathname} label='HOME' />
+        <NavigationItem path='/charts' current={pathname} label='CHARTS' />
+        <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
+        <NavigationItem path='/about' current={pathname} label='ABOUT' />
+        {!signedIn && (
+          <NavigationItem path='/login' current={pathname} label='LOGIN' />
         )}
         <Spacer />
         {signedIn && (
@@ -109,54 +101,31 @@ export const App = () => {
           />
         )}
       </Toolbar>
+
       <Box mt={`${top}px`}>
         {isOpen && (
           <PermanentDrawer isOpen={isOpen} top={`${top}px`} width='320px'>
-            <PermanentDrawerContent>
-              <Switch>
-                <Route path='/entries'>
-                  <FormLabel fontSize='xl'>Filters</FormLabel>
-                  <Filters
-                    filters={filters}
-                    counts={counts}
-                    fields={fields}
-                    setFilter={setFilter}
-                    px={3}
-                  />
-                </Route>
-                <Route path='/charts'>
-                  <RadioGroup onChange={changeShowBy} value={showBy} size='lg'>
-                    <FormLabel fontSize='xl'>Show By</FormLabel>
-                    <VStack align='flex-start' px={3}>
-                      <Radio value='month'>Month</Radio>
-                      <Radio value='category'>Category</Radio>
-                      <Radio value='payer'>Payer</Radio>
-                    </VStack>
-                  </RadioGroup>
-                  <RadioGroup
-                    onChange={changeOrToggleSeries}
-                    value={series}
-                    size='lg'
-                  >
-                    <FormLabel fontSize='xl'>Series</FormLabel>
-                    <VStack align='flex-start' px={3}>
-                      <Radio value='' isDisabled={showBy !== "month"}>
-                        None
-                      </Radio>
-                      <Radio value='category' isDisabled={showBy !== "month"}>
-                        Category
-                      </Radio>
-                      <Radio value='payer' isDisabled={showBy !== "month"}>
-                        Payer
-                      </Radio>
-                    </VStack>
-                  </RadioGroup>
-                </Route>
-              </Switch>
-            </PermanentDrawerContent>
+            <Switch>
+              <Route path='/entries'>
+                <EntriesDrawerContent
+                  filters={filters}
+                  counts={counts}
+                  fields={fields}
+                  setFilter={setFilter}
+                />
+              </Route>
+              <Route path='/charts'>
+                <ChartDrawerContent
+                  showBy={showBy}
+                  series={series}
+                  onChangeShowBy={changeShowBy}
+                  onChangeSeries={changeOrToggleSeries}
+                />
+              </Route>
+            </Switch>
           </PermanentDrawer>
         )}
-        <Box ml={isOpen ? "320px" : "0"} transition='all ease-out 200ms'>
+        <Box ml={isOpen ? "10%" : "0"}>
           <Switch>
             <Route path='/charts'>
               <Flex direction='column' width='min' margin='auto' pt={3}>
@@ -178,13 +147,13 @@ export const App = () => {
                 <Heading p={6} mx='auto'>
                   {capitalizeFirstChar(showBy)}
                 </Heading>
-                {doShowLegend(showBy, series, "payer") && (
+                {isShownLegend(showBy, series, "payer") && (
                   <Legend
                     array={fields.payer}
                     colors={colors.payerColors || {}}
                   />
                 )}
-                {doShowLegend(showBy, series, "category") && (
+                {isShownLegend(showBy, series, "category") && (
                   <Legend
                     array={fields.category}
                     colors={colors.categoryColors || {}}
@@ -200,7 +169,13 @@ export const App = () => {
               />
             </Route>
             <Route path='/login' component={LoginForm} />
-            <Route path='/' exact component={Home} />
+            <Route path='/' exact>
+              <Home
+                groupedTree={groupedTree}
+                subField={fields.category}
+                colors={colors}
+              />
+            </Route>
           </Switch>
         </Box>
       </Box>

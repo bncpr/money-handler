@@ -5,6 +5,7 @@ import { LeftAxis } from "./LeftAxis"
 import { Unit } from "./Unit/Unit"
 import { useFocus } from "../../../hooks/useFocus/useFocus"
 import { Box, Heading } from "@chakra-ui/layout"
+import { useEffect } from "react"
 
 const isDoneLoading = (isLoading, chartData) => !isLoading && chartData
 
@@ -38,6 +39,10 @@ export const BarChart = ({
 
   const colorsSet = selectColorsSet(series, showBy, colors)
   const { focusedUnit, onMouseEnter, onMouseOut } = useFocus()
+
+  useEffect(() => {
+    console.log(chartData)
+  }, [chartData])
 
   return (
     <Box
