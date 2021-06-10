@@ -14,7 +14,7 @@ import { monthsMap } from "../../../utility/maps"
 export const SelectMenu = ({
   buttonVal,
   buttonDefault,
-  array,
+  array = [],
   onChange,
   counts,
   ...rest

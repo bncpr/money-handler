@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/layout"
+import { Text } from "@chakra-ui/layout"
 import { scaleBand, scaleLinear } from "d3-scale"
 import * as R from "ramda"
 import { ChartBox } from "../../ChartBox/ChartBox"
@@ -8,9 +8,12 @@ import {
   getDomainXAlphanumerical,
   getDomainXDescendingValue,
 } from "../_modules/getDomainX"
+import { Bar } from "../Bar/Bar"
+import { capitalizeFirstChar } from "../../../../utility/utility"
+import { format } from "d3-format"
 
 export const VerticalBarChart = ({
-  entries,
+  fields,
   height,
   width,
   fieldName,
@@ -18,34 +21,34 @@ export const VerticalBarChart = ({
   margin,
   sortByValue,
   fontSize,
+  label,
+  subField,
+  setHovered,
+  hovered,
   ...rest
 }) => {
   const innerHeight = height - margin.top - margin.bottom
   const innerWidth = width - margin.left - margin.right
 
-  const fields = R.pipe(
-    R.groupBy(R.prop(fieldName)),
-    R.map(R.pipe(R.map(R.prop("value")), R.sum)),
-    R.toPairs,
-  )(entries)
-
   const domainX = sortByValue
     ? getDomainXDescendingValue(fields)
     : getDomainXAlphanumerical(fields)
 
-  const domainY = [0, fields.map(R.prop(1)).reduce(R.max, 0)]
+  const domainY = [0, fields.map(R.prop(1)).reduce(R.max, 0) || 1000]
 
   const xScale = scaleBand().domain(domainX).range([0, innerWidth]).padding(0.1)
 
   const yScale = scaleLinear().domain(domainY).range([innerHeight, 0])
 
   const rects = fields.map(([key, value]) => ({
-    key: key,
+    key,
     x: xScale(key),
     y: yScale(value),
     width: xScale.bandwidth(),
     height: innerHeight - yScale(value),
     fill: colors[key],
+    name: key,
+    value: value,
   }))
 
   return (
@@ -59,8 +62,30 @@ export const VerticalBarChart = ({
         fontSize={fontSize}
       />
       {rects.map(d => (
-        <Box as='rect' {...d} />
+        <Bar d={d} hovered={hovered} setHovered={setHovered} />
       ))}
+      {rects.map(
+        d =>
+          hovered === d.name &&
+          d.value && (
+            <text
+              transform={`translate(${d.x + d.width},${d.y})`}
+              fontSize='16'
+              dy='0.5em'
+              dx='0.2em'
+            >
+              <tspan fontWeight='bold' y='-0.5em'>
+                {capitalizeFirstChar(d.name)}
+              </tspan>
+              <tspan x='0.2em' y='1.1em'>
+                {format(",")(d.value)}
+              </tspan>
+            </text>
+          ),
+      )}
+      <Text as='text' x={innerWidth - 20} textAnchor='end' fontSize='1.3em'>
+        {label}
+      </Text>
     </ChartBox>
   )
 }

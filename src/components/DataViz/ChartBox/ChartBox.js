@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/layout"
 
-export const ChartBox = ({ children, h, w, ml, mt, ...rest }) => {
+export const ChartBox = ({ children, h, w, ml = 0, mt = 0, ...rest }) => {
   return (
     <Box
       as='svg'
