@@ -1,6 +1,13 @@
 import { monthsMap } from "../../../utility/maps"
 
-export const BottomAxis = ({ xScale, height, yOffset, showBy, fontSize }) => {
+export const BottomAxis = ({
+  xScale,
+  height,
+  yOffset,
+  showBy,
+  fontSize,
+  selected,
+}) => {
   if (!xScale) return null
   return xScale.domain().map(tick => (
     <text
@@ -16,6 +23,7 @@ export const BottomAxis = ({ xScale, height, yOffset, showBy, fontSize }) => {
             })`
           : null
       }
+      fontWeight={tick === selected ? "bold" : ""}
     >
       {showBy === "month" ? monthsMap.get(tick) : tick}
     </text>

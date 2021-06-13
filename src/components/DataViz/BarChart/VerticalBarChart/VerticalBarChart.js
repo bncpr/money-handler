@@ -8,9 +8,11 @@ import {
   getDomainXAlphanumerical,
   getDomainXDescendingValue,
 } from "../_modules/getDomainX"
-import { Bar } from "../Bar/Bar"
-import { capitalizeFirstChar } from "../../../../utility/utility"
-import { format } from "d3-format"
+import { AverageStroke } from "../Stroke/AverageStroke/AverageStroke"
+import { Bars } from "../Bars/Bars"
+import { BarsLabels } from "../BarsLabels/BarsLabels"
+import { createRef, useEffect } from "react"
+import { easeCircleOut, easeCubicOut, easeElastic, easeExpInOut, easeLinear, easeQuadOut, select } from "d3"
 
 export const VerticalBarChart = ({
   fields,
@@ -21,10 +23,10 @@ export const VerticalBarChart = ({
   margin,
   sortByValue,
   fontSize,
-  label,
   subField,
   setHovered,
   hovered,
+  average,
   ...rest
 }) => {
   const innerHeight = height - margin.top - margin.bottom
@@ -49,7 +51,19 @@ export const VerticalBarChart = ({
     fill: colors[key],
     name: key,
     value: value,
+    ref: createRef(),
   }))
+
+  useEffect(() => {
+    rects.forEach(rect => {
+      select(rect.ref.current)
+        .transition()
+        .ease(easeCubicOut)
+        .duration(400)
+        .attr("y", rect.y)
+        .attr("height", rect.height)
+    })
+  }, [rects])
 
   return (
     <ChartBox h={height} w={width} ml={margin.left} mt={margin.top} {...rest}>
@@ -61,31 +75,21 @@ export const VerticalBarChart = ({
         showBy={fieldName}
         fontSize={fontSize}
       />
-      {rects.map(d => (
-        <Bar d={d} hovered={hovered} setHovered={setHovered} />
-      ))}
-      {rects.map(
-        d =>
-          hovered === d.name &&
-          d.value && (
-            <text
-              transform={`translate(${d.x + d.width},${d.y})`}
-              fontSize='16'
-              dy='0.5em'
-              dx='0.2em'
-            >
-              <tspan fontWeight='bold' y='-0.5em'>
-                {capitalizeFirstChar(d.name)}
-              </tspan>
-              <tspan x='0.2em' y='1.1em'>
-                {format(",")(d.value)}
-              </tspan>
-            </text>
-          ),
+      {average && (
+        <AverageStroke
+          y={yScale(average)}
+          width={innerWidth}
+          stroke={colors[hovered]}
+        />
       )}
-      <Text as='text' x={innerWidth - 20} textAnchor='end' fontSize='1.3em'>
-        {label}
-      </Text>
+      <Bars
+        rects={rects}
+        hovered={hovered}
+        setHovered={setHovered}
+        isInitiallyFlat
+        y={yScale(0)}
+      />
+      <BarsLabels rects={rects} hovered={hovered} fontSize={16} />
     </ChartBox>
   )
 }

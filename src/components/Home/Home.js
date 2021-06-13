@@ -1,8 +1,8 @@
-import {
-  Flex
-} from "@chakra-ui/layout"
+import { Grid, GridItem } from "@chakra-ui/layout"
+import { Heading } from "@chakra-ui/react"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
+import { monthsMap, monthsMapFull } from "../../utility/maps"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
 import { PieChart } from "../DataViz/PieChart/PieChart"
@@ -47,7 +47,11 @@ export const Home = ({ groupedTree, colors, subField }) => {
   }, [index, years])
 
   useEffect(() => {
-    setMonths(sortKeysAscending(groupedMonths[year]))
+    const months = sortKeysAscending(groupedMonths[year])
+    setMonths(months)
+    if (!months.includes(month)) {
+      setMonth(R.last(months))
+    }
   }, [year])
 
   useEffect(() => {
@@ -81,69 +85,87 @@ export const Home = ({ groupedTree, colors, subField }) => {
       )(yearFields),
     ),
   )
-
   const [hovered, setHovered] = useState("")
 
   return (
-    <Flex direction={["column, row"]} align='flex-start' justify='center'>
-      <Flex direction='column' align='center'>
-        <Flex direction={["column", "row"]} align='center'>
-          <PieChart
-            width={350}
-            height={350}
-            margin={30}
-            data={R.toPairs(averages)}
-            colors={colors.categoryColors || {}}
-            mx={2}
-            my={3}
-            setHovered={setHovered}
-            hovered={hovered}
-          ></PieChart>
+    <Grid
+      justifyContent='center'
+      justifyItems='center'
+      alignItems='center'
+      rowGap={0}
+      columnGap={3}
+      pt={1}
+    >
+      <GridItem rowStart='1' colStart='1'>
+        <Heading size='lg' p={2} ml={3}>
+          Monthly Averages
+        </Heading>
+        <PieChart
+          width={350}
+          height={350}
+          margin={25}
+          data={R.toPairs(averages)}
+          colors={colors.categoryColors || {}}
+          setHovered={setHovered}
+          hovered={hovered}
+        />
+      </GridItem>
+      <GridItem rowStart={["2", "1"]} colStart={["1", "2"]}>
+        <Heading size='lg' p={2} ml={3}>
+          {monthsMapFull.get(month)}
+        </Heading>
+        <VerticalBarChart
+          fields={monthFields}
+          height={350}
+          width={550}
+          fieldName='category'
+          colors={colors.categoryColors || {}}
+          margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
+          sortByValue
+          subField={subField}
+          fontSize='0.9em'
+          setHovered={setHovered}
+          hovered={hovered}
+          average={averages[hovered]}
+        />
+      </GridItem>
 
-          <VerticalBarChart
-            fields={monthFields}
-            height={350}
-            width={600}
-            fieldName='category'
-            colors={colors.categoryColors || {}}
-            margin={{ top: 40, right: 20, bottom: 50, left: 45 }}
-            label={`${month}-${year}`}
-            sortByValue
-            subField={subField}
-            my={3}
-            mx={2}
-            fontSize='0.9em'
-            setHovered={setHovered}
-            hovered={hovered}
-          />
-        </Flex>
+      <GridItem rowStart={["3", "1"]} colStart={["1", "3"]} alignSelf='start'>
+        <CalendarSelect
+          month={month}
+          year={year}
+          onDecIndex={onDecIndex}
+          onIncIndex={onIncIndex}
+          isDisabledDec={index === 0}
+          isDisabledInc={index === years.length - 1}
+          months={months}
+          setMonth={setMonth}
+        />
+      </GridItem>
+      <GridItem
+        rowStart={["4", "3"]}
+        colStart='1'
+        colSpan={["1", "2"]}
+        justifySelf='center'
+      >
+        <Heading size='lg' p={1} ml={3} orientation='vertical'>
+          {year}
+        </Heading>
         <GroupedVerticalBarChart
           fields={yearFields}
-          height={450}
-          width={970}
+          height={400}
+          width={900}
           fieldName='month'
           subFieldName='category'
           subField={subField}
           colors={colors.categoryColors || {}}
           margin={{ top: 30, right: 20, bottom: 55, left: 55 }}
-          label={year}
-          mx={6}
           setHovered={setHovered}
           hovered={hovered}
+          average={averages[hovered]}
+          month={month}
         />
-      </Flex>
-      <CalendarSelect
-        month={month}
-        year={year}
-        onDecIndex={onDecIndex}
-        onIncIndex={onIncIndex}
-        isDisabledDec={index === 0}
-        isDisabledInc={index === years.length - 1}
-        months={months}
-        setMonth={setMonth}
-      />
-    </Flex>
+      </GridItem>
+    </Grid>
   )
 }
-
-

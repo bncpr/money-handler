@@ -34,7 +34,7 @@ export const PieChart = ({
       {pie.map(d => (
         <path
           key={d.data[0]}
-          value={d.value}
+          value={"" + d.value}
           d={arc.innerRadius(0).outerRadius(r)(d)}
           stroke={hovered === d.data[0] ? "black" : ""}
           strokeWidth={hovered === d.data[0] ? "1px" : "0.5px"}

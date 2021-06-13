@@ -12,18 +12,21 @@ export const CalendarSelect = ({
   isDisabledInc,
   months,
   setMonth,
+  ...rest
 }) => {
   return (
     <Flex
       direction='column'
       shadow='lg'
       borderRadius='lg'
-      m={3}
+      // m={3}
       px={8}
       py={6}
       align='center'
+      w='max'
+      {...rest}
     >
-      <Stack direction={["column", "row"]} align='center'>
+      <Stack direction='row' align='center'>
         <IconButton
           icon={<ChevronLeftIcon />}
           variant='ghost'
@@ -45,6 +48,7 @@ export const CalendarSelect = ({
       <SimpleGrid columns={3} spacing={2} mt={2}>
         {months.map(m => (
           <Button
+            key={m}
             variant={m === month ? "solid" : "ghost"}
             colorScheme='gray'
             size='sm'

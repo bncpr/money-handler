@@ -1,12 +1,19 @@
 import { Box, Text } from "@chakra-ui/layout"
+import { nanoid } from "@reduxjs/toolkit"
+import { easeCubicOut, select } from "d3"
 import { format } from "d3-format"
 import { scaleBand, scaleLinear } from "d3-scale"
 import * as R from "ramda"
+import { createRef, useEffect } from "react"
 import { capitalizeFirstChar } from "../../../../utility/utility"
 import { ChartBox } from "../../ChartBox/ChartBox"
 import { Bar } from "../Bar/Bar"
+import { BarLabel } from "../BarLabel/BarLabel"
+import { Bars } from "../Bars/Bars"
+import { BarsLabels } from "../BarsLabels/BarsLabels"
 import { BottomAxis } from "../BottomAxis"
 import { LeftAxis } from "../LeftAxis"
+import { AverageStroke } from "../Stroke/AverageStroke/AverageStroke"
 import { getDescendingKeys } from "../_modules/getDescendingKeys"
 import { getDomainXAlphanumerical } from "../_modules/getDomainX"
 
@@ -29,9 +36,10 @@ export const GroupedVerticalBarChart = ({
   margin,
   sortByValue,
   fontSize,
-  label,
   setHovered,
   hovered,
+  average,
+  month,
   ...rest
 }) => {
   const innerHeight = height - margin.top - margin.bottom
@@ -40,7 +48,7 @@ export const GroupedVerticalBarChart = ({
   const domainX = getDomainXAlphanumerical(fields)
   const domainY = [0, getMaxOfSubFields(fields) || 100]
 
-  const xScale = scaleBand().domain(domainX).range([0, innerWidth]).padding(0.2)
+  const xScale = scaleBand().domain(domainX).range([0, innerWidth]).padding(0.1)
 
   const yScale = scaleLinear().domain(domainY).range([innerHeight, 0])
 
@@ -49,8 +57,8 @@ export const GroupedVerticalBarChart = ({
       const subScale = scaleBand()
         .domain(getDescendingKeys(series))
         .range([xScale(key), xScale(key) + xScale.bandwidth()])
-      return subScale.domain().map(d => ({
-        key: key + d,
+      return subScale.domain().map((d, i) => ({
+        key: key + d + i,
         x: subScale(d),
         y: yScale(series[d]),
         width: subScale.bandwidth(),
@@ -58,9 +66,21 @@ export const GroupedVerticalBarChart = ({
         fill: colors[d],
         name: d,
         value: series[d],
+        ref: createRef(),
       }))
     }),
   )
+
+  useEffect(() => {
+    rects.forEach(rect => {
+      select(rect.ref.current)
+        .transition()
+        .ease(easeCubicOut)
+        .duration(400)
+        .attr("y", rect.y)
+        .attr("height", rect.height)
+    })
+  }, [rects])
 
   return (
     <ChartBox h={height} w={width} ml={margin.left} mt={margin.top} {...rest}>
@@ -71,32 +91,23 @@ export const GroupedVerticalBarChart = ({
         yOffset={margin.bottom / 2}
         showBy={fieldName}
         fontSize={fontSize}
+        selected={month}
       />
-      {rects.map(d => (
-        <Bar d={d} hovered={hovered} setHovered={setHovered} />
-      ))}
-      {rects.map(
-        d =>
-          hovered === d.name &&
-          d.value && (
-            <text
-              transform={`translate(${d.x + d.width},${d.y})`}
-              fontSize='16'
-              dy='0.5em'
-              dx='0.2em'
-            >
-              <tspan fontWeight='bold' y='-0.5em'>
-                {capitalizeFirstChar(d.name)}
-              </tspan>
-              <tspan x='0.2em' y='1.1em'>
-                {format(",")(d.value)}
-              </tspan>
-            </text>
-          ),
+      {average && (
+        <AverageStroke
+          y={yScale(average)}
+          width={innerWidth}
+          stroke={colors[hovered]}
+        />
       )}
-      <Text as='text' x={innerWidth - 20} textAnchor='end' fontSize='1.3em'>
-        {label}
-      </Text>
+      <Bars
+        rects={rects}
+        hovered={hovered}
+        setHovered={setHovered}
+        isInitiallyFlat
+        y={yScale(0)}
+      />
+      <BarsLabels rects={rects} hovered={hovered} fontSize={12} />
     </ChartBox>
   )
 }
