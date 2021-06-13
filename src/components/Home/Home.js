@@ -2,7 +2,7 @@ import { Grid, GridItem } from "@chakra-ui/layout"
 import { Heading } from "@chakra-ui/react"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
-import { monthsMap, monthsMapFull } from "../../utility/maps"
+import { monthsMapFull } from "../../utility/maps"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
 import { PieChart } from "../DataViz/PieChart/PieChart"
@@ -13,7 +13,27 @@ const getSums = R.map(R.pipe(R.map(R.prop("value")), R.sum))
 
 const sortKeysAscending = R.pipe(R.keys, R.sortBy(R.identity))
 
+const getCategorySums = init =>
+  R.pipe(R.groupBy(R.prop("category")), getSums, R.mergeRight(init))
+
+const getCategorySumsOfMonths = init =>
+  R.pipe(groupByProp("month"), R.map(getCategorySums(init)))
+
+function getAverages(subField, yearFields) {
+  return R.zipObj(
+    subField,
+    subField.map(key =>
+      R.pipe(
+        R.map(R.path([1, key])),
+        R.converge(R.divide, [R.sum, R.length]),
+        Math.floor,
+      )(yearFields),
+    ),
+  )
+}
+
 export const Home = ({ groupedTree, colors, subField }) => {
+  const [hovered, setHovered] = useState("")
   const [month, setMonth] = useState("")
   const [year, setYear] = useState("")
   const [years, setYears] = useState([])
@@ -54,38 +74,17 @@ export const Home = ({ groupedTree, colors, subField }) => {
     }
   }, [year])
 
-  useEffect(() => {
-    // console.log(months, years, index, year, month)
-  }, [months, years, index, year, month])
-
   const initSubField = R.zipObj(subField, subField.map(R.always(0)))
 
-  const monthFields = R.pipe(
-    R.groupBy(R.prop("category")),
-    R.map(R.pipe(R.map(R.prop("value")), R.sum)),
-    R.mergeRight(initSubField),
-    R.toPairs,
-  )(groupedMonths?.[year]?.[month] || [])
-
-  const yearFields = R.pipe(
-    groupByProp("month"),
-    R.map(groupByProp("category")),
-    R.map(getSums),
-    R.map(R.mergeRight(initSubField)),
-    R.toPairs,
-  )(groupedTree.year?.[year] || [])
-
-  const averages = R.zipObj(
-    subField,
-    subField.map(key =>
-      R.pipe(
-        R.map(R.path([1, key])),
-        R.converge(R.divide, [R.sum, R.length]),
-        Math.floor,
-      )(yearFields),
-    ),
+  const monthFields = R.toPairs(
+    getCategorySums(initSubField)(groupedMonths?.[year]?.[month] || []),
   )
-  const [hovered, setHovered] = useState("")
+
+  const yearFields = R.toPairs(
+    getCategorySumsOfMonths(initSubField)(groupedTree.year?.[year] || []),
+  )
+
+  const averages = getAverages(subField, yearFields)
 
   return (
     <Grid

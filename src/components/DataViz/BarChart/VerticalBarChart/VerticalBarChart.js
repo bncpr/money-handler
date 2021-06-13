@@ -1,18 +1,17 @@
-import { Text } from "@chakra-ui/layout"
+import { easeCubicOut, select } from "d3"
 import { scaleBand, scaleLinear } from "d3-scale"
 import * as R from "ramda"
+import { createRef, useEffect } from "react"
 import { ChartBox } from "../../ChartBox/ChartBox"
-import { BottomAxis } from "../BottomAxis"
-import { LeftAxis } from "../LeftAxis"
-import {
-  getDomainXAlphanumerical,
-  getDomainXDescendingValue,
-} from "../_modules/getDomainX"
-import { AverageStroke } from "../Stroke/AverageStroke/AverageStroke"
 import { Bars } from "../Bars/Bars"
 import { BarsLabels } from "../BarsLabels/BarsLabels"
-import { createRef, useEffect } from "react"
-import { easeCircleOut, easeCubicOut, easeElastic, easeExpInOut, easeLinear, easeQuadOut, select } from "d3"
+import { BottomAxis } from "../BottomAxis"
+import { LeftAxis } from "../LeftAxis"
+import { AverageStroke } from "../Stroke/AverageStroke/AverageStroke"
+import {
+  getDomainXAlphanumerical,
+  getDomainXDescendingValue
+} from "../_modules/getDomainX"
 
 export const VerticalBarChart = ({
   fields,

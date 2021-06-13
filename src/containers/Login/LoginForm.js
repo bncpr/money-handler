@@ -55,7 +55,7 @@ export const LoginForm = () => {
 
   return (
     <Box boxShadow='lg' width='max' p={8} borderRadius='md' mx='auto' mt={28}>
-      {signedIn && <Redirect to='/home' />}
+      {signedIn && <Redirect to='/' />}
       <FormikProvider value={formik}>
         <Flex direction='column'>
           <Heading size='md' mx='auto' fontWeight='semibold'>

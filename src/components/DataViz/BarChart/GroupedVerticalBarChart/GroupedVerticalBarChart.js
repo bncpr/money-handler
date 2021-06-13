@@ -1,14 +1,8 @@
-import { Box, Text } from "@chakra-ui/layout"
-import { nanoid } from "@reduxjs/toolkit"
 import { easeCubicOut, select } from "d3"
-import { format } from "d3-format"
 import { scaleBand, scaleLinear } from "d3-scale"
 import * as R from "ramda"
 import { createRef, useEffect } from "react"
-import { capitalizeFirstChar } from "../../../../utility/utility"
 import { ChartBox } from "../../ChartBox/ChartBox"
-import { Bar } from "../Bar/Bar"
-import { BarLabel } from "../BarLabel/BarLabel"
 import { Bars } from "../Bars/Bars"
 import { BarsLabels } from "../BarsLabels/BarsLabels"
 import { BottomAxis } from "../BottomAxis"
@@ -22,8 +16,6 @@ const getMaxOfSubFields = R.pipe(
   R.chain(R.values),
   R.reduce(R.max, 0),
 )
-export const groupByProp = prop => R.groupBy(R.prop(prop))
-const getSums = R.map(R.pipe(R.map(R.prop("value")), R.sum))
 
 export const GroupedVerticalBarChart = ({
   fields,

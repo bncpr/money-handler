@@ -1,7 +1,6 @@
-import { shallowEqual, useSelector } from "react-redux"
+import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { colorsGenerator } from "../../utility/colors"
-import * as R from "ramda"
 
 export function selectColorsSet(series, showBy, colors) {
   if (showBy === "payer") return colors.payerColors
@@ -23,7 +22,6 @@ export const useColors = ({ payers, categories }) => {
 
   useEffect(() => {
     if (R.isEmpty(colors) && (!R.isEmpty(payers) || !R.isEmpty(categories))) {
-
       setColors({
         payerColors: assignColors(payers, colorsGenerator),
         categoryColors: assignColors(categories, colorsGenerator),
