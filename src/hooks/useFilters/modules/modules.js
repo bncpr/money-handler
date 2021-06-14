@@ -20,10 +20,7 @@ const removeFiltersAndAppend = (keys, key, value, stack) =>
   R.pipe(removeFilters(keys), appendFilter(key, value))(stack)
 
 const removeAndAppend = R.curry((key, value, stack) =>
-  R.pipe(
-    removeFilter(key),
-    appendFilter(key, value),
-  )(stack),
+  R.pipe(removeFilter(key), appendFilter(key, value))(stack),
 )
 
 const getKeyValPair = R.props(["key", "value"])
@@ -70,6 +67,7 @@ export const getEntriesStack = (tree, filterStack, entriesStack) => {
 }
 
 export const getUpdatedCounts = (tree, entriesStack, rest) => {
+  if (R.isEmpty(tree)) return {}
   const counts = R.map(R.map(R.length), tree)
 
   R.forEach(
