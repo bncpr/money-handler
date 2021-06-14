@@ -129,7 +129,7 @@ export const Home = ({ groupedTree, colors, subField }) => {
         />
       </GridItem>
 
-      <GridItem rowStart={["3", "1"]} colStart={["1", "3"]} alignSelf='start'>
+      <GridItem rowStart={["3", "1"]} colStart={["1", "3"]} alignSelf='start' pt="52px">
         <CalendarSelect
           month={month}
           year={year}

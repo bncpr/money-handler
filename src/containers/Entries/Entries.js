@@ -1,8 +1,18 @@
 import { AddIcon } from "@chakra-ui/icons"
 import { Box, Flex, HStack } from "@chakra-ui/layout"
-import { Button, Portal, Table, Tbody } from "@chakra-ui/react"
+import {
+  Button,
+  Grid,
+  GridItem,
+  Heading,
+  Portal,
+  Table,
+  Tbody,
+  VStack,
+} from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
+import { Filters } from "../../components/Filters/Filters"
 import { DeleteEntryAlert } from "../../components/UI/Alert/DeleteEntryAlert"
 import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
 import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
@@ -15,7 +25,13 @@ import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/
 
 const headers = ["Date", "Value", "Payer", "Category", "Tags", "more"]
 
-export const Entries = ({ surfaceData, fields, filters }) => {
+export const Entries = ({
+  surfaceData,
+  fields,
+  filters,
+  counts,
+  setFilter,
+}) => {
   const dispatch = useDispatch()
 
   const {
@@ -50,43 +66,66 @@ export const Entries = ({ surfaceData, fields, filters }) => {
 
   return (
     <Box>
-      <Flex direction='column' align='center' pt={6}>
-        <Box shadow='md' p={6} borderRadius='lg'>
-          <Table variant='simple' size='sm'>
-            <TableHead headers={headers} />
-            <Tbody>
-              {surfaceData
-                .slice(page * pageSize, page * pageSize + pageSize)
-                .map(d => (
-                  <TableRow
-                    key={d.id}
-                    d={d}
-                    onDelete={onOpenDel}
-                    onEdit={onOpenEdit}
-                    onPick={onPickEntry}
-                  />
-                ))}
-            </Tbody>
-          </Table>
-        </Box>
+      <Grid templateColumns='1fr 1fr auto 1fr' columnGap={6} pt={9}>
+        <GridItem colStart='2' rowStart='1' justifySelf='center'>
+          <VStack spacing={6} align="stretch" width={56}>
+            <Box>
+              <Heading size='md' fontWeight='semibold' p={2} >
+                Filters
+              </Heading>
+              <Filters
+                
+                filters={filters}
+                counts={counts}
+                fields={fields}
+                setFilter={setFilter}
+              />
+            </Box>
+            <Button
+              onClick={onOpenNew}
+              leftIcon={<AddIcon />}
+              colorScheme='purple'
+            >
+              ADD ENTRY
+            </Button>
+          </VStack>
+        </GridItem>
+        <GridItem colStart='3' rowStart='1' rowSpan='1'>
+          <Box shadow='md' p={6} borderRadius='lg'>
+            <Table variant='simple' size='sm'>
+              <TableHead headers={headers} />
+              <Tbody>
+                {surfaceData
+                  .slice(page * pageSize, page * pageSize + pageSize)
+                  .map(d => (
+                    <TableRow
+                      key={d.id}
+                      d={d}
+                      onDelete={onOpenDel}
+                      onEdit={onOpenEdit}
+                      onPick={onPickEntry}
+                    />
+                  ))}
+              </Tbody>
+            </Table>
+          </Box>
+        </GridItem>
 
-        <HStack p={3} pos='fixed' bottom={0} spacing={10}>
-          <PagePanel
-            page={page}
-            pagesNum={pagesNum}
-            pageSize={pageSize}
-            changePage={onChangePage}
-            changePageSize={onChangePageSize}
-          />
-          <Button
-            onClick={onOpenNew}
-            leftIcon={<AddIcon />}
-            colorScheme='purple'
-          >
-            ADD
-          </Button>
-        </HStack>
-      </Flex>
+        <GridItem colStart='2' rowStart='2' pt={3}></GridItem>
+      </Grid>
+
+      <PagePanel
+        pos='fixed'
+        bottom='0'
+        left='50%'
+        transform='translate(-50%, 0)'
+        p={2}
+        page={page}
+        pagesNum={pagesNum}
+        pageSize={pageSize}
+        changePage={onChangePage}
+        changePageSize={onChangePageSize}
+      />
 
       <Portal>
         <DeleteEntryAlert

@@ -27,7 +27,6 @@ export const ProfilePopover = ({ ...rest }) => {
       <PopoverContent p={3} _focus={{ boxShadow: "none" }}>
         <PopoverCloseButton />
         <PopoverBody>
-          {" "}
           Signed in as:
           <Code m={2} p={1}>
             {email}
