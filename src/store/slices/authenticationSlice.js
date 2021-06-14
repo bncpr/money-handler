@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const initialState = {
+const initial = {
   signedIn: false,
   email: null,
   uid: null,
@@ -8,7 +8,7 @@ const initialState = {
 
 const authenticationSlice = createSlice({
   name: "authentication",
-  initialState,
+  initialState: { signedIn: undefined },
   reducers: {
     signIn(state, { payload: { uid, email } }) {
       state.signedIn = true
@@ -16,7 +16,7 @@ const authenticationSlice = createSlice({
       state.email = email
     },
     signOut() {
-      return initialState
+      return initial
     },
   },
 })

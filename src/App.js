@@ -63,11 +63,11 @@ export const App = () => {
 
   return (
     <Box>
-      <Toolbar bgColor='purple.500' spacing={8} ref={headerRef}>
-        <NavigationItem path='/' current={pathname} label='HOME' />
+      <Toolbar bgColor='purple.500' spacing={6} ref={headerRef}>
+        <NavigationItem path='/' current={pathname} label='HOME' ml={3} />
         <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
         <NavigationItem path='/about' current={pathname} label='ABOUT' />
-        {!signedIn && (
+        {signedIn === false && (
           <NavigationItem path='/login' current={pathname} label='LOGIN' />
         )}
         <Spacer />

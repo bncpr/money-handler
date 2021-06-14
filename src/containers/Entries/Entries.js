@@ -68,13 +68,20 @@ export const Entries = ({
     <Box>
       <Grid templateColumns='1fr 1fr auto 1fr' columnGap={6} pt={9}>
         <GridItem colStart='2' rowStart='1' justifySelf='center'>
-          <VStack spacing={6} align="stretch" width={56}>
+          <VStack
+            spacing={6}
+            align='stretch'
+            width="2xs"
+            shadow='xl'
+            px={10}
+            py={6}
+            borderRadius='lg'
+          >
             <Box>
-              <Heading size='md' fontWeight='semibold' p={2} >
+              <Heading size='md' fontWeight='semibold' p={2}>
                 Filters
               </Heading>
               <Filters
-                
                 filters={filters}
                 counts={counts}
                 fields={fields}
@@ -91,7 +98,7 @@ export const Entries = ({
           </VStack>
         </GridItem>
         <GridItem colStart='3' rowStart='1' rowSpan='1'>
-          <Box shadow='md' p={6} borderRadius='lg'>
+          <Box shadow='xl' p={6} borderRadius='lg'>
             <Table variant='simple' size='sm'>
               <TableHead headers={headers} />
               <Tbody>
