@@ -1,5 +1,5 @@
 import { AddIcon } from "@chakra-ui/icons"
-import { Box, Flex, HStack } from "@chakra-ui/layout"
+import { Box } from "@chakra-ui/layout"
 import {
   Button,
   Grid,
@@ -8,7 +8,7 @@ import {
   Portal,
   Table,
   Tbody,
-  VStack,
+  VStack
 } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
@@ -71,7 +71,7 @@ export const Entries = ({
           <VStack
             spacing={6}
             align='stretch'
-            width="2xs"
+            width='2xs'
             shadow='xl'
             px={10}
             py={6}
@@ -116,23 +116,19 @@ export const Entries = ({
               </Tbody>
             </Table>
           </Box>
+          <PagePanel
+            pos='fixed'
+            bottom='0'
+            left='50%'
+            p={2}
+            page={page}
+            pagesNum={pagesNum}
+            pageSize={pageSize}
+            changePage={onChangePage}
+            changePageSize={onChangePageSize}
+          />
         </GridItem>
-
-        <GridItem colStart='2' rowStart='2' pt={3}></GridItem>
       </Grid>
-
-      <PagePanel
-        pos='fixed'
-        bottom='0'
-        left='50%'
-        transform='translate(-50%, 0)'
-        p={2}
-        page={page}
-        pagesNum={pagesNum}
-        pageSize={pageSize}
-        changePage={onChangePage}
-        changePageSize={onChangePageSize}
-      />
 
       <Portal>
         <DeleteEntryAlert
