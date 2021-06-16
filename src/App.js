@@ -16,7 +16,7 @@ import { useFilters } from "./hooks/useFilters/useFilters"
 import { useInitialPick } from "./hooks/useInitialPick/useInitialPick"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
-import { getRandomMonthData } from "./utility/getRandomData"
+import { getRandomData, getRandomMonthData } from "./utility/getRandomData"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
@@ -38,6 +38,7 @@ export const App = () => {
         dispatch(signIn({ uid: user.uid, email: user.email }))
       } else {
         dispatch(signOut())
+        dispatch(updateEntries({ entries: getRandomData() }))
       }
     })
   }, [auth, dispatch])
@@ -100,6 +101,7 @@ export const App = () => {
               filters={filters}
               counts={counts}
               setFilter={setFilter}
+              signedIn={signedIn}
             />
           </Route>
           <Route path='/login' component={LoginForm} />

@@ -1,4 +1,8 @@
-import { extendTheme, withDefaultColorScheme } from "@chakra-ui/react"
+import {
+  extendTheme,
+  withDefaultColorScheme,
+  withDefaultProps,
+} from "@chakra-ui/react"
 
 export const customTheme = extendTheme(
   {
@@ -43,5 +47,11 @@ export const customTheme = extendTheme(
   withDefaultColorScheme({
     colorScheme: "green",
     components: ["Radio"],
+  }),
+  withDefaultProps({
+    defaultProps: {
+      isLazy: true,
+    },
+    components: ["Menu"],
   }),
 )

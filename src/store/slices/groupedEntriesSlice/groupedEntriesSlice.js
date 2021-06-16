@@ -25,16 +25,6 @@ const groupedEntriesSlice = createSlice({
       state.fields = fields
     },
   },
-  extraReducers: {
-    [signOut]: state => {
-      const entriesArr = getRandomData()
-      const groupedTree = R.pipe(getInitialGroupedTree)(entriesArr)
-      const fields = getFields(groupedTree)
-      state.entries = entriesArr
-      state.groupedTree = groupedTree
-      state.fields = fields
-    },
-  },
 })
 
 export const groupedEntriesReducer = groupedEntriesSlice.reducer

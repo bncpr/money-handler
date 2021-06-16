@@ -22,7 +22,6 @@ import { usePagination } from "../../hooks/usePagination/usePagination"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
 import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
 import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
-import { LoginForm } from "../Login/LoginForm"
 
 const headers = ["Date", "Value", "Payer", "Category", "Tags", "more"]
 
@@ -93,13 +92,15 @@ export const Entries = ({
                 setFilter={setFilter}
               />
             </Box>
-            <Button
-              onClick={onOpenNew}
-              leftIcon={<AddIcon />}
-              colorScheme='purple'
-            >
-              ADD ENTRY
-            </Button>
+            {signedIn && (
+              <Button
+                onClick={onOpenNew}
+                leftIcon={<AddIcon />}
+                colorScheme='purple'
+              >
+                ADD ENTRY
+              </Button>
+            )}
           </VStack>
         </GridItem>
         <GridItem colStart='2' rowStart='1' rowSpan='1'>

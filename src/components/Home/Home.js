@@ -88,15 +88,8 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
   const averages = getAverages(subField, yearFields)
 
   return (
-    <Grid
-      justifyContent='center'
-      justifyItems='center'
-      alignItems='center'
-      rowGap={0}
-      columnGap={8}
-      pt={1}
-    >
-      <GridItem rowStart='1' colStart='1'>
+    <Grid justifyContent='center' rowGap={0} columnGap={8} pt={1}>
+      <GridItem rowStart='1' colStart='1' colSpan='2'>
         <Heading size='lg' p={2} ml={3}>
           Monthly Averages
         </Heading>
@@ -110,7 +103,7 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
           hovered={hovered}
         />
       </GridItem>
-      <GridItem rowStart={["2", "1"]} colStart={["1", "2"]}>
+      <GridItem rowStart='1' colStart='3' colSpan='2'>
         <Heading size='lg' p={2} ml={3}>
           {monthsMapFull.get(month)}
         </Heading>
@@ -131,8 +124,8 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
       </GridItem>
 
       <GridItem
-        rowStart={["3", "1"]}
-        colStart={["1", "3"]}
+        rowStart='1'
+        colStart='5'
         rowSpan='3'
         alignSelf='start'
         pt='58px'
@@ -151,12 +144,7 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
           />
         </VStack>
       </GridItem>
-      <GridItem
-        rowStart={["4", "3"]}
-        colStart='1'
-        colSpan={["1", "2"]}
-        justifySelf='center'
-      >
+      <GridItem rowStart='2' colStart='1' colSpan='4' justifySelf='center'>
         <Heading size='lg' p={1} ml={3} orientation='vertical'>
           {year}
         </Heading>

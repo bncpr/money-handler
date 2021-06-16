@@ -20,7 +20,7 @@ export function RadioCard({ children, label, ...rest }) {
         borderWidth='1px'
         borderRadius='md'
         boxShadow='md'
-        size='lg'
+        size='md'
         _checked={{
           bg: "purple.500",
           color: "white",

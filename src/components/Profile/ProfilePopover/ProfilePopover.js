@@ -10,9 +10,11 @@ import {
   PopoverTrigger,
 } from "@chakra-ui/popover"
 import { useSelector } from "react-redux"
+import { useHistory } from "react-router-dom"
 import { auth } from "../../../firebase"
 
 export const ProfilePopover = ({ ...rest }) => {
+  const history = useHistory()
   const email = useSelector(state => state.authentication.email)
   return (
     <Popover>
@@ -33,7 +35,14 @@ export const ProfilePopover = ({ ...rest }) => {
           </Code>
         </PopoverBody>
         <PopoverFooter display='flex'>
-          <Button size='sm' colorScheme='red' onClick={() => auth.signOut()}>
+          <Button
+            size='sm'
+            colorScheme='red'
+            onClick={() => {
+              auth.signOut()
+              history.push("/")
+            }}
+          >
             Log Out
           </Button>
         </PopoverFooter>

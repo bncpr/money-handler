@@ -7,11 +7,11 @@ const getRanNum = (min, max) =>
 const getLengths = () => ({
   food: getRanNum(4, 15),
   home: getRanNum(2, 10),
-  transportation: getRanNum(1, 7),
+  transportation: getRanNum(1, 8),
   utilities: getRanNum(1, 5),
   entertainment: getRanNum(1, 5),
   cats: getRanNum(0, 3),
-  miscellaneous: getRanNum(0, 8),
+  miscellaneous: getRanNum(0, 5),
   takeout: getRanNum(0, 5),
 })
 
@@ -59,16 +59,19 @@ export const getRandomData = () => {
     "12",
   ]
 
-  const years = [currentYear]
+  const years = ["" + (currentYear - 1), currentYear]
 
-  return R.unnest(
-    R.chain(
-      year =>
-        (year === currentYear
-          ? months.slice(0, +currentMonth - 1)
-          : months
-        ).map(month => getRandomMonthData(year, month)),
-      years,
+  return R.pipe(
+    R.chain(year =>
+      (year === currentYear ? months.slice(0, +currentMonth - 1) : months).map(
+        month => getRandomMonthData(year, month),
+      ),
     ),
-  )
+    R.unnest,
+    R.tap(console.log),
+    R.map(entry => R.objOf(entry.id, entry)),
+    R.tap(console.log),
+    R.mergeAll,
+    R.tap(console.log),
+  )(years)
 }

@@ -1,12 +1,13 @@
 import { createAction, createSlice } from "@reduxjs/toolkit"
 import * as R from "ramda"
 import { signOut } from "./authenticationSlice"
+import { updateEntries } from "./groupedEntriesSlice/groupedEntriesSlice"
 
 export const getUserEntriesFulfilled = createAction(
-  "data/getUserEntries/fulfilled"
+  "data/getUserEntries/fulfilled",
 )
 export const getUserEntriesNoEntries = createAction(
-  "data/getUserEntries/noEntries"
+  "data/getUserEntries/noEntries",
 )
 
 const initialState = {
@@ -37,7 +38,9 @@ const dataSlice = createSlice({
     [getUserEntriesFulfilled]: (state, { payload }) => {
       return R.mergeDeepRight(state, payload)
     },
-    [signOut]: state => initialState,
+    [updateEntries]: (state, { payload }) => {
+      state.entries = payload.entries
+    },
   },
 })
 

@@ -5,6 +5,7 @@ import { Field, Form, FormikProvider, useFormik } from "formik"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { Redirect } from "react-router"
+import { useHistory } from "react-router-dom"
 import * as Yup from "yup"
 import { InputContext } from "../../components/UI/Form/InputContext/InputContext"
 import { createUser, signInUser } from "../../firebase"
@@ -28,6 +29,7 @@ const validationSchema = Yup.object().shape({
 })
 
 export const LoginForm = () => {
+  const history = useHistory()
   const signedIn = useSelector(state => state.authentication.signedIn)
   const [mode, setMode] = useState("signIn")
   const toggleMode = () => setMode(mode === "signIn" ? "signUp" : "signIn")
@@ -43,6 +45,7 @@ export const LoginForm = () => {
       try {
         const response = await fn(email, password)
         formik.resetForm()
+        history.push(mode === "signIn" ? "/" : "entries")
       } catch (error) {
         const { key, value } = extractErrorCode(error.code)
         formik.errors[key] = value
