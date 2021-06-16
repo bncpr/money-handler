@@ -1,15 +1,6 @@
 import * as R from "ramda"
 import { useEffect, useState } from "react"
-import { colorsGenerator } from "../../utility/colors"
-
-export function selectColorsSet(series, showBy, colors) {
-  if (showBy === "payer") return colors.payerColors
-  if (showBy === "category") return colors.categoryColors
-  // Give precedence to showBy because it comes on top of series
-  if (series === "payer") return colors.payerColors
-  if (series === "category") return colors.categoryColors
-  return {}
-}
+import { getColorsGenerator } from "../../utility/colors"
 
 const assignColors = (array, colorsGen) =>
   R.zipObj(
@@ -21,13 +12,17 @@ export const useColors = ({ payers, categories }) => {
   const [colors, setColors] = useState({})
 
   useEffect(() => {
-    if (R.isEmpty(colors) && (!R.isEmpty(payers) || !R.isEmpty(categories))) {
-      setColors({
-        payerColors: assignColors(payers, colorsGenerator),
-        categoryColors: assignColors(categories, colorsGenerator),
-      })
-    }
+    const colorsGenerator = getColorsGenerator()
+    setColors({
+      payerColors: assignColors(payers, colorsGenerator),
+      categoryColors: assignColors(categories, colorsGenerator),
+    })
   }, [payers, categories])
 
-  return colors
+  const resetColors = () => {
+    console.log("RESET_COLORS")
+    setColors({})
+  }
+
+  return { colors, resetColors }
 }

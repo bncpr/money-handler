@@ -8,7 +8,7 @@ import {
   Portal,
   Table,
   Tbody,
-  VStack
+  VStack,
 } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
@@ -22,6 +22,7 @@ import { usePagination } from "../../hooks/usePagination/usePagination"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
 import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
 import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
+import { LoginForm } from "../Login/LoginForm"
 
 const headers = ["Date", "Value", "Payer", "Category", "Tags", "more"]
 
@@ -31,6 +32,7 @@ export const Entries = ({
   filters,
   counts,
   setFilter,
+  signedIn,
 }) => {
   const dispatch = useDispatch()
 
@@ -66,8 +68,11 @@ export const Entries = ({
 
   return (
     <Box>
-      <Grid templateColumns='1fr 1fr auto 1fr' columnGap={6} pt={9}>
-        <GridItem colStart='2' rowStart='1' justifySelf='center'>
+      <Grid templateColumns='1fr auto 1fr' columnGap={6} pt={9}>
+        {/* <GridItem colStart='3' rowStart='1'>
+          {signedIn || <LoginForm />}
+        </GridItem> */}
+        <GridItem colStart='1' rowStart='1' justifySelf='end'>
           <VStack
             spacing={6}
             align='stretch'
@@ -97,7 +102,7 @@ export const Entries = ({
             </Button>
           </VStack>
         </GridItem>
-        <GridItem colStart='3' rowStart='1' rowSpan='1'>
+        <GridItem colStart='2' rowStart='1' rowSpan='1'>
           <Box shadow='xl' p={6} borderRadius='lg'>
             <Table variant='simple' size='sm'>
               <TableHead headers={headers} />
@@ -120,6 +125,7 @@ export const Entries = ({
             pos='fixed'
             bottom='0'
             left='50%'
+            transform='translate(-50%, 0)'
             p={2}
             page={page}
             pagesNum={pagesNum}

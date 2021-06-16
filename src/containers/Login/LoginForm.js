@@ -37,11 +37,12 @@ export const LoginForm = () => {
       password: "",
     },
     validationSchema,
+    validateOnBlur: false,
     onSubmit: async ({ email, password }) => {
       const fn = mode === "signIn" ? signInUser : createUser
       try {
         const response = await fn(email, password)
-        console.log(response)
+        formik.resetForm()
       } catch (error) {
         const { key, value } = extractErrorCode(error.code)
         formik.errors[key] = value
@@ -54,7 +55,7 @@ export const LoginForm = () => {
   }, [formik.values])
 
   return (
-    <Box boxShadow='lg' width='max' p={8} borderRadius='md' mx='auto' mt={28}>
+    <Box boxShadow='lg' borderRadius='md' p={6} w='max' mx='auto'>
       {signedIn && <Redirect to='/' />}
       <FormikProvider value={formik}>
         <Flex direction='column'>

@@ -10,11 +10,13 @@ import { Toolbar } from "./components/Navigation/Toolbar/Toolbar"
 import { ProfilePopover } from "./components/Profile/ProfilePopover/ProfilePopover"
 import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
-import { auth } from "./firebase"
+import { auth, getEntriesObserver } from "./firebase"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
 import { useInitialPick } from "./hooks/useInitialPick/useInitialPick"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
+import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
+import { getRandomMonthData } from "./utility/getRandomData"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
@@ -22,6 +24,7 @@ console.log(currentYear, currentMonth)
 export const App = () => {
   const dispatch = useDispatch()
   const signedIn = useSelector(state => state.authentication.signedIn)
+  const uid = useSelector(state => state.authentication.uid)
 
   const headerRef = useRef()
   const top = headerRef.current?.clientHeight
@@ -30,6 +33,7 @@ export const App = () => {
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
+      resetColors()
       if (user) {
         dispatch(signIn({ uid: user.uid, email: user.email }))
       } else {
@@ -37,6 +41,13 @@ export const App = () => {
       }
     })
   }, [auth, dispatch])
+
+  useEffect(() => {
+    const unsubscribe = getEntriesObserver(uid, snapshot => {
+      dispatch(updateEntries({ entries: snapshot.val() }))
+    })
+    return () => unsubscribe()
+  }, [uid])
 
   const { entries, groupedTree, fields } = useSelector(
     state => state.groupedEntries,
@@ -56,7 +67,7 @@ export const App = () => {
   useInitialPick(fields.year, setFilter("year"))
   useInitialPick(R.keys(counts.month), setFilter("month"))
 
-  const colors = useColors({
+  const { colors, resetColors } = useColors({
     payers: fields.payer,
     categories: fields.category,
   })
@@ -97,6 +108,7 @@ export const App = () => {
               groupedTree={groupedTree}
               subField={fields.category}
               colors={colors}
+              signedIn={signedIn}
             />
           </Route>
         </Switch>

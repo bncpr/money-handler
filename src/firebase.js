@@ -7,6 +7,7 @@ import {
 import {
   get,
   getDatabase,
+  onValue,
   push,
   ref,
   remove,
@@ -39,7 +40,7 @@ export const db = getDatabase()
 
 export const getUserEntries = uid =>
   get(ref(db, `users/${uid}`)).then(snapshot =>
-    snapshot.exists() ? snapshot.val() : {}
+    snapshot.exists() ? snapshot.val() : {},
   )
 
 export const removeEntry = (uid, entryId) =>
@@ -52,3 +53,6 @@ export const updateUserFields = (uid, updates) =>
   update(ref(db, `users/${uid}`), updates)
 
 export const pushNewEntry = uid => push(ref(db, `users/${uid}/entries`))
+
+export const getEntriesObserver = (uid, callback) =>
+  onValue(ref(db, `users/${uid}/entries`), callback)

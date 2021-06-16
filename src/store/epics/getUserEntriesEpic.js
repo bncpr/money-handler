@@ -5,12 +5,10 @@ import { catchError, map, startWith, switchMap } from "rxjs/operators"
 import { getUserEntries } from "../../firebase"
 import { signIn } from "../slices/authenticationSlice"
 import {
-  getUserEntriesFulfilled,
   getUserEntriesNoEntries
 } from "../slices/dataSlice"
 import { showError } from "../slices/errorSlice"
-
-
+import { updateEntries } from "../slices/groupedEntriesSlice/groupedEntriesSlice"
 
 export const getUserEntriesEpic = action$ =>
   action$.pipe(
@@ -18,14 +16,10 @@ export const getUserEntriesEpic = action$ =>
     switchMap(({ payload: { uid } }) =>
       from(getUserEntries(uid)).pipe(
         map(data =>
-          ifElse(
-            isEmpty,
-            getUserEntriesNoEntries,
-            getUserEntriesFulfilled
-          )(data)
+          ifElse(isEmpty, getUserEntriesNoEntries, updateEntries)(data),
         ),
         catchError(error => of(showError(error))),
-        startWith({ type: "data/getUserEntries/pending" })
-      )
-    )
+        startWith({ type: "data/getUserEntries/pending" }),
+      ),
+    ),
   )

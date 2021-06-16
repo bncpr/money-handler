@@ -49,3 +49,4 @@ function* generateColors(colors) {
 }
 
 export const colorsGenerator = generateColors(colors)
+export const getColorsGenerator = () => generateColors(colors)

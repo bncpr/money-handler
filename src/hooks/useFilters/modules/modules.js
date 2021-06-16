@@ -23,8 +23,6 @@ const removeAndAppend = R.curry((key, value, stack) =>
   R.pipe(removeFilter(key), appendFilter(key, value))(stack),
 )
 
-const getKeyValPair = R.props(["key", "value"])
-
 const filterNext = (key, value, prevEntries) =>
   R.pipe(R.prop("entries"), R.filter(R.propEq(key, value)))(prevEntries)
 
@@ -36,17 +34,9 @@ const getNextEntries = ([key, value], prevEntries) => ({
 
 const getUpdatedEntriesStack = (accStack, filterStack, entriesStack) => {
   const nextFilter = R.head(filterStack)
-  const nextEntries = R.head(entriesStack)
   const prevEntries = R.last(accStack)
 
   if (!nextFilter) return accStack
-
-  if (nextEntries && R.equals(getKeyValPair(nextEntries), nextFilter))
-    return getUpdatedEntriesStack(
-      accStack.concat(nextEntries),
-      R.tail(filterStack),
-      R.tail(entriesStack),
-    )
 
   return getUpdatedEntriesStack(
     accStack.concat(getNextEntries(nextFilter, prevEntries)),
@@ -60,7 +50,7 @@ export const getEntriesStack = (tree, filterStack, entriesStack) => {
   if (!nextFilter) return []
   const [key, value] = nextFilter
   return getUpdatedEntriesStack(
-    [{ key, value, entries: R.path(nextFilter, tree) }],
+    [{ key, value, entries: R.pathOr([], nextFilter, tree) }],
     R.tail(filterStack),
     R.tail(entriesStack),
   )

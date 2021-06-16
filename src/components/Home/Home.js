@@ -1,7 +1,8 @@
 import { Grid, GridItem } from "@chakra-ui/layout"
-import { Heading } from "@chakra-ui/react"
+import { Heading, VStack } from "@chakra-ui/react"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
+import { LoginForm } from "../../containers/Login/LoginForm"
 import { monthsMapFull } from "../../utility/maps"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
@@ -32,7 +33,7 @@ function getAverages(subField, yearFields) {
   )
 }
 
-export const Home = ({ groupedTree, colors, subField }) => {
+export const Home = ({ groupedTree, colors, subField, signedIn }) => {
   const [hovered, setHovered] = useState("")
   const [month, setMonth] = useState("")
   const [year, setYear] = useState("")
@@ -92,7 +93,7 @@ export const Home = ({ groupedTree, colors, subField }) => {
       justifyItems='center'
       alignItems='center'
       rowGap={0}
-      columnGap={3}
+      columnGap={8}
       pt={1}
     >
       <GridItem rowStart='1' colStart='1'>
@@ -129,17 +130,26 @@ export const Home = ({ groupedTree, colors, subField }) => {
         />
       </GridItem>
 
-      <GridItem rowStart={["3", "1"]} colStart={["1", "3"]} alignSelf='start' pt="52px">
-        <CalendarSelect
-          month={month}
-          year={year}
-          onDecIndex={onDecIndex}
-          onIncIndex={onIncIndex}
-          isDisabledDec={index === 0}
-          isDisabledInc={index === years.length - 1}
-          months={months}
-          setMonth={setMonth}
-        />
+      <GridItem
+        rowStart={["3", "1"]}
+        colStart={["1", "3"]}
+        rowSpan='3'
+        alignSelf='start'
+        pt='58px'
+      >
+        <VStack spacing={6}>
+          {/* {signedIn || <LoginForm />} */}
+          <CalendarSelect
+            month={month}
+            year={year}
+            onDecIndex={onDecIndex}
+            onIncIndex={onIncIndex}
+            isDisabledDec={index === 0}
+            isDisabledInc={index === years.length - 1}
+            months={months}
+            setMonth={setMonth}
+          />
+        </VStack>
       </GridItem>
       <GridItem
         rowStart={["4", "3"]}
@@ -153,7 +163,7 @@ export const Home = ({ groupedTree, colors, subField }) => {
         <GroupedVerticalBarChart
           fields={yearFields}
           height={400}
-          width={900}
+          width={850}
           fieldName='month'
           subFieldName='category'
           subField={subField}
