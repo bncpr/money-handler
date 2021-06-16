@@ -1,5 +1,5 @@
 import { Grid, GridItem } from "@chakra-ui/layout"
-import { Heading, VStack } from "@chakra-ui/react"
+import { Box, Heading, VStack } from "@chakra-ui/react"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { LoginForm } from "../../containers/Login/LoginForm"
@@ -88,81 +88,83 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
   const averages = getAverages(subField, yearFields)
 
   return (
-    <Grid justifyContent='center' rowGap={0} columnGap={8} pt={1}>
-      <GridItem rowStart='1' colStart='1' colSpan='2'>
-        <Heading size='lg' p={2} ml={3}>
-          Monthly Averages
-        </Heading>
-        <PieChart
-          width={350}
-          height={350}
-          margin={25}
-          data={R.toPairs(averages)}
-          colors={colors.categoryColors || {}}
-          setHovered={setHovered}
-          hovered={hovered}
-        />
-      </GridItem>
-      <GridItem rowStart='1' colStart='3' colSpan='2'>
-        <Heading size='lg' p={2} ml={3}>
-          {monthsMapFull.get(month)}
-        </Heading>
-        <VerticalBarChart
-          fields={monthFields}
-          height={350}
-          width={550}
-          fieldName='category'
-          colors={colors.categoryColors || {}}
-          margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
-          sortByValue
-          subField={subField}
-          fontSize='0.9em'
-          setHovered={setHovered}
-          hovered={hovered}
-          average={averages[hovered]}
-        />
-      </GridItem>
-
-      <GridItem
-        rowStart='1'
-        colStart='5'
-        rowSpan='3'
-        alignSelf='start'
-        pt='58px'
-      >
-        <VStack spacing={6}>
-          {/* {signedIn || <LoginForm />} */}
-          <CalendarSelect
-            month={month}
-            year={year}
-            onDecIndex={onDecIndex}
-            onIncIndex={onIncIndex}
-            isDisabledDec={index === 0}
-            isDisabledInc={index === years.length - 1}
-            months={months}
-            setMonth={setMonth}
+    <Box>
+      <Grid justifyContent='center' rowGap={0} columnGap={8} pt={1}>
+        <GridItem rowStart='1' colStart='1' colSpan='2'>
+          <Heading size='lg' p={2} ml={3}>
+            Monthly Averages
+          </Heading>
+          <PieChart
+            width={350}
+            height={350}
+            margin={25}
+            data={R.toPairs(averages)}
+            colors={colors.categoryColors || {}}
+            setHovered={setHovered}
+            hovered={hovered}
           />
-        </VStack>
-      </GridItem>
-      <GridItem rowStart='2' colStart='1' colSpan='4' justifySelf='center'>
-        <Heading size='lg' p={1} ml={3} orientation='vertical'>
-          {year}
-        </Heading>
-        <GroupedVerticalBarChart
-          fields={yearFields}
-          height={400}
-          width={850}
-          fieldName='month'
-          subFieldName='category'
-          subField={subField}
-          colors={colors.categoryColors || {}}
-          margin={{ top: 30, right: 20, bottom: 55, left: 55 }}
-          setHovered={setHovered}
-          hovered={hovered}
-          average={averages[hovered]}
-          month={month}
-        />
-      </GridItem>
-    </Grid>
+        </GridItem>
+        <GridItem rowStart='1' colStart='3' colSpan='2'>
+          <Heading size='lg' p={2} ml={3}>
+            {monthsMapFull.get(month)}
+          </Heading>
+          <VerticalBarChart
+            fields={monthFields}
+            height={350}
+            width={550}
+            fieldName='category'
+            colors={colors.categoryColors || {}}
+            margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
+            sortByValue
+            subField={subField}
+            fontSize='0.9em'
+            setHovered={setHovered}
+            hovered={hovered}
+            average={averages[hovered]}
+          />
+        </GridItem>
+
+        <GridItem
+          rowStart='1'
+          colStart='5'
+          rowSpan='3'
+          alignSelf='start'
+          pt='58px'
+        >
+          <VStack spacing={6}>
+            {/* {signedIn || <LoginForm />} */}
+            <CalendarSelect
+              month={month}
+              year={year}
+              onDecIndex={onDecIndex}
+              onIncIndex={onIncIndex}
+              isDisabledDec={index === 0}
+              isDisabledInc={index === years.length - 1}
+              months={months}
+              setMonth={setMonth}
+            />
+          </VStack>
+        </GridItem>
+        <GridItem rowStart='2' colStart='1' colSpan='4' justifySelf='center'>
+          <Heading size='lg' p={1} ml={3} orientation='vertical'>
+            {year}
+          </Heading>
+          <GroupedVerticalBarChart
+            fields={yearFields}
+            height={400}
+            width={850}
+            fieldName='month'
+            subFieldName='category'
+            subField={subField}
+            colors={colors.categoryColors || {}}
+            margin={{ top: 30, right: 20, bottom: 55, left: 55 }}
+            setHovered={setHovered}
+            hovered={hovered}
+            average={averages[hovered]}
+            month={month}
+          />
+        </GridItem>
+      </Grid>
+    </Box>
   )
 }

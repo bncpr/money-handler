@@ -1,5 +1,6 @@
 import { Box, Spacer } from "@chakra-ui/layout"
 import { onAuthStateChanged } from "@firebase/auth"
+import { AnimatePresence, motion, useMotionValue } from "framer-motion"
 import * as R from "ramda"
 import { useEffect, useRef } from "react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
@@ -16,10 +17,37 @@ import { useFilters } from "./hooks/useFilters/useFilters"
 import { useInitialPick } from "./hooks/useInitialPick/useInitialPick"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
-import { getRandomData, getRandomMonthData } from "./utility/getRandomData"
+import { getRandomData } from "./utility/getRandomData"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
+
+const MotionContentVariant = ({ children }) => {
+  const x = useMotionValue(0)
+  const contentVariants = {
+    initial: {
+      opacity: 0,
+    },
+    in: {
+      opacity: 1,
+    },
+    out: {
+      opacity: 0,
+    },
+  }
+  return (
+    <motion.div
+      initial='initial'
+      animate='in'
+      exit='out'
+      variants={contentVariants}
+      transition={{ duration: 0.3 }}
+      style={{ x }}
+    >
+      {children}
+    </motion.div>
+  )
+}
 
 export const App = () => {
   const dispatch = useDispatch()
@@ -30,6 +58,7 @@ export const App = () => {
   const top = headerRef.current?.clientHeight
 
   const { pathname } = useLocation()
+  const location = useLocation()
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
@@ -93,27 +122,33 @@ export const App = () => {
       </Toolbar>
 
       <Box mt={`${top}px`}>
-        <Switch>
-          <Route path='/entries'>
-            <Entries
-              surfaceData={surfaceData}
-              fields={fields}
-              filters={filters}
-              counts={counts}
-              setFilter={setFilter}
-              signedIn={signedIn}
-            />
-          </Route>
-          <Route path='/login' component={LoginForm} />
-          <Route path='/' exact>
-            <Home
-              groupedTree={groupedTree}
-              subField={fields.category}
-              colors={colors}
-              signedIn={signedIn}
-            />
-          </Route>
-        </Switch>
+        <AnimatePresence initial={false}>
+          <Switch location={location} key={location.key}>
+            <Route path='/entries'>
+              <MotionContentVariant>
+                <Entries
+                  surfaceData={surfaceData}
+                  fields={fields}
+                  filters={filters}
+                  counts={counts}
+                  setFilter={setFilter}
+                  signedIn={signedIn}
+                />
+              </MotionContentVariant>
+            </Route>
+            <Route path='/login' component={LoginForm} />
+            <Route path='/' exact>
+              <MotionContentVariant>
+                <Home
+                  groupedTree={groupedTree}
+                  subField={fields.category}
+                  colors={colors}
+                  signedIn={signedIn}
+                />
+              </MotionContentVariant>
+            </Route>
+          </Switch>
+        </AnimatePresence>
       </Box>
     </Box>
   )
