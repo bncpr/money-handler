@@ -1,9 +1,22 @@
-import { Grid, GridItem } from "@chakra-ui/layout"
-import { Heading, VStack } from "@chakra-ui/react"
+import { Flex, Grid, GridItem, Stack, Text } from "@chakra-ui/layout"
+import {
+  Box,
+  Heading,
+  Table,
+  TableCaption,
+  Tbody,
+  Td,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
+  VStack,
+} from "@chakra-ui/react"
+import { format } from "d3"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
-import { LoginForm } from "../../containers/Login/LoginForm"
 import { monthsMapFull } from "../../utility/maps"
+import { capitalizeFirstChar } from "../../utility/utility"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
 import { PieChart } from "../DataViz/PieChart/PieChart"
@@ -27,13 +40,20 @@ function getAverages(subField, yearFields) {
       R.pipe(
         R.map(R.path([1, key])),
         R.converge(R.divide, [R.sum, R.length]),
-        Math.floor,
+        Math.round,
+        R.defaultTo(0),
       )(yearFields),
     ),
   )
 }
 
-export const Home = ({ groupedTree, colors, subField, signedIn }) => {
+export const Home = ({
+  groupedTree,
+  colors,
+  subField,
+  signedIn,
+  payerField,
+}) => {
   const [hovered, setHovered] = useState("")
   const [month, setMonth] = useState("")
   const [year, setYear] = useState("")
@@ -87,6 +107,12 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
 
   const averages = getAverages(subField, yearFields)
 
+  const payerMonthFields = R.pipe(
+    groupByProp("payer"),
+    getSums,
+    R.toPairs,
+  )(groupedMonths?.[year]?.[month] || [])
+
   return (
     <Grid justifyContent='center' rowGap={0} columnGap={8} pt={1}>
       <GridItem rowStart='1' colStart='1' colSpan='2'>
@@ -123,14 +149,8 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
         />
       </GridItem>
 
-      <GridItem
-        rowStart='1'
-        colStart='5'
-        rowSpan='3'
-        alignSelf='start'
-        pt='58px'
-      >
-        <VStack spacing={6}>
+      <GridItem rowStart='1' colStart='5' rowSpan='3' alignSelf='start' pt={9}>
+        <VStack spacing={6} align='start'>
           {/* {signedIn || <LoginForm />} */}
           <CalendarSelect
             month={month}
@@ -142,9 +162,11 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
             months={months}
             setMonth={setMonth}
           />
+          <CategorySummaryTable monthFields={monthFields} averages={averages} />
+          <PayerSummaryTable payerMonthFields={payerMonthFields} />
         </VStack>
       </GridItem>
-      <GridItem rowStart='2' colStart='1' colSpan='4' justifySelf='center'>
+      <GridItem rowStart='2' colStart='1' colSpan='4' justifySelf='end'>
         <Heading size='lg' p={1} ml={3} orientation='vertical'>
           {year}
         </Heading>
@@ -164,5 +186,99 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
         />
       </GridItem>
     </Grid>
+  )
+}
+
+const PayerSummaryTable = ({ payerMonthFields }) => {
+  const total = Math.round(R.sum(payerMonthFields.map(R.last)))
+  const average = Math.round(total / payerMonthFields.length)
+  return (
+    <Box shadow='lg' borderRadius='lg' p={4}>
+      <Table size='sm'>
+        <TableCaption mt={1}>(deviation from the average)</TableCaption>
+        <Thead>
+          <Tr>
+            <Th>Payer</Th>
+            <Th isNumeric>Sum</Th>
+            <Th isNumeric>Dev.</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {payerMonthFields.map(([payer, value]) => {
+            const deviation = Math.round(Math.abs(average - value))
+            return (
+              <Tr key={payer}>
+                <Td>{capitalizeFirstChar(payer)}</Td>
+                <Td isNumeric>{Math.round(value)}</Td>
+                <Td
+                  display='flex'
+                  direction='row'
+                  justifyContent='space-between'
+                >
+                  <Text>{average < value ? "+" : "-"}</Text>
+                  <Text>{deviation}</Text>
+                </Td>
+              </Tr>
+            )
+          })}
+        </Tbody>
+        <Tfoot>
+          <Tr>
+            <Th>Total</Th>
+            <Th isNumeric>{total}</Th>
+            <Th isNumeric>{average}</Th>
+          </Tr>
+        </Tfoot>
+      </Table>
+    </Box>
+  )
+}
+
+const CategorySummaryTable = ({ monthFields, averages }) => {
+  const sorted = R.sort(R.descend(R.last), monthFields)
+  return (
+    <Box shadow='lg' borderRadius='lg' p={6}>
+      <Table size='sm'>
+        <Thead>
+          <Tr>
+            <Th>Category</Th>
+            <Th isNumeric>Sum</Th>
+            <Th isNumeric>Avg.</Th>
+            <Th isNumeric>Diff.</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {sorted.map(([key, value]) => {
+            const average = averages[key]
+            const difference = Math.round(Math.abs(value - average))
+
+            return (
+              <Tr key={key}>
+                <Td>{capitalizeFirstChar(key)}</Td>
+                <Td isNumeric>{Math.round(value)}</Td>
+                <Td isNumeric>{average}</Td>
+                <Td
+                  display='flex'
+                  direction='row'
+                  justifyContent='space-between'
+                >
+                  <Text>
+                    {average > value ? "+" : average === value ? "" : "-"}
+                  </Text>
+                  <Text>{difference}</Text>
+                </Td>
+              </Tr>
+            )
+          })}
+        </Tbody>
+        <Tfoot>
+          <Tr>
+            <Th>Total</Th>
+            <Th isNumeric>{Math.round(R.sum(monthFields.map(R.last)))}</Th>
+            <Th isNumeric>{Math.round(R.sum(R.values(averages)))}</Th>
+          </Tr>
+        </Tfoot>
+      </Table>
+    </Box>
   )
 }

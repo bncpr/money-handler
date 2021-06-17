@@ -45,7 +45,7 @@ export const CalendarSelect = ({
           isDisabled={isDisabledInc}
         />
       </Stack>
-      <SimpleGrid columns={3} spacing={2} mt={2}>
+      <SimpleGrid columns={4} spacing={1} mt={2}>
         {months.map(m => (
           <Button
             key={m}
