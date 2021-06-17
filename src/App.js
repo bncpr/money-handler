@@ -1,6 +1,6 @@
 import { Box, Spacer } from "@chakra-ui/layout"
 import { onAuthStateChanged } from "@firebase/auth"
-import { AnimatePresence, motion, useMotionValue } from "framer-motion"
+import { AnimatePresence, useMotionValue } from "framer-motion"
 import * as R from "ramda"
 import { useEffect, useRef } from "react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
@@ -15,39 +15,13 @@ import { auth, getEntriesObserver } from "./firebase"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
 import { useInitialPick } from "./hooks/useInitialPick/useInitialPick"
+import { MotionContentVariant } from "./components/Motion/MotionContentVariant/MotionContentVariant"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
 import { getRandomData } from "./utility/getRandomData"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
-
-const MotionContentVariant = ({ children }) => {
-  const x = useMotionValue(0)
-  const contentVariants = {
-    initial: {
-      opacity: 0,
-    },
-    in: {
-      opacity: 1,
-    },
-    out: {
-      opacity: 0,
-    },
-  }
-  return (
-    <motion.div
-      initial='initial'
-      animate='in'
-      exit='out'
-      variants={contentVariants}
-      transition={{ duration: 0.3 }}
-      style={{ x }}
-    >
-      {children}
-    </motion.div>
-  )
-}
 
 export const App = () => {
   const dispatch = useDispatch()
@@ -57,7 +31,6 @@ export const App = () => {
   const headerRef = useRef()
   const top = headerRef.current?.clientHeight
 
-  const { pathname } = useLocation()
   const location = useLocation()
 
   useEffect(() => {
@@ -102,6 +75,7 @@ export const App = () => {
     categories: fields.category,
   })
 
+  const pathname = location.pathname
   return (
     <Box>
       <Toolbar bgColor='purple.500' spacing={6} ref={headerRef}>
@@ -122,7 +96,7 @@ export const App = () => {
       </Toolbar>
 
       <Box mt={`${top}px`}>
-        <AnimatePresence initial={false}>
+        <AnimatePresence exitBeforeEnter initial={false}>
           <Switch location={location} key={location.key}>
             <Route path='/entries'>
               <MotionContentVariant>
@@ -136,7 +110,11 @@ export const App = () => {
                 />
               </MotionContentVariant>
             </Route>
-            <Route path='/login' component={LoginForm} />
+            <Route path='/login'>
+              <MotionContentVariant>
+                <LoginForm />
+              </MotionContentVariant>
+            </Route>
             <Route path='/' exact>
               <MotionContentVariant>
                 <Home
