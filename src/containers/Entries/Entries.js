@@ -8,7 +8,10 @@ import {
   Portal,
   Table,
   Tbody,
+  Tfoot,
+  Tr,
   VStack,
+  Th,
 } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
@@ -22,6 +25,7 @@ import { usePagination } from "../../hooks/usePagination/usePagination"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
 import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
 import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
+import * as R from "ramda"
 
 const headers = ["Date", "Value", "Payer", "Category", "Tags", "more"]
 
@@ -42,7 +46,7 @@ export const Entries = ({
     onChangePage,
     onChangePageSize,
     resetPage,
-  } = usePagination(surfaceData.length, 20, filters)
+  } = usePagination(surfaceData.length, 12, filters)
 
   useEffect(() => {
     resetPage()
@@ -65,12 +69,14 @@ export const Entries = ({
     onClose()
   }
 
+  const paginated = surfaceData.slice(
+    page * pageSize,
+    page * pageSize + pageSize,
+  )
+
   return (
     <Box>
       <Grid templateColumns='1fr auto 1fr' columnGap={6} pt={9}>
-        {/* <GridItem colStart='3' rowStart='1'>
-          {signedIn || <LoginForm />}
-        </GridItem> */}
         <GridItem colStart='1' rowStart='1' justifySelf='end'>
           <VStack
             spacing={6}
@@ -104,22 +110,26 @@ export const Entries = ({
           </VStack>
         </GridItem>
         <GridItem colStart='2' rowStart='1' rowSpan='1'>
-          <Box shadow='xl' p={6} borderRadius='lg'>
-            <Table variant='simple' size='sm'>
+          <Box shadow='xl' px={6} py={3} borderRadius='lg'>
+            <Table variant='simple' size='md'>
               <TableHead headers={headers} />
               <Tbody>
-                {surfaceData
-                  .slice(page * pageSize, page * pageSize + pageSize)
-                  .map(d => (
-                    <TableRow
-                      key={d.id}
-                      d={d}
-                      onDelete={onOpenDel}
-                      onEdit={onOpenEdit}
-                      onPick={onPickEntry}
-                    />
-                  ))}
+                {paginated.map(d => (
+                  <TableRow
+                    key={d.id}
+                    d={d}
+                    onDelete={onOpenDel}
+                    onEdit={onOpenEdit}
+                    onPick={onPickEntry}
+                  />
+                ))}
               </Tbody>
+              <Tfoot>
+                <Tr>
+                  <Th>Total:</Th>
+                  <Th isNumeric>{R.sum(paginated.map(R.prop("value")))}</Th>
+                </Tr>
+              </Tfoot>
             </Table>
           </Box>
           <PagePanel

@@ -1,26 +1,16 @@
-import { Flex, Grid, GridItem, Stack, Text } from "@chakra-ui/layout"
-import {
-  Box,
-  Heading,
-  Table,
-  TableCaption,
-  Tbody,
-  Td,
-  Tfoot,
-  Th,
-  Thead,
-  Tr,
-  VStack,
-} from "@chakra-ui/react"
+import { Flex, Grid, GridItem, Stack } from "@chakra-ui/layout"
+import { Heading, HStack, IconButton, VStack } from "@chakra-ui/react"
 import { format } from "d3"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { monthsMapFull } from "../../utility/maps"
-import { capitalizeFirstChar } from "../../utility/utility"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
 import { PieChart } from "../DataViz/PieChart/PieChart"
 import { CalendarSelect } from "../UI/Form/CalendarSelect/CalendarSelect"
+import { CategorySummaryTable } from "../Tables/CategorySummaryTable/CategorySummaryTable"
+import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable"
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 
 export const groupByProp = prop => R.groupBy(R.prop(prop))
 const getSums = R.map(R.pipe(R.map(R.prop("value")), R.sum))
@@ -47,6 +37,35 @@ function getAverages(subField, yearFields) {
   )
 }
 
+const useIncrementSelect = ({ array }) => {
+  const [index, setIndex] = useState(0)
+  const [selected, setSelected] = useState("")
+
+  const clamp = R.clamp(0, (array.length || 1) - 1)
+
+  const onIncIndex = () => setIndex(clamp(index + 1))
+  const onDecIndex = () => setIndex(clamp(index - 1))
+
+  useEffect(() => {
+    setSelected(array[index])
+  }, [index, array])
+
+  const isDisabledInc = array && index === array.length - 1
+  const isDisabledDec = array && index === 0
+
+  return {
+    selected,
+    setSelected,
+    setIndex,
+    onIncIndex,
+    onDecIndex,
+    isDisabledDec,
+    isDisabledInc,
+  }
+}
+
+const getLastIndex = arr => arr.length - 1
+
 export const Home = ({
   groupedTree,
   colors,
@@ -55,16 +74,27 @@ export const Home = ({
   payerField,
 }) => {
   const [hovered, setHovered] = useState("")
-  const [month, setMonth] = useState("")
-  const [year, setYear] = useState("")
   const [years, setYears] = useState([])
   const [months, setMonths] = useState([])
-  const [index, setIndex] = useState(0)
 
-  const clampYears = R.clamp(0, (years.length || 1) - 1)
-
-  const onIncIndex = () => setIndex(clampYears(index + 1))
-  const onDecIndex = () => setIndex(clampYears(index - 1))
+  const {
+    selected: year,
+    setSelected: setYear,
+    setIndex: setYearIndex,
+    onIncIndex: onIncYear,
+    onDecIndex: onDecYear,
+    isDisabledDec: isDisabledDecYear,
+    isDisabledInc: isDisabledIncYear,
+  } = useIncrementSelect({ array: years })
+  const {
+    selected: month,
+    setSelected: setMonth,
+    setIndex: setMonthIndex,
+    onIncIndex: onIncMonth,
+    onDecIndex: onDecMonth,
+    isDisabledDec: isDisabledDecMonth,
+    isDisabledInc: isDisabledIncMonth,
+  } = useIncrementSelect({ array: months })
 
   const groupedMonths = R.pipe(
     R.propOr({}, "year"),
@@ -72,27 +102,21 @@ export const Home = ({
   )(groupedTree)
 
   useEffect(() => {
-    if (R.isEmpty(years) && !year && !month) {
-      const years = sortKeysAscending(groupedTree.year)
-      setYears(years)
-      setYear(R.last(years))
-      const months = sortKeysAscending(groupedMonths[R.last(years)])
-      setMonths(months)
-      setMonth(R.last(months))
-      setIndex(years.length - 1)
-    }
+    const years = sortKeysAscending(groupedTree.year)
+    setYears(years)
+    setYear(R.last(years))
+    const months = sortKeysAscending(groupedMonths[R.last(years)])
+    setMonths(months)
+    setMonth(R.last(months))
+    setYearIndex(getLastIndex(years))
+    setMonthIndex(getLastIndex(months))
   }, [groupedTree.year])
-
-  useEffect(() => {
-    setYear(years[clampYears(index)])
-  }, [index, years])
 
   useEffect(() => {
     const months = sortKeysAscending(groupedMonths[year])
     setMonths(months)
-    if (!months.includes(month)) {
-      setMonth(R.last(months))
-    }
+    const index = months.indexOf(month)
+    setMonthIndex(index === -1 ? getLastIndex(months) : index)
   }, [year])
 
   const initSubField = R.zipObj(subField, subField.map(R.always(0)))
@@ -122,7 +146,7 @@ export const Home = ({
         <PieChart
           width={350}
           height={350}
-          margin={25}
+          margin={20}
           data={R.toPairs(averages)}
           colors={colors.categoryColors || {}}
           setHovered={setHovered}
@@ -130,9 +154,17 @@ export const Home = ({
         />
       </GridItem>
       <GridItem rowStart='1' colStart='3' colSpan='2'>
-        <Heading size='lg' p={2} ml={3}>
-          {monthsMapFull.get(month)}
-        </Heading>
+        <HStack>
+          <ForwardBackward
+            onDec={onDecMonth}
+            onInc={onIncMonth}
+            isDisabledInc={isDisabledIncMonth}
+            isDisabledDec={isDisabledDecMonth}
+          />
+          <Heading size='lg' p={2} ml={3}>
+            {monthsMapFull.get(month)}
+          </Heading>
+        </HStack>
         <VerticalBarChart
           fields={monthFields}
           height={350}
@@ -149,136 +181,72 @@ export const Home = ({
         />
       </GridItem>
 
-      <GridItem rowStart='1' colStart='5' rowSpan='3' alignSelf='start' pt={9}>
+      <GridItem rowStart='1' colStart='5' rowSpan='3' alignSelf='start' pt={6}>
         <VStack spacing={6} align='start'>
-          {/* {signedIn || <LoginForm />} */}
-          <CalendarSelect
-            month={month}
-            year={year}
-            onDecIndex={onDecIndex}
-            onIncIndex={onIncIndex}
-            isDisabledDec={index === 0}
-            isDisabledInc={index === years.length - 1}
-            months={months}
-            setMonth={setMonth}
-          />
-          <CategorySummaryTable monthFields={monthFields} averages={averages} />
+          <CategorySummaryTable monthFields={monthFields} averages={averages} hovered={hovered} />
           <PayerSummaryTable payerMonthFields={payerMonthFields} />
         </VStack>
       </GridItem>
       <GridItem rowStart='2' colStart='1' colSpan='4' justifySelf='end'>
-        <Heading size='lg' p={1} ml={3} orientation='vertical'>
-          {year}
-        </Heading>
+        <HStack mt={2}>
+          <ForwardBackward
+            onDec={onDecYear}
+            onInc={onIncYear}
+            isDisabledInc={isDisabledIncYear}
+            isDisabledDec={isDisabledDecYear}
+          />
+          <Heading size='lg' p={1} ml={3} orientation='vertical'>
+            {year}
+          </Heading>
+        </HStack>
         <GroupedVerticalBarChart
           fields={yearFields}
-          height={400}
-          width={850}
+          height={350}
+          width={800}
           fieldName='month'
           subFieldName='category'
           subField={subField}
           colors={colors.categoryColors || {}}
-          margin={{ top: 30, right: 20, bottom: 55, left: 55 }}
+          margin={{ top: 20, right: 20, bottom: 40, left: 55 }}
           setHovered={setHovered}
           hovered={hovered}
           average={averages[hovered]}
           month={month}
         />
       </GridItem>
+      {/* <GridItem>
+        <CalendarSelect
+          month={month}
+          year={year}
+          onDecIndex={onDecYear}
+          onIncIndex={onIncYear}
+          isDisabledDec={isDisabledDecYear}
+          isDisabledInc={isDisabledIncYear}
+          months={months}
+          setMonth={setMonth}
+        />
+      </GridItem> */}
     </Grid>
   )
 }
 
-const PayerSummaryTable = ({ payerMonthFields }) => {
-  const total = Math.round(R.sum(payerMonthFields.map(R.last)))
-  const average = Math.round(total / payerMonthFields.length)
+const ForwardBackward = ({ onDec, onInc, isDisabledInc, isDisabledDec }) => {
   return (
-    <Box shadow='lg' borderRadius='lg' p={4}>
-      <Table size='sm'>
-        <TableCaption mt={1}>(deviation from the average)</TableCaption>
-        <Thead>
-          <Tr>
-            <Th>Payer</Th>
-            <Th isNumeric>Sum</Th>
-            <Th isNumeric>Dev.</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {payerMonthFields.map(([payer, value]) => {
-            const deviation = Math.round(Math.abs(average - value))
-            return (
-              <Tr key={payer}>
-                <Td>{capitalizeFirstChar(payer)}</Td>
-                <Td isNumeric>{Math.round(value)}</Td>
-                <Td
-                  display='flex'
-                  direction='row'
-                  justifyContent='space-between'
-                >
-                  <Text>{average < value ? "+" : "-"}</Text>
-                  <Text>{deviation}</Text>
-                </Td>
-              </Tr>
-            )
-          })}
-        </Tbody>
-        <Tfoot>
-          <Tr>
-            <Th>Total</Th>
-            <Th isNumeric>{total}</Th>
-            <Th isNumeric>{average}</Th>
-          </Tr>
-        </Tfoot>
-      </Table>
-    </Box>
-  )
-}
-
-const CategorySummaryTable = ({ monthFields, averages }) => {
-  const sorted = R.sort(R.descend(R.last), monthFields)
-  return (
-    <Box shadow='lg' borderRadius='lg' p={6}>
-      <Table size='sm'>
-        <Thead>
-          <Tr>
-            <Th>Category</Th>
-            <Th isNumeric>Sum</Th>
-            <Th isNumeric>Avg.</Th>
-            <Th isNumeric>Diff.</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {sorted.map(([key, value]) => {
-            const average = averages[key]
-            const difference = Math.round(Math.abs(value - average))
-
-            return (
-              <Tr key={key}>
-                <Td>{capitalizeFirstChar(key)}</Td>
-                <Td isNumeric>{Math.round(value)}</Td>
-                <Td isNumeric>{average}</Td>
-                <Td
-                  display='flex'
-                  direction='row'
-                  justifyContent='space-between'
-                >
-                  <Text>
-                    {average > value ? "+" : average === value ? "" : "-"}
-                  </Text>
-                  <Text>{difference}</Text>
-                </Td>
-              </Tr>
-            )
-          })}
-        </Tbody>
-        <Tfoot>
-          <Tr>
-            <Th>Total</Th>
-            <Th isNumeric>{Math.round(R.sum(monthFields.map(R.last)))}</Th>
-            <Th isNumeric>{Math.round(R.sum(R.values(averages)))}</Th>
-          </Tr>
-        </Tfoot>
-      </Table>
-    </Box>
+    <>
+      <IconButton
+        icon={<ChevronLeftIcon />}
+        variant='ghost'
+        fontSize={30}
+        onClick={onDec}
+        isDisabled={isDisabledDec}
+      />
+      <IconButton
+        icon={<ChevronRightIcon />}
+        variant='ghost'
+        fontSize={30}
+        onClick={onInc}
+        isDisabled={isDisabledInc}
+      />
+    </>
   )
 }
