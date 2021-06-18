@@ -19,7 +19,7 @@ export const PayerSummaryTable = ({ payerMonthFields }) => {
   const average = Math.round(total / payerMonthFields.length)
   return (
     <Box shadow='lg' borderRadius='lg' p={4}>
-      <Table size='sm'>
+      <Table size={payerMonthFields.length <= 2 ? "md" : "sm"}>
         <TableCaption mt={1}>(deviation from the average)</TableCaption>
         <Thead>
           <Tr>
@@ -35,13 +35,8 @@ export const PayerSummaryTable = ({ payerMonthFields }) => {
               <Tr key={payer}>
                 <Td>{capitalizeFirstChar(payer)}</Td>
                 <Td isNumeric>{Math.round(value)}</Td>
-                <Td
-                  display='flex'
-                  direction='row'
-                  justifyContent='space-between'
-                >
-                  <Text>{average < value ? "+" : "-"}</Text>
-                  <Text>{deviation}</Text>
+                <Td isNumeric minW='76px'>
+                  {`${average < value ? "+" : "-"} ${deviation}`}
                 </Td>
               </Tr>
             )

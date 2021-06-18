@@ -139,6 +139,7 @@ export const Home = ({
 
   return (
     <Grid justifyContent='center' rowGap={0} columnGap={8} pt={1}>
+
       <GridItem rowStart='1' colStart='1' colSpan='2'>
         <Heading size='lg' p={2} ml={3}>
           Monthly Averages
@@ -153,6 +154,7 @@ export const Home = ({
           hovered={hovered}
         />
       </GridItem>
+
       <GridItem rowStart='1' colStart='3' colSpan='2'>
         <HStack>
           <ForwardBackward
@@ -187,6 +189,7 @@ export const Home = ({
           <PayerSummaryTable payerMonthFields={payerMonthFields} />
         </VStack>
       </GridItem>
+
       <GridItem rowStart='2' colStart='1' colSpan='4' justifySelf='end'>
         <HStack mt={2}>
           <ForwardBackward
@@ -214,18 +217,6 @@ export const Home = ({
           month={month}
         />
       </GridItem>
-      {/* <GridItem>
-        <CalendarSelect
-          month={month}
-          year={year}
-          onDecIndex={onDecYear}
-          onIncIndex={onIncYear}
-          isDisabledDec={isDisabledDecYear}
-          isDisabledInc={isDisabledIncYear}
-          months={months}
-          setMonth={setMonth}
-        />
-      </GridItem> */}
     </Grid>
   )
 }

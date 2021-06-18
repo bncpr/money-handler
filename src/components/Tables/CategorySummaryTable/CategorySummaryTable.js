@@ -26,20 +26,22 @@ export const CategorySummaryTable = ({ monthFields, averages, hovered }) => {
             return (
               <Tr
                 key={key}
-                opacity={hovered && hovered !== key ? "0.7" : "1"}
                 bg={hovered === key && "gray.100"}
-                transition="opacity ease 100ms 100ms"
+                transition='opacity ease 100ms 100ms'
               >
                 <Td>{capitalizeFirstChar(key)}</Td>
 
-                <Td isNumeric>{Math.round(value)}</Td>
-                <Td isNumeric>{average}</Td>
-                <Td isNumeric>
+                <Td isNumeric minW='72px'>
+                  {Math.round(value)}
+                </Td>
+                <Td isNumeric minW='72px'>
+                  {average}
+                </Td>
+                <Td isNumeric minW='76px'>
                   {`${
                     average < value ? "+" : average === value ? "" : "-"
                   } ${difference}`}
                 </Td>
-               
               </Tr>
             )
           })}
