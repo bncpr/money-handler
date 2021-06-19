@@ -24,4 +24,4 @@ export const store = configureStore({
   middleware: [...getDefaultMiddleware(), epicMiddleware],
 })
 
-epicMiddleware.run(rootEpic)
+// epicMiddleware.run(rootEpic)

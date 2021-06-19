@@ -1,25 +1,24 @@
-import { useEffect, useRef } from "react"
 import {
   Button,
   Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  DrawerHeader,
   DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
   DrawerFooter,
-  Box,
+  DrawerHeader,
+  DrawerOverlay,
   Portal,
   useDisclosure,
 } from "@chakra-ui/react"
-import { shallowEqual, useDispatch, useSelector } from "react-redux"
-import { updateUserEntriesThunk } from "../../../store/thunks/updateUserEntriesThunk"
 import { useFormik } from "formik"
 import * as R from "ramda"
-import { useResetFormOnClose } from "../../../hooks/useResetFormOnClose/useResetFormOnClose"
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { AlertYesNo } from "../../../components/UI/Alert/AlertYesNo"
-import { entrySchema } from "../modules/entrySchema"
 import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
+import { useResetFormOnClose } from "../../../hooks/useResetFormOnClose/useResetFormOnClose"
+import { updateUserEntriesThunk } from "../../../store/thunks/updateUserEntriesThunk"
+import { entrySchema } from "../modules/entrySchema"
 
 const initialValues = { tags: [], more: "" }
 
@@ -45,31 +44,30 @@ export const UpdateEntryDrawerForm = ({
     initialValues,
     validationSchema: entrySchema,
     onSubmit: async values => {
-      onCloseAlert()
       await dispatch(
         updateUserEntriesThunk({
           entryId: entry.id,
           entry: values,
-          addedFields,
-        })
+        }),
       )
       formik.setSubmitting(false)
+      onCloseAlert()
       onClose()
     },
   })
 
   const { addedFields, onAddField, onRemoveAddedField } = useAddedFields(
     formik,
-    isOpen
+    isOpen,
   )
 
   useEffect(() => {
-    console.log(formik.values)
+    // console.log(formik.values)
   }, [formik.values])
 
   useEffect(() => {
     formik.setValues(R.mergeRight(initialValues, entry))
-  }, [entry, formik.setValues])
+  }, [entry])
 
   useResetFormOnClose(isOpen, formik)
 
@@ -81,12 +79,7 @@ export const UpdateEntryDrawerForm = ({
   }
 
   return (
-    <Drawer
-      isOpen={isOpen}
-      onClose={onClose}
-      placement={placement}
-      size='md'
-    >
+    <Drawer isOpen={isOpen} onClose={onClose} placement={placement} size='md'>
       <DrawerOverlay />
 
       <DrawerContent>
@@ -107,11 +100,7 @@ export const UpdateEntryDrawerForm = ({
           <Button onClick={onClose} colorScheme='red' mr={3}>
             Cancel
           </Button>
-          <Button
-            colorScheme='green'
-            onClick={onSubmitAttempt}
-            isLoading={formik.isSubmitting}
-          >
+          <Button colorScheme='green' onClick={onSubmitAttempt}>
             Submit
           </Button>
         </DrawerFooter>
@@ -123,6 +112,7 @@ export const UpdateEntryDrawerForm = ({
           header='Update Entry'
           body='Are you sure you want to update this entry?'
           onYes={formik.handleSubmit}
+          isLoading={formik.isSubmitting}
         />
       </Portal>
     </Drawer>

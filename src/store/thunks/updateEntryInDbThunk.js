@@ -1,7 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
-import {
-  updateEntry as updateEntryInDb,
-} from "../../firebase"
+import { updateEntry as updateEntryInDb } from "../../firebase"
 import { updateEntry } from "../slices/dataSlice"
 
 export const updateEntryInDbThunk = createAsyncThunk(
@@ -10,9 +8,9 @@ export const updateEntryInDbThunk = createAsyncThunk(
     try {
       const uid = getState().authentication.uid
       await updateEntryInDb(uid, entryId, entry)
-      dispatch(updateEntry({ entryId, entry }))
+      // dispatch(updateEntry({ entryId, entry }))
     } catch (error) {
-      return rejectWithValue({ error: error.message })
+      return rejectWithValue({ errorMessage: "Was unable to update entry" })
     }
-  }
+  },
 )

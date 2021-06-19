@@ -8,9 +8,9 @@ export const removeEntryFromDbThunk = createAsyncThunk(
     const uid = getState().authentication.uid
     try {
       await removeEntryFB(uid, entryId)
-      dispatch(removeEntry(entryId))
+      // dispatch(removeEntry(entryId))
     } catch (error) {
-      return rejectWithValue({ error: error.message })
+      return rejectWithValue({ errorMessage: error.message })
     }
   }
 )

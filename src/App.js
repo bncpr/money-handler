@@ -59,6 +59,7 @@ export const App = () => {
         dispatch(signIn({ uid: user.uid, email: user.email }))
       } else {
         dispatch(signOut())
+        dispatch({ type: "app/makingRandomData" })
         dispatch(updateEntries({ entries: getRandomData() }))
       }
     })

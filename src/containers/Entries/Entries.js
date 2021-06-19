@@ -64,9 +64,13 @@ export const Entries = ({
   const onOpenDel = () => setIsOpen("del")
   const onOpenNew = () => setIsOpen("new")
 
-  const deleteEntry = async () => {
-    await dispatch(removeEntryFromDbThunk(pickedEntry))
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const deleteEntry = () => {
+    setIsDeleting(true)
+    dispatch(removeEntryFromDbThunk(pickedEntry))
     onClose()
+    setIsDeleting(false)
   }
 
   const paginated = surfaceData.slice(
@@ -152,6 +156,7 @@ export const Entries = ({
           isOpen={isOpen === "del"}
           onClose={onClose}
           onYes={deleteEntry}
+          isLoading={isDeleting}
         />
         <UpdateEntryDrawerForm
           isOpen={isOpen === "edit"}

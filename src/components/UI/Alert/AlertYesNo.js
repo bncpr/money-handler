@@ -10,7 +10,14 @@ import {
 } from "@chakra-ui/react"
 import { useRef } from "react"
 
-export const AlertYesNo = ({ onClose, isOpen, onYes, header, body }) => {
+export const AlertYesNo = ({
+  onClose,
+  isOpen,
+  onYes,
+  header,
+  body,
+  isLoading,
+}) => {
   const focusRef = useRef()
   return (
     <AlertDialog
@@ -35,7 +42,12 @@ export const AlertYesNo = ({ onClose, isOpen, onYes, header, body }) => {
           >
             No
           </Button>
-          <Button colorScheme='red' ml={3} onClick={onYes}>
+          <Button
+            colorScheme='red'
+            ml={3}
+            onClick={onYes}
+            isLoading={isLoading}
+          >
             Yes
           </Button>
         </AlertDialogFooter>

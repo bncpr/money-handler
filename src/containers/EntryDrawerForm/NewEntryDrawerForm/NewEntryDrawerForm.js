@@ -1,24 +1,24 @@
-import { useEffect, useRef } from "react"
 import {
   Button,
   Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  DrawerHeader,
   DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
   DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
 } from "@chakra-ui/react"
-import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { useFormik } from "formik"
-import { useResetFormOnClose } from "../../../hooks/useResetFormOnClose/useResetFormOnClose"
-import { entrySchema } from "../modules/entrySchema"
-import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
 import * as R from "ramda"
+import { useEffect, useRef } from "react"
+import { useDispatch } from "react-redux"
+import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
+import { useResetFormOnClose } from "../../../hooks/useResetFormOnClose/useResetFormOnClose"
 import { postNewEntryThunk } from "../../../store/thunks/postNewEntryThunk"
+import { entrySchema } from "../modules/entrySchema"
 
 const initialValues = {
-  date: "",
+  date: new Date().toJSON().slice(0, 10),
   payer: "",
   value: 0,
   category: "",
@@ -48,7 +48,7 @@ export const NewEntryDrawerForm = ({
     validationSchema: entrySchema,
     onSubmit: async values => {
       const entry = addYearAndMonthProps(values)
-      await dispatch(postNewEntryThunk({ entry, addedFields }))
+      await dispatch(postNewEntryThunk({ entry }))
       formik.setSubmitting(false)
       formik.resetForm()
       resetAddedFields()
@@ -62,7 +62,7 @@ export const NewEntryDrawerForm = ({
   useResetFormOnClose(isOpen, formik)
 
   useEffect(() => {
-    console.log(formik.values)
+    // console.log(formik.values)
   }, [formik.values])
 
   return (

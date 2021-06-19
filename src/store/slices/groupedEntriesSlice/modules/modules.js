@@ -15,14 +15,16 @@ export const groupMonths = R.over(
   R.map(({ entries }) => ({
     entries,
     month: groupEntriesOfProp("month")(entries),
-  }))
+  })),
 )
 
 const getKeysOfProp = prop => R.pipe(R.prop(prop), R.keys, R.defaultTo([]))
 
+const sortAscend = R.sort(R.ascend(R.identity))
+
 export const getFields = R.applySpec({
   year: getKeysOfProp("year"),
-  payer: getKeysOfProp("payer"),
-  category: getKeysOfProp("category"),
+  payer: R.pipe(getKeysOfProp("payer"), sortAscend),
+  category: R.pipe(getKeysOfProp("category"), sortAscend),
   // month: R.pipe(R.prop("year"), R.map(getKeysOfProp("month"))),
 })
