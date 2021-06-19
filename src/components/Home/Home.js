@@ -1,16 +1,14 @@
-import { Flex, Grid, GridItem, Stack } from "@chakra-ui/layout"
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
+import { Grid, GridItem } from "@chakra-ui/layout"
 import { Heading, HStack, IconButton, VStack } from "@chakra-ui/react"
-import { format } from "d3"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { monthsMapFull } from "../../utility/maps"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
 import { PieChart } from "../DataViz/PieChart/PieChart"
-import { CalendarSelect } from "../UI/Form/CalendarSelect/CalendarSelect"
 import { CategorySummaryTable } from "../Tables/CategorySummaryTable/CategorySummaryTable"
 import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable"
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 
 export const groupByProp = prop => R.groupBy(R.prop(prop))
 const getSums = R.map(R.pipe(R.map(R.prop("value")), R.sum))

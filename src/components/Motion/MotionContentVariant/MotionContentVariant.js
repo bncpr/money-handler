@@ -1,4 +1,4 @@
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 export const MotionContentVariant = ({ children }) => {
   const contentVariants = {
@@ -11,7 +11,7 @@ export const MotionContentVariant = ({ children }) => {
     out: {
       opacity: 0,
     },
-  }
+  };
   return (
     <motion.div
       initial='initial'
@@ -22,5 +22,5 @@ export const MotionContentVariant = ({ children }) => {
     >
       {children}
     </motion.div>
-  )
-}
+  );
+};
