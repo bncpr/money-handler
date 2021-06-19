@@ -1,6 +1,5 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 import { Grid, GridItem } from "@chakra-ui/layout"
-import { Heading, HStack, IconButton, VStack } from "@chakra-ui/react"
+import { Heading, HStack, VStack } from "@chakra-ui/react"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { monthsMapFull } from "../../utility/maps"
@@ -9,6 +8,7 @@ import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalB
 import { PieChart } from "../DataViz/PieChart/PieChart"
 import { CategorySummaryTable } from "../Tables/CategorySummaryTable/CategorySummaryTable"
 import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable"
+import { ForwardBackward } from "../UI/ForwardBackward/ForwardBackward"
 
 export const groupByProp = prop => R.groupBy(R.prop(prop))
 const getSums = R.map(R.pipe(R.map(R.prop("value")), R.sum))
@@ -83,6 +83,7 @@ export const Home = ({
     isDisabledDec: isDisabledDecYear,
     isDisabledInc: isDisabledIncYear,
   } = useIncrementSelect({ array: years })
+
   const {
     selected: month,
     setSelected: setMonth,
@@ -218,23 +219,4 @@ export const Home = ({
   )
 }
 
-const ForwardBackward = ({ onDec, onInc, isDisabledInc, isDisabledDec }) => {
-  return (
-    <>
-      <IconButton
-        icon={<ChevronLeftIcon />}
-        variant='ghost'
-        fontSize={30}
-        onClick={onDec}
-        isDisabled={isDisabledDec}
-      />
-      <IconButton
-        icon={<ChevronRightIcon />}
-        variant='ghost'
-        fontSize={30}
-        onClick={onInc}
-        isDisabled={isDisabledInc}
-      />
-    </>
-  )
-}
+

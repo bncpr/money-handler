@@ -1,20 +1,11 @@
 import { Box, Spacer } from "@chakra-ui/layout"
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Button,
   CloseButton,
   Container,
-  Flex,
-  Modal,
   ModalBody,
-  ModalCloseButton,
-  ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
   VStack,
 } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
@@ -30,6 +21,7 @@ import { Toolbar } from "./components/Navigation/Toolbar/Toolbar"
 import { ProfilePopover } from "./components/Profile/ProfilePopover/ProfilePopover"
 import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
+import { ErrorModal } from "./components/ErrorModal/ErrorModal"
 import { auth, getEntriesObserver } from "./firebase"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
@@ -161,20 +153,4 @@ export const App = () => {
   )
 }
 
-const ErrorModal = ({ isOpen, onClose, errorMessage }) => {
-  return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <Alert status='error' borderRadius='md' bg='white'>
-          <AlertIcon />
-          <Flex direction='column'>
-            <AlertTitle>Error:</AlertTitle>
-            <AlertDescription>{errorMessage}</AlertDescription>
-          </Flex>
-          <ModalCloseButton position='absolute' right='8px' top='8px' />
-        </Alert>
-      </ModalContent>
-    </Modal>
-  )
-}
+

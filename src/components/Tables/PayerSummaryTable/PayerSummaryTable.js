@@ -31,12 +31,13 @@ export const PayerSummaryTable = ({ payerMonthFields }) => {
         <Tbody>
           {sorted.map(([payer, value]) => {
             const deviation = Math.round(Math.abs(average - value))
+            const sign = average < value ? "+" : "-"
             return (
               <Tr key={payer}>
                 <Td>{capitalizeFirstChar(payer)}</Td>
                 <Td isNumeric>{Math.round(value)}</Td>
                 <Td isNumeric minW='76px'>
-                  {`${average < value ? "+" : "-"} ${deviation}`}
+                  {`${sign} ${deviation}`}
                 </Td>
               </Tr>
             )
