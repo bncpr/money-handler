@@ -69,7 +69,6 @@ export const Home = ({
   colors,
   subField,
   signedIn,
-  payerField,
 }) => {
   const [hovered, setHovered] = useState("")
   const [years, setYears] = useState([])

@@ -122,7 +122,6 @@ export const App = () => {
                   subField={fields.category}
                   colors={colors}
                   signedIn={signedIn}
-                  payerField={fields.payer}
                 />
               </MotionContentVariant>
             </Route>
