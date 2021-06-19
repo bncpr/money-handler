@@ -1,9 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
 import * as R from "ramda"
-import {
-  getRandomData,
-} from "../../../utility/getRandomData"
-import { signOut } from "../authenticationSlice"
 import { getFields, getInitialGroupedTree } from "./modules/modules"
 
 const initialState = {

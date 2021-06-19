@@ -1,18 +1,22 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
   error: false,
-  errorMessage: null,
-  attemptedFetch: false
+  errorMessage: "",
 }
 
 const errorSlice = createSlice({
-  name: 'error',
+  name: "error",
   initialState,
   reducers: {
-    showError(state, action) { Object.assign(state, action.payload); state.attemptedFetch = true },
-    hideError(state) { state.error = false; state.errorMessage = null }
-  }
+    showError(state, { payload }) {
+      state.error = true
+      state.errorMessage = payload.errorMessage
+    },
+    hideError() {
+      return initialState
+    },
+  },
 })
 
 export const errorReducer = errorSlice.reducer

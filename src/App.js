@@ -1,11 +1,30 @@
 import { Box, Spacer } from "@chakra-ui/layout"
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Button,
+  CloseButton,
+  Container,
+  Flex,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  VStack,
+} from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
-import { AnimatePresence, useMotionValue } from "framer-motion"
+import { AnimatePresence } from "framer-motion"
 import * as R from "ramda"
 import { useEffect, useRef } from "react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { Route, Switch, useLocation } from "react-router"
 import { Home } from "./components/Home/Home"
+import { MotionContentVariant } from "./components/Motion/MotionContentVariant/MotionContentVariant"
 import { NavigationItem } from "./components/Navigation/NavigationItems/NavigationItem/NavigationItem"
 import { Toolbar } from "./components/Navigation/Toolbar/Toolbar"
 import { ProfilePopover } from "./components/Profile/ProfilePopover/ProfilePopover"
@@ -15,8 +34,8 @@ import { auth, getEntriesObserver } from "./firebase"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
 import { useInitialPick } from "./hooks/useInitialPick/useInitialPick"
-import { MotionContentVariant } from "./components/Motion/MotionContentVariant/MotionContentVariant"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
+import { hideError } from "./store/slices/errorSlice"
 import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
 import { getRandomData } from "./utility/getRandomData"
 
@@ -76,8 +95,17 @@ export const App = () => {
   })
 
   const pathname = location.pathname
+
+  const error = useSelector(state => state.error.error)
+  const errorMessage = useSelector(state => state.error.errorMessage)
+
   return (
     <Box>
+      <ErrorModal
+        isOpen={error}
+        onClose={() => dispatch(hideError())}
+        errorMessage={errorMessage}
+      />
       <Toolbar bgColor='purple.500' spacing={6} ref={headerRef}>
         <NavigationItem path='/' current={pathname} label='HOME' ml={3} />
         <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
@@ -129,5 +157,23 @@ export const App = () => {
         </AnimatePresence>
       </Box>
     </Box>
+  )
+}
+
+const ErrorModal = ({ isOpen, onClose, errorMessage }) => {
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <Alert status='error' borderRadius='md' bg='white'>
+          <AlertIcon />
+          <Flex direction='column'>
+            <AlertTitle>Error:</AlertTitle>
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Flex>
+          <ModalCloseButton position='absolute' right='8px' top='8px' />
+        </Alert>
+      </ModalContent>
+    </Modal>
   )
 }
