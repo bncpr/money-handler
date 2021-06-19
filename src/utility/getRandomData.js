@@ -60,7 +60,7 @@ export const getRandomData = () => {
     "12",
   ]
 
-  const years = ["" + (currentYear - 1), currentYear]
+  const years = ["" + (currentYear - 2), "" + (currentYear - 1), currentYear]
 
   return R.pipe(
     R.chain(year =>
