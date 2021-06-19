@@ -5,6 +5,7 @@ const getRanNum = (min, max) =>
   Math.floor(Math.random() * (max - min + 1) + min)
 
 const getLengths = () => ({
+  rent: 1,
   food: getRanNum(4, 15),
   home: getRanNum(2, 10),
   transportation: getRanNum(1, 8),
@@ -22,7 +23,7 @@ const getRandEntry = (y, m, category, payer) => ({
   category,
   payer,
   date: `${y}-${m}-${getRanNum(10, 28)}`,
-  value: getRanNum(1, 500),
+  value: category === "rent" ? 3800 : getRanNum(1, 500),
 })
 
 export const getRandomMonthData = (y, m) => {
