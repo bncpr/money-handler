@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { AlertYesNo } from "../../../components/UI/Alert/AlertYesNo"
 import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
 import { useResetFormOnClose } from "../../../hooks/useResetFormOnClose/useResetFormOnClose"
+import { setLoadingOn } from "../../../store/slices/loadingSlice"
 import { updateUserEntriesThunk } from "../../../store/thunks/updateUserEntriesThunk"
 import { entrySchema } from "../modules/entrySchema"
 
@@ -43,16 +44,18 @@ export const UpdateEntryDrawerForm = ({
   const formik = useFormik({
     initialValues,
     validationSchema: entrySchema,
-    onSubmit: async values => {
-      await dispatch(
-        updateUserEntriesThunk({
-          entryId: entry.id,
-          entry: values,
-        }),
-      )
-      formik.setSubmitting(false)
-      onCloseAlert()
-      onClose()
+    onSubmit: values => {
+      // dispatch(setLoadingOn())
+      setTimeout(() => {
+        dispatch(
+          updateUserEntriesThunk({
+            entryId: entry.id,
+            entry: values,
+          }),
+        )
+        onCloseAlert()
+        onClose()
+      }, 0)
     },
   })
 
@@ -62,8 +65,8 @@ export const UpdateEntryDrawerForm = ({
   )
 
   useEffect(() => {
-    // console.log(formik.values)
-  }, [formik.values])
+    console.log(formik.isSubmitting)
+  }, [formik.isSubmitting])
 
   useEffect(() => {
     formik.setValues(R.mergeRight(initialValues, entry))
@@ -100,7 +103,11 @@ export const UpdateEntryDrawerForm = ({
           <Button onClick={onClose} colorScheme='red' mr={3}>
             Cancel
           </Button>
-          <Button colorScheme='green' onClick={onSubmitAttempt}>
+          <Button
+            colorScheme='green'
+            onClick={onSubmitAttempt}
+            isLoading={formik.isSubmitting}
+          >
             Submit
           </Button>
         </DrawerFooter>

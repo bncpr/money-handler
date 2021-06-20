@@ -14,6 +14,7 @@ import { useEffect, useRef } from "react"
 import { useDispatch } from "react-redux"
 import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
 import { useResetFormOnClose } from "../../../hooks/useResetFormOnClose/useResetFormOnClose"
+import { setLoadingOn } from "../../../store/slices/loadingSlice"
 import { postNewEntryThunk } from "../../../store/thunks/postNewEntryThunk"
 import { entrySchema } from "../modules/entrySchema"
 
@@ -46,13 +47,15 @@ export const NewEntryDrawerForm = ({
     initialValues,
     validateOnBlur: false,
     validationSchema: entrySchema,
-    onSubmit: async values => {
+    onSubmit: values => {
       const entry = addYearAndMonthProps(values)
-      await dispatch(postNewEntryThunk({ entry }))
-      formik.setSubmitting(false)
-      formik.resetForm()
-      resetAddedFields()
-      initialFocusRef.current.focus()
+      // dispatch(setLoadingOn())
+      setTimeout(() => {
+        dispatch(postNewEntryThunk({ entry }))
+        formik.resetForm()
+        resetAddedFields()
+        initialFocusRef.current.focus()
+      }, 0)
     },
   })
 
@@ -62,8 +65,8 @@ export const NewEntryDrawerForm = ({
   useResetFormOnClose(isOpen, formik)
 
   useEffect(() => {
-    // console.log(formik.values)
-  }, [formik.values])
+    console.log(formik.isSubmitting)
+  }, [formik.isSubmitting])
 
   return (
     <Drawer

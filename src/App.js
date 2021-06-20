@@ -1,19 +1,12 @@
 import { Box, Spacer } from "@chakra-ui/layout"
-import {
-  Button,
-  CloseButton,
-  Container,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  VStack,
-} from "@chakra-ui/react"
+import { Portal, Spinner } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { AnimatePresence } from "framer-motion"
 import * as R from "ramda"
 import { useEffect, useRef } from "react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { Route, Switch, useLocation } from "react-router"
+import { ErrorModal } from "./components/ErrorModal/ErrorModal"
 import { Home } from "./components/Home/Home"
 import { MotionContentVariant } from "./components/Motion/MotionContentVariant/MotionContentVariant"
 import { NavigationItem } from "./components/Navigation/NavigationItems/NavigationItem/NavigationItem"
@@ -21,7 +14,6 @@ import { Toolbar } from "./components/Navigation/Toolbar/Toolbar"
 import { ProfilePopover } from "./components/Profile/ProfilePopover/ProfilePopover"
 import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
-import { ErrorModal } from "./components/ErrorModal/ErrorModal"
 import { auth, getEntriesObserver } from "./firebase"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
@@ -29,6 +21,7 @@ import { useInitialPick } from "./hooks/useInitialPick/useInitialPick"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { hideError } from "./store/slices/errorSlice"
 import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
+import { setLoadingOff, setLoadingOn } from "./store/slices/loadingSlice"
 import { getRandomData } from "./utility/getRandomData"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
@@ -36,6 +29,9 @@ console.log(currentYear, currentMonth)
 
 export const App = () => {
   const dispatch = useDispatch()
+  const isLoading = useSelector(state => state.loading.isLoading)
+  const isLoadingFilter = useSelector(state => state.loading.isLoadingFilter)
+
   const signedIn = useSelector(state => state.authentication.signedIn)
   const uid = useSelector(state => state.authentication.uid)
 
@@ -45,6 +41,7 @@ export const App = () => {
   const location = useLocation()
 
   useEffect(() => {
+    dispatch(setLoadingOn())
     onAuthStateChanged(auth, user => {
       resetColors()
       if (user) {
@@ -53,13 +50,18 @@ export const App = () => {
         dispatch(signOut())
         dispatch({ type: "app/makingRandomData" })
         dispatch(updateEntries({ entries: getRandomData() }))
+        dispatch(setLoadingOff())
       }
     })
   }, [auth, dispatch])
 
   useEffect(() => {
     const unsubscribe = getEntriesObserver(uid, snapshot => {
-      dispatch(updateEntries({ entries: snapshot.val() }))
+      setTimeout(() => {
+        dispatch(setLoadingOff())
+      }, 0)
+
+      dispatch(updateEntries({ entries: snapshot.val() || {} }))
     })
     return () => unsubscribe()
   }, [uid])
@@ -94,6 +96,20 @@ export const App = () => {
 
   return (
     <Box>
+      <Portal>
+        {(isLoading || isLoadingFilter) && (
+          <Spinner
+            pos='fixed'
+            top='40%'
+            left='50%'
+            size='xl'
+            color='purple.400'
+            thickness='5px'
+            emptyColor='gray.200'
+            zIndex='tooltip'
+          />
+        )}
+      </Portal>
       <ErrorModal
         isOpen={error}
         onClose={() => dispatch(hideError())}
@@ -152,5 +168,3 @@ export const App = () => {
     </Box>
   )
 }
-
-

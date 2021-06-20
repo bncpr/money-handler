@@ -7,7 +7,7 @@ import {
   Tfoot,
   Th,
   Thead,
-  Tr
+  Tr,
 } from "@chakra-ui/react"
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
@@ -15,7 +15,7 @@ import { capitalizeFirstChar } from "../../../utility/utility"
 export const PayerSummaryTable = ({ payerMonthFields }) => {
   const sorted = R.sort(R.ascend(R.head), payerMonthFields)
   const total = Math.round(R.sum(payerMonthFields.map(R.last)))
-  const average = Math.round(total / payerMonthFields.length)
+  const average = Math.round(total / payerMonthFields.length || 0)
   return (
     <Box shadow='lg' borderRadius='lg' p={4}>
       <Table size={payerMonthFields.length <= 2 ? "md" : "sm"}>

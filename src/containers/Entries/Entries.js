@@ -68,9 +68,11 @@ export const Entries = ({
 
   const deleteEntry = () => {
     setIsDeleting(true)
-    dispatch(removeEntryFromDbThunk(pickedEntry))
-    onClose()
-    setIsDeleting(false)
+    setTimeout(() => {
+      dispatch(removeEntryFromDbThunk(pickedEntry))
+      onClose()
+      setIsDeleting(false)
+    }, 0)
   }
 
   const paginated = surfaceData.slice(

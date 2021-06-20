@@ -9,6 +9,7 @@ import { authenticationReducer } from "./slices/authenticationSlice"
 
 import { rootEpic } from "./epics/_rootEpic"
 import { groupedEntriesReducer } from "./slices/groupedEntriesSlice/groupedEntriesSlice"
+import { loadingReducer } from "./slices/loadingSlice"
 
 const epicMiddleware = createEpicMiddleware()
 
@@ -20,6 +21,7 @@ export const store = configureStore({
     login: loginReducer,
     authentication: authenticationReducer,
     groupedEntries: groupedEntriesReducer,
+    loading: loadingReducer,
   },
   middleware: [...getDefaultMiddleware(), epicMiddleware],
 })

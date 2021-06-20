@@ -1,7 +1,8 @@
 import { Grid, GridItem } from "@chakra-ui/layout"
-import { Heading, HStack, VStack } from "@chakra-ui/react"
+import { Heading, HStack, Spinner, VStack } from "@chakra-ui/react"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
 import { monthsMapFull } from "../../utility/maps"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
@@ -64,12 +65,9 @@ const useIncrementSelect = ({ array }) => {
 
 const getLastIndex = arr => arr.length - 1
 
-export const Home = ({
-  groupedTree,
-  colors,
-  subField,
-  signedIn,
-}) => {
+export const Home = ({ groupedTree, colors, subField, signedIn }) => {
+  const isLoading = useSelector(state => state.loading.isLoading)
+
   const [hovered, setHovered] = useState("")
   const [years, setYears] = useState([])
   const [months, setMonths] = useState([])
@@ -137,7 +135,6 @@ export const Home = ({
 
   return (
     <Grid justifyContent='center' rowGap={0} columnGap={8} pt={1}>
-
       <GridItem rowStart='1' colStart='1' colSpan='2'>
         <Heading size='lg' p={2} ml={3}>
           Monthly Averages
@@ -183,7 +180,11 @@ export const Home = ({
 
       <GridItem rowStart='1' colStart='5' rowSpan='3' alignSelf='start' pt={6}>
         <VStack spacing={6} align='start'>
-          <CategorySummaryTable monthFields={monthFields} averages={averages} hovered={hovered} />
+          <CategorySummaryTable
+            monthFields={monthFields}
+            averages={averages}
+            hovered={hovered}
+          />
           <PayerSummaryTable payerMonthFields={payerMonthFields} />
         </VStack>
       </GridItem>
@@ -218,5 +219,3 @@ export const Home = ({
     </Grid>
   )
 }
-
-
