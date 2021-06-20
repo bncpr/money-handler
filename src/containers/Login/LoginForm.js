@@ -29,7 +29,7 @@ const validationSchema = Yup.object().shape({
 })
 
 export const LoginForm = () => {
-  const history = useHistory()
+  // const history = useHistory()
   const signedIn = useSelector(state => state.authentication.signedIn)
   const [mode, setMode] = useState("signIn")
   const toggleMode = () => setMode(mode === "signIn" ? "signUp" : "signIn")
@@ -43,9 +43,9 @@ export const LoginForm = () => {
     onSubmit: async ({ email, password }) => {
       const fn = mode === "signIn" ? signInUser : createUser
       try {
-        const response = await fn(email, password)
+        await fn(email, password)
         formik.resetForm()
-        history.push(mode === "signIn" ? "/" : "entries")
+        // history.push(mode === "signIn" ? "/" : "entries")
       } catch (error) {
         const { key, value } = extractErrorCode(error.code)
         formik.errors[key] = value
@@ -59,7 +59,7 @@ export const LoginForm = () => {
 
   return (
     <Box boxShadow='lg' borderRadius='md' p={6} w='max' mx='auto'>
-      {signedIn && <Redirect to='/' />}
+      {signedIn && <Redirect to='/entries' />}
       <FormikProvider value={formik}>
         <Flex direction='column'>
           <Heading size='md' mx='auto' fontWeight='semibold'>

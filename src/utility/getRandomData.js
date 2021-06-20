@@ -70,10 +70,7 @@ export const getRandomData = () => {
       ),
     ),
     R.unnest,
-    R.tap(console.log),
     R.map(entry => R.objOf(entry.id, entry)),
-    R.tap(console.log),
     R.mergeAll,
-    R.tap(console.log),
   )(years)
 }

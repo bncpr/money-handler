@@ -1,8 +1,22 @@
 import { Grid, GridItem } from "@chakra-ui/layout"
-import { Heading, HStack, Spinner, VStack } from "@chakra-ui/react"
+import {
+  Button,
+  Heading,
+  HStack,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  VStack,
+} from "@chakra-ui/react"
 import * as R from "ramda"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
+import { useHistory } from "react-router-dom"
 import { monthsMapFull } from "../../utility/maps"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
@@ -65,9 +79,14 @@ const useIncrementSelect = ({ array }) => {
 
 const getLastIndex = arr => arr.length - 1
 
-export const Home = ({ groupedTree, colors, subField, signedIn }) => {
+export const Home = ({
+  groupedTree,
+  colors,
+  subField,
+  isEmptyEntries,
+  isSignedIn,
+}) => {
   const isLoading = useSelector(state => state.loading.isLoading)
-
   const [hovered, setHovered] = useState("")
   const [years, setYears] = useState([])
   const [months, setMonths] = useState([])
@@ -135,6 +154,7 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
 
   return (
     <Grid justifyContent='center' rowGap={0} columnGap={8} pt={1}>
+      <NoEntriesModal isOpen={isEmptyEntries && !isLoading && isSignedIn} />
       <GridItem rowStart='1' colStart='1' colSpan='2'>
         <Heading size='lg' p={2} ml={3}>
           Monthly Averages
@@ -217,5 +237,27 @@ export const Home = ({ groupedTree, colors, subField, signedIn }) => {
         />
       </GridItem>
     </Grid>
+  )
+}
+
+const NoEntriesModal = ({ isOpen }) => {
+  const history = useHistory()
+  const redirectToEntries = () => history.push("/entries")
+  return (
+    <Modal isOpen={isOpen} onClose={redirectToEntries}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>No Entries Yet</ModalHeader>
+        <ModalBody>
+          <Text>You need to have data in order to viz it.</Text>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme='green' onClick={redirectToEntries}>
+            Okay
+          </Button>
+        </ModalFooter>
+        <ModalCloseButton />
+      </ModalContent>
+    </Modal>
   )
 }

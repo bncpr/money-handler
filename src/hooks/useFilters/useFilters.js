@@ -55,8 +55,12 @@ export const useFilters = ({ groupedTree, entries }) => {
   const setFilter = R.curry((key, value) => {
     console.log("SET_FILTER", key, value)
     dispatch(setLoadingFilter(true))
-    setFilterStack(updateFilterStack(key, value, filterStack))
     setFilters(updateFilters(key, value, filters))
+    setTimeout(() => {
+      setFilterStack(updateFilterStack(key, value, filterStack))
+    }, 0)
   })
-  return { setFilter, counts, filteredEntries, filters }
+
+  const resetFilters = () => setFilters(initialFilters)
+  return { setFilter, counts, filteredEntries, filters, resetFilters }
 }

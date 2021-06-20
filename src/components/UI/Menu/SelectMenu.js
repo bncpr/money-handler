@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react"
 import { ChevronDownIcon } from "@chakra-ui/icons"
 import { capitalizeFirstChar } from "../../../utility/utility"
-import { monthsMap } from "../../../utility/maps"
+import { monthsMap, monthsMapFull } from "../../../utility/maps"
 
 export const SelectMenu = ({
   buttonVal,
@@ -30,13 +30,19 @@ export const SelectMenu = ({
           {...rest}
         >
           {(buttonDefault === "Month"
-            ? monthsMap.get(buttonVal)
+            ? monthsMapFull.get(buttonVal)
             : capitalizeFirstChar(buttonVal)) || buttonDefault}
         </MenuButton>
         <MenuList maxH={96} overflow='auto'>
           <MenuOptionGroup value={buttonVal} onChange={onChange} type='radio'>
             {array.map(([a, b]) => (
-              <MenuItemOption key={a} value={a} onClick={onClose}>
+              <MenuItemOption
+                key={a}
+                value={a}
+                onClick={() => {
+                  setTimeout(() => onClose(), 0)
+                }}
+              >
                 {capitalizeFirstChar(b)}
                 {counts && (
                   <Badge colorScheme='purple' fontSize='xs' m={2}>

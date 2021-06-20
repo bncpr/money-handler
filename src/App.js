@@ -3,9 +3,11 @@ import { Portal, Spinner } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { AnimatePresence } from "framer-motion"
 import * as R from "ramda"
+import { useState } from "react"
 import { useEffect, useRef } from "react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { Route, Switch, useLocation } from "react-router"
+import { Redirect, useHistory } from "react-router-dom"
 import { ErrorModal } from "./components/ErrorModal/ErrorModal"
 import { Home } from "./components/Home/Home"
 import { MotionContentVariant } from "./components/Motion/MotionContentVariant/MotionContentVariant"
@@ -39,10 +41,12 @@ export const App = () => {
   const top = headerRef.current?.clientHeight
 
   const location = useLocation()
+  const history = useHistory()
 
   useEffect(() => {
     dispatch(setLoadingOn())
     onAuthStateChanged(auth, user => {
+      resetFilters()
       resetColors()
       if (user) {
         dispatch(signIn({ uid: user.uid, email: user.email }))
@@ -55,13 +59,18 @@ export const App = () => {
     })
   }, [auth, dispatch])
 
+  const [isEmptyEntries, setIsEmptyEntries] = useState(false)
+
   useEffect(() => {
     const unsubscribe = getEntriesObserver(uid, snapshot => {
+      setIsEmptyEntries(snapshot.exists() ? false : true)
+      if (!snapshot.exists() && pathname !== "entries") {
+        history.push("/entries")
+      }
+      dispatch(updateEntries({ entries: snapshot.val() || {} }))
       setTimeout(() => {
         dispatch(setLoadingOff())
       }, 0)
-
-      dispatch(updateEntries({ entries: snapshot.val() || {} }))
     })
     return () => unsubscribe()
   }, [uid])
@@ -76,6 +85,7 @@ export const App = () => {
     counts,
     filteredEntries: surfaceData,
     filters,
+    resetFilters,
   } = useFilters({
     entries,
     groupedTree,
@@ -158,9 +168,13 @@ export const App = () => {
                   groupedTree={groupedTree}
                   subField={fields.category}
                   colors={colors}
-                  signedIn={signedIn}
+                  isSignedIn={signedIn}
+                  isEmptyEntries={isEmptyEntries}
                 />
               </MotionContentVariant>
+            </Route>
+            <Route>
+              <Redirect to='/' />
             </Route>
           </Switch>
         </AnimatePresence>
