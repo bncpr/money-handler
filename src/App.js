@@ -1,6 +1,7 @@
 import { Box, Spacer } from "@chakra-ui/layout"
 import { Portal, Spinner } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
+import { current } from "@reduxjs/toolkit"
 import { AnimatePresence } from "framer-motion"
 import * as R from "ramda"
 import { useState } from "react"
@@ -19,7 +20,6 @@ import { LoginForm } from "./containers/Login/LoginForm"
 import { auth, getEntriesObserver } from "./firebase"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
-import { useInitialPick } from "./hooks/useInitialPick/useInitialPick"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { hideError } from "./store/slices/errorSlice"
 import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
@@ -28,6 +28,35 @@ import { getRandomData } from "./utility/getRandomData"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
+
+const useInitialFilters = ({
+  groupedMonths,
+  yearField,
+  uid,
+  isEmptyEntries,
+  resetFilters,
+}) => {
+  const [initializedForUid, setInitializedForUid] = useState()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (
+      uid &&
+      uid !== initializedForUid &&
+      !isEmptyEntries &&
+      !R.isEmpty(yearField)
+    ) {
+      const lastYear = yearField.reduce(R.max, "")
+      const lastMonth = R.pipe(
+        R.prop(lastYear),
+        R.keys,
+        R.reduce(R.max, ""),
+      )(groupedMonths)
+      resetFilters({ year: lastYear, month: lastMonth })
+      setInitializedForUid(uid)
+    }
+  }, [groupedMonths, yearField, uid, initializedForUid, isEmptyEntries])
+}
 
 export const App = () => {
   const dispatch = useDispatch()
@@ -46,27 +75,27 @@ export const App = () => {
   useEffect(() => {
     dispatch(setLoadingOn())
     onAuthStateChanged(auth, user => {
-      resetFilters()
-      resetColors()
-      if (user) {
-        dispatch(signIn({ uid: user.uid, email: user.email }))
-      } else {
-        dispatch(signOut())
-        dispatch({ type: "app/makingRandomData" })
-        dispatch(updateEntries({ entries: getRandomData() }))
-        dispatch(setLoadingOff())
-      }
+      dispatch(user ? signIn({ uid: user.uid, email: user.email }) : signOut())
     })
   }, [auth, dispatch])
+
+  useEffect(() => {
+    console.log("UID_CHANGE", uid)
+    resetColors()
+    resetFilters({ year: currentYear, month: currentMonth })
+    setIsEmptyEntries(true)
+    if (!uid && signedIn !== undefined) {
+      dispatch({ type: "app/makingRandomData" })
+      dispatch(updateEntries({ entries: getRandomData() }))
+      dispatch(setLoadingOff())
+    }
+  }, [uid, signedIn])
 
   const [isEmptyEntries, setIsEmptyEntries] = useState(false)
 
   useEffect(() => {
     const unsubscribe = getEntriesObserver(uid, snapshot => {
       setIsEmptyEntries(snapshot.exists() ? false : true)
-      if (!snapshot.exists() && pathname !== "entries") {
-        history.push("/entries")
-      }
       dispatch(updateEntries({ entries: snapshot.val() || {} }))
       setTimeout(() => {
         dispatch(setLoadingOff())
@@ -90,9 +119,6 @@ export const App = () => {
     entries,
     groupedTree,
   })
-
-  useInitialPick(fields.year, setFilter("year"))
-  useInitialPick(R.keys(counts.month), setFilter("month"))
 
   const { colors, resetColors } = useColors({
     payers: fields.payer,
