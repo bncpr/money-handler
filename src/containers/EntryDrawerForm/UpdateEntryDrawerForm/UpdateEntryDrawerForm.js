@@ -64,9 +64,6 @@ export const UpdateEntryDrawerForm = ({
     isOpen,
   )
 
-  useEffect(() => {
-    console.log(formik.isSubmitting)
-  }, [formik.isSubmitting])
 
   useEffect(() => {
     formik.setValues(R.mergeRight(initialValues, entry))

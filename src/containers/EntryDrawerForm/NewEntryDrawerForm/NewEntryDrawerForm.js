@@ -64,10 +64,6 @@ export const NewEntryDrawerForm = ({
 
   useResetFormOnClose(isOpen, formik)
 
-  useEffect(() => {
-    console.log(formik.isSubmitting)
-  }, [formik.isSubmitting])
-
   return (
     <Drawer
       isOpen={isOpen}

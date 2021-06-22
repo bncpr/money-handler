@@ -9,7 +9,6 @@ const authThunk = (type, asyncProcess) =>
     async ({ email, password }, { dispatch, rejectWithValue }) => {
       try {
         const userCredentials = await asyncProcess(email, password)
-        console.log(userCredentials)
       } catch (error) {
         dispatch(updateError(extractErrorCode(error.code)))
         return rejectWithValue({ error: error.message })

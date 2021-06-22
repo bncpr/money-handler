@@ -53,10 +53,6 @@ export const LoginForm = () => {
     },
   })
 
-  useEffect(() => {
-    console.log(formik.values)
-  }, [formik.values])
-
   return (
     <Box boxShadow='lg' borderRadius='md' p={6} w='max' mx='auto'>
       {signedIn && <Redirect to='/entries' />}

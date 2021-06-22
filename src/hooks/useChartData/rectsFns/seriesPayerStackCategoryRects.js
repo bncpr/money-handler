@@ -37,7 +37,6 @@ export const seriesPayerStackCategoryRects = (
       stack.forEach(s => {
         const [y1, y2] = s
         if (isNaN(y1) || isNaN(y2)) {
-          console.log("NaN FOUND")
           return null
         }
         const payer = s.data.name

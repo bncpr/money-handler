@@ -10,10 +10,6 @@ export const usePagination = (length, size) => {
     setPagesNum(Math.ceil(length / pageSize))
   }, [length, pageSize])
 
-  useEffect(() => {
-    console.log(pagesNum)
-  }, [pagesNum])
-
   const onChangePage = n => () => {
     setPage(R.clamp(0, pagesNum, page + n))
   }

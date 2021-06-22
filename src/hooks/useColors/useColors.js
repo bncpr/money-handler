@@ -20,7 +20,6 @@ export const useColors = ({ payers, categories }) => {
   }, [payers, categories])
 
   const resetColors = () => {
-    console.log("RESET_COLORS")
     setColors({})
   }
 

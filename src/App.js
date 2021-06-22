@@ -80,7 +80,6 @@ export const App = () => {
   }, [auth, dispatch])
 
   useEffect(() => {
-    console.log("UID_CHANGE", uid)
     resetColors()
     resetFilters({ year: currentYear, month: currentMonth })
     setIsEmptyEntries(true)

@@ -48,12 +48,8 @@ export const useFilters = ({ groupedTree, entries }) => {
     setCounts(getUpdatedCounts(groupedTree, entriesStack, rest))
   }, [groupedTree, entriesStack])
 
-  useEffect(() => {
-    console.log(filters)
-  }, [filters])
 
   const setFilter = R.curry((key, value) => {
-    console.log("SET_FILTER", key, value)
     dispatch(setLoadingFilter(true))
     setFilters(updateFilters(key, value, filters))
     setTimeout(() => {

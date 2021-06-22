@@ -17,6 +17,5 @@ export const getChartData = (
     innerWidth,
     innerHeight
   )
-  // console.log(chartData, chartScales)
   return { chartData, chartScales }
 }

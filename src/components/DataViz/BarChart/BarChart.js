@@ -40,10 +40,6 @@ export const BarChart = ({
   const colorsSet = selectColorsSet(series, showBy, colors)
   const { focusedUnit, onMouseEnter, onMouseOut } = useFocus()
 
-  useEffect(() => {
-    console.log(chartData)
-  }, [chartData])
-
   return (
     <Box
       as='svg'

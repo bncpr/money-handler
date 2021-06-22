@@ -8,7 +8,6 @@ const getRects = R.curry(
     series.map(month => {
       const [y1, y2] = month
       if (isNaN(y1) || isNaN(y2)) {
-        console.log("NaN FOUND")
         return null
       }
       const x = month.data.month

@@ -62,7 +62,7 @@ export const getRandomData = () => {
   ]
 
   const years = ["" + (currentYear - 2), "" + (currentYear - 1), currentYear]
-  console.log(years)
+
   return R.pipe(
     R.chain(year =>
       (year === currentYear ? months.slice(0, +currentMonth) : months).map(

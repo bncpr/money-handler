@@ -9,11 +9,9 @@ export const useFocus = () => {
       if (hoveredUnit) {
         if (hoveredUnit !== focusedUnit) {
           setFocusedUnit(hoveredUnit)
-          // console.log("SET_FOCUS", hoveredUnit)
         }
       } else {
         setFocusedUnit()
-        // console.log("UNSET_FOCUS")
       }
     }, 0)
     return () => clearTimeout(t)

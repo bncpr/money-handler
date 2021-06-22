@@ -9,7 +9,6 @@ export const Profile = () => {
     state => state.authentication,
     shallowEqual
   )
-  console.log(uid)
   return (
     <Box p={5}>
       {!signedIn && <Redirect to='/login' />}
