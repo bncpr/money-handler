@@ -20,12 +20,12 @@ export const PagePanel = ({
         icon={<ArrowBackIcon />}
       />
       <Text>
-        {page + 1} / {pagesNum + 1}
+        {page + 1} / {pagesNum}
       </Text>
       <IconButton
         variant='link'
         onClick={changePage(1)}
-        isDisabled={page >= pagesNum}
+        isDisabled={page + 1 >= pagesNum}
         icon={<ArrowForwardIcon />}
       />
 
