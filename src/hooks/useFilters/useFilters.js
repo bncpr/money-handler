@@ -1,5 +1,5 @@
 import * as R from "ramda"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { setLoadingFilter } from "../../store/slices/loadingSlice"
 import {
@@ -41,13 +41,12 @@ export const useFilters = ({ groupedTree, entries }) => {
     }, 0)
 
     return () => clearTimeout(t)
-  }, [entries, entriesStack])
+  }, [entries, entriesStack, dispatch])
 
   useEffect(() => {
     const rest = getRest(initialFilters, entriesStack)
     setCounts(getUpdatedCounts(groupedTree, entriesStack, rest))
   }, [groupedTree, entriesStack])
-
 
   const setFilter = R.curry((key, value) => {
     dispatch(setLoadingFilter(true))
@@ -57,11 +56,14 @@ export const useFilters = ({ groupedTree, entries }) => {
     }, 0)
   })
 
-  const resetFilters = filters => {
-    dispatch(setLoadingFilter(true))       
-    setFilters(R.mergeRight(initialFilters, filters))
-    setFilterStack(R.toPairs(filters) || [])
-  }
+  const resetFilters = useCallback(
+    filters => {
+      dispatch(setLoadingFilter(true))
+      setFilters(R.mergeRight(initialFilters, filters))
+      setFilterStack(R.toPairs(filters) || [])
+    },
+    [dispatch],
+  )
 
   return { setFilter, counts, filteredEntries, filters, resetFilters }
 }

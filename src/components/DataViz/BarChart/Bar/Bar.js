@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/layout"
 import { format } from "d3-format"
 import { capitalizeFirstChar } from "../../../../utility/utility"
 

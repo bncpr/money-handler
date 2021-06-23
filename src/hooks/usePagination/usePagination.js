@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import * as R from "ramda"
 
 export const usePagination = (length, size) => {
@@ -19,7 +19,7 @@ export const usePagination = (length, size) => {
     setPageSize(+value)
   }
 
-  const resetPage = () => setPage(0)
+  const resetPage = useCallback(() => setPage(0), [])
 
   return {
     pageSize,

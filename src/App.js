@@ -1,14 +1,11 @@
 import { Box, Spacer } from "@chakra-ui/layout"
 import { Portal, Spinner } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
-import { current } from "@reduxjs/toolkit"
 import { AnimatePresence } from "framer-motion"
-import * as R from "ramda"
-import { useState } from "react"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { Route, Switch, useLocation } from "react-router"
-import { Redirect, useHistory } from "react-router-dom"
+import { Redirect } from "react-router-dom"
 import { ErrorModal } from "./components/ErrorModal/ErrorModal"
 import { Home } from "./components/Home/Home"
 import { MotionContentVariant } from "./components/Motion/MotionContentVariant/MotionContentVariant"
@@ -29,35 +26,6 @@ import { getRandomData } from "./utility/getRandomData"
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
 
-const useInitialFilters = ({
-  groupedMonths,
-  yearField,
-  uid,
-  isEmptyEntries,
-  resetFilters,
-}) => {
-  const [initializedForUid, setInitializedForUid] = useState()
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (
-      uid &&
-      uid !== initializedForUid &&
-      !isEmptyEntries &&
-      !R.isEmpty(yearField)
-    ) {
-      const lastYear = yearField.reduce(R.max, "")
-      const lastMonth = R.pipe(
-        R.prop(lastYear),
-        R.keys,
-        R.reduce(R.max, ""),
-      )(groupedMonths)
-      resetFilters({ year: lastYear, month: lastMonth })
-      setInitializedForUid(uid)
-    }
-  }, [groupedMonths, yearField, uid, initializedForUid, isEmptyEntries])
-}
-
 export const App = () => {
   const dispatch = useDispatch()
   const isLoading = useSelector(state => state.loading.isLoading)
@@ -70,25 +38,13 @@ export const App = () => {
   const top = headerRef.current?.clientHeight
 
   const location = useLocation()
-  const history = useHistory()
 
   useEffect(() => {
     dispatch(setLoadingOn())
     onAuthStateChanged(auth, user => {
       dispatch(user ? signIn({ uid: user.uid, email: user.email }) : signOut())
     })
-  }, [auth, dispatch])
-
-  useEffect(() => {
-    resetColors()
-    resetFilters({ year: currentYear, month: currentMonth })
-    setIsEmptyEntries(true)
-    if (!uid && signedIn !== undefined) {
-      dispatch({ type: "app/makingRandomData" })
-      dispatch(updateEntries({ entries: getRandomData() }))
-      dispatch(setLoadingOff())
-    }
-  }, [uid, signedIn])
+  }, [dispatch])
 
   const [isEmptyEntries, setIsEmptyEntries] = useState(false)
 
@@ -101,7 +57,7 @@ export const App = () => {
       }, 0)
     })
     return () => unsubscribe()
-  }, [uid])
+  }, [uid, dispatch])
 
   const { entries, groupedTree, fields } = useSelector(
     state => state.groupedEntries,
@@ -123,6 +79,17 @@ export const App = () => {
     payers: fields.payer,
     categories: fields.category,
   })
+
+  useEffect(() => {
+    resetColors()
+    resetFilters({ year: currentYear, month: currentMonth })
+    setIsEmptyEntries(true)
+    if (!uid && signedIn !== undefined) {
+      dispatch({ type: "app/makingRandomData" })
+      dispatch(updateEntries({ entries: getRandomData() }))
+      dispatch(setLoadingOff())
+    }
+  }, [uid, signedIn, dispatch, resetFilters, resetColors])
 
   const pathname = location.pathname
 

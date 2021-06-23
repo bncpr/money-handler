@@ -1,15 +1,14 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit"
 import { createEpicMiddleware } from "redux-observable"
-
+import { authenticationReducer } from "./slices/authenticationSlice"
+import { dashboardReducer } from "./slices/dashboardSlice"
 import { dataReducer } from "./slices/dataSlice"
 import { errorReducer } from "./slices/errorSlice"
-import { dashboardReducer } from "./slices/dashboardSlice"
-import { loginReducer } from "./slices/loginSlice"
-import { authenticationReducer } from "./slices/authenticationSlice"
-
-import { rootEpic } from "./epics/_rootEpic"
 import { groupedEntriesReducer } from "./slices/groupedEntriesSlice/groupedEntriesSlice"
 import { loadingReducer } from "./slices/loadingSlice"
+import { loginReducer } from "./slices/loginSlice"
+
+
 
 const epicMiddleware = createEpicMiddleware()
 

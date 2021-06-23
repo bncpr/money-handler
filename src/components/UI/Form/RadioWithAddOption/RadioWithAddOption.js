@@ -1,15 +1,14 @@
 import {
   FormControl,
   FormErrorMessage,
-  FormLabel,
+  FormLabel
 } from "@chakra-ui/form-control"
 import { Wrap } from "@chakra-ui/layout"
 import { useRadioGroup } from "@chakra-ui/radio"
+import { TagCloseButton } from "@chakra-ui/tag"
+import { PopoverFormContainer } from "../../../../containers/PopoverFormContainer/PopoverFormContainer"
 import { capitalizeFirstChar } from "../../../../utility/utility"
 import { PopoverForm } from "../PopoverForm/PopoverForm"
-import { PopoverFormContainer } from "../../../../containers/PopoverFormContainer/PopoverFormContainer"
-import * as R from "ramda"
-import { TagCloseButton, TagLabel } from "@chakra-ui/tag"
 
 export const RadioWithAddOption = ({
   field: { name, value },

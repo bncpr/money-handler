@@ -1,5 +1,5 @@
 import * as R from "ramda"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { getColorsGenerator } from "../../utility/colors"
 
 const assignColors = (array, colorsGen) =>
@@ -19,9 +19,9 @@ export const useColors = ({ payers, categories }) => {
     })
   }, [payers, categories])
 
-  const resetColors = () => {
+  const resetColors = useCallback(() => {
     setColors({})
-  }
+  }, [setColors])
 
   return { colors, resetColors }
 }

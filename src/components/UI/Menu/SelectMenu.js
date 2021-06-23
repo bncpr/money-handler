@@ -1,15 +1,15 @@
+import { ChevronDownIcon } from "@chakra-ui/icons"
 import {
+  Badge,
+  Button,
   Menu,
   MenuButton,
-  MenuList,
-  Button,
-  MenuOptionGroup,
   MenuItemOption,
-  Badge,
+  MenuList,
+  MenuOptionGroup,
 } from "@chakra-ui/react"
-import { ChevronDownIcon } from "@chakra-ui/icons"
+import { monthsMapFull } from "../../../utility/maps"
 import { capitalizeFirstChar } from "../../../utility/utility"
-import { monthsMap, monthsMapFull } from "../../../utility/maps"
 
 export const SelectMenu = ({
   buttonVal,
@@ -19,7 +19,7 @@ export const SelectMenu = ({
   counts,
   ...rest
 }) => (
-  <Menu>
+  <Menu isLazy>
     {({ onClose }) => (
       <>
         <MenuButton

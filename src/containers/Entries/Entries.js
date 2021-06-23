@@ -50,7 +50,7 @@ export const Entries = ({
 
   useEffect(() => {
     resetPage()
-  }, [filters])
+  }, [filters, resetPage])
 
   const [pickedEntry, setPickedEntry] = useState()
 

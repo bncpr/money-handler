@@ -16,8 +16,6 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AlertYesNo } from "../../../components/UI/Alert/AlertYesNo"
 import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
-import { useResetFormOnClose } from "../../../hooks/useResetFormOnClose/useResetFormOnClose"
-import { setLoadingOn } from "../../../store/slices/loadingSlice"
 import { updateUserEntriesThunk } from "../../../store/thunks/updateUserEntriesThunk"
 import { entrySchema } from "../modules/entrySchema"
 
@@ -25,7 +23,7 @@ const initialValues = { tags: [], more: "" }
 
 export const UpdateEntryDrawerForm = ({
   isOpen,
-  onClose,
+  onClose: closeDrawer,
   placement,
   header,
   pickedEntry,
@@ -34,6 +32,11 @@ export const UpdateEntryDrawerForm = ({
 }) => {
   const entry = useSelector(state => state.data.entries[pickedEntry])
   const dispatch = useDispatch()
+
+  const onClose = () => {
+    closeDrawer()
+    formik.resetForm()
+  }
 
   const {
     isOpen: isOpenAlert,
@@ -64,12 +67,11 @@ export const UpdateEntryDrawerForm = ({
     isOpen,
   )
 
+  const { setValues } = formik
 
   useEffect(() => {
-    formik.setValues(R.mergeRight(initialValues, entry))
-  }, [entry])
-
-  useResetFormOnClose(isOpen, formik)
+    setValues(R.mergeRight(initialValues, entry))
+  }, [entry, setValues])
 
   const onSubmitAttempt = () => {
     formik.validateForm()

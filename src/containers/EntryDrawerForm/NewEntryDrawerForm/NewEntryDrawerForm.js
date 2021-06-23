@@ -6,15 +6,13 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
-  DrawerOverlay,
+  DrawerOverlay
 } from "@chakra-ui/react"
 import { useFormik } from "formik"
 import * as R from "ramda"
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { useDispatch } from "react-redux"
 import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
-import { useResetFormOnClose } from "../../../hooks/useResetFormOnClose/useResetFormOnClose"
-import { setLoadingOn } from "../../../store/slices/loadingSlice"
 import { postNewEntryThunk } from "../../../store/thunks/postNewEntryThunk"
 import { entrySchema } from "../modules/entrySchema"
 
@@ -34,7 +32,7 @@ const addYearAndMonthProps = values => {
 
 export const NewEntryDrawerForm = ({
   isOpen,
-  onClose,
+  onClose: closeDrawer,
   placement,
   header,
   fields,
@@ -42,6 +40,11 @@ export const NewEntryDrawerForm = ({
 }) => {
   const dispatch = useDispatch()
   const initialFocusRef = useRef()
+
+  const onClose = () => {
+    closeDrawer()
+    formik.resetForm()
+  }
 
   const formik = useFormik({
     initialValues,
@@ -61,8 +64,6 @@ export const NewEntryDrawerForm = ({
 
   const { addedFields, onAddField, onRemoveAddedField, resetAddedFields } =
     useAddedFields(formik, isOpen)
-
-  useResetFormOnClose(isOpen, formik)
 
   return (
     <Drawer

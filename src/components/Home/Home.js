@@ -14,7 +14,7 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import * as R from "ramda"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
 import { monthsMapFull } from "../../utility/maps"
@@ -111,10 +111,15 @@ export const Home = ({
     isDisabledInc: isDisabledIncMonth,
   } = useIncrementSelect({ array: months })
 
-  const groupedMonths = R.pipe(
-    R.propOr({}, "year"),
-    R.map(R.groupBy(R.prop("month"))),
-  )(groupedTree)
+  const [groupedMonths, setGroupedMonths] = useState({})
+
+  useEffect(() => {
+    const groupedMonths = R.pipe(
+      R.propOr({}, "year"),
+      R.map(R.groupBy(R.prop("month"))),
+    )(groupedTree)
+    setGroupedMonths(groupedMonths)
+  }, [groupedTree])
 
   useEffect(() => {
     const years = sortKeysAscending(groupedTree.year)
@@ -125,14 +130,14 @@ export const Home = ({
     setMonth(R.last(months))
     setYearIndex(getLastIndex(years))
     setMonthIndex(getLastIndex(months))
-  }, [groupedTree.year])
+  }, [groupedTree, groupedMonths])
 
   useEffect(() => {
     const months = sortKeysAscending(groupedMonths[year])
     setMonths(months)
     const index = months.indexOf(month)
     setMonthIndex(index === -1 ? getLastIndex(months) : index)
-  }, [year])
+  }, [year, groupedMonths, month])
 
   const initSubField = R.zipObj(subField, subField.map(R.always(0)))
 

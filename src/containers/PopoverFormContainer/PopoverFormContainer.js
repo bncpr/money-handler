@@ -6,14 +6,13 @@ import {
   PopoverCloseButton,
   PopoverContent,
   PopoverHeader,
-  PopoverTrigger,
+  PopoverTrigger
 } from "@chakra-ui/popover"
+import { Portal } from "@chakra-ui/portal"
 import { useFormik } from "formik"
 import { useRef, useState } from "react"
-import { capitalizeFirstChar } from "../../utility/utility"
 import * as Yup from "yup"
-import { useResetFormOnClose } from "../../hooks/useResetFormOnClose/useResetFormOnClose"
-import { Portal } from "@chakra-ui/portal"
+import { capitalizeFirstChar } from "../../utility/utility"
 
 export const PopoverFormContainer = ({
   name,
@@ -26,7 +25,10 @@ export const PopoverFormContainer = ({
   const initialFocusRef = useRef()
   const [isOpen, setIsOpen] = useState(false)
   const toggleOpen = () => setIsOpen(!isOpen)
-  const onClose = () => setIsOpen(false)
+  const onClose = () => {
+    setIsOpen(false)
+    formik.resetForm()
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -47,8 +49,6 @@ export const PopoverFormContainer = ({
     },
     validateOnBlur: false,
   })
-
-  useResetFormOnClose(isOpen, formik)
 
   return (
     <Popover
@@ -71,7 +71,7 @@ export const PopoverFormContainer = ({
           <PopoverArrow />
           <PopoverCloseButton />
           <PopoverHeader fontWeight='600'>{`Add New ${capitalizeFirstChar(
-            name
+            name,
           )}:`}</PopoverHeader>
 
           <Component

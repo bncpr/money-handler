@@ -1,13 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { zipObj } from "ramda"
-import { getUserEntriesFulfilled } from "./dataSlice"
-import { colorsGenerator } from "../../utility/colors"
 
-const assignColors = (array, colorsGen) =>
-  zipObj(
-    array,
-    array.map(() => colorsGen.next().value)
-  )
+// const assignColors = (array, colorsGen) =>
+//   zipObj(
+//     array,
+//     array.map(() => colorsGen.next().value)
+//   )
 
 const dashboardSlice = createSlice({
   name: "dashboard",

@@ -1,6 +1,5 @@
 import { createAction, createSlice } from "@reduxjs/toolkit"
 import * as R from "ramda"
-import { signOut } from "./authenticationSlice"
 import { updateEntries } from "./groupedEntriesSlice/groupedEntriesSlice"
 
 export const getUserEntriesFulfilled = createAction(
