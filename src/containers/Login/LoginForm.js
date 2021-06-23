@@ -53,45 +53,47 @@ export const LoginForm = () => {
   })
 
   return (
-    <Box boxShadow='lg' borderRadius='md' p={6} w='max' mx='auto'>
-      {signedIn && <Redirect to='/entries' />}
-      <FormikProvider value={formik}>
-        <Flex direction='column'>
-          <Heading size='md' mx='auto' fontWeight='semibold'>
-            {mode === "signIn" ? "Login" : "Create New User"}
-          </Heading>
-          <Form onSubmit={formik.handleSubmit}>
-            <Field
-              name='email'
-              type='email'
-              component={InputContext}
-              label='Email'
-            />
-            <Field
-              name='password'
-              type='password'
-              component={InputContext}
-              label='Password'
-            />
-            <FormControl isInvalid={formik.errors.other}>
-              <FormErrorMessage>{formik.errors.other}</FormErrorMessage>
-            </FormControl>
-            <Flex justify='center' direction='column'>
-              <Button
-                type='submit'
-                colorScheme='green'
-                mt={3}
-                isLoading={formik.isSubmitting}
-              >
-                Submit
-              </Button>
-              <Button mx='auto' mt={3} variant='link' onClick={toggleMode}>
-                {`switch to ${mode === "signIn" ? "sign-up" : "sign-in"}`}
-              </Button>
-            </Flex>
-          </Form>
-        </Flex>
-      </FormikProvider>
+    <Box pt={9}>
+      <Box boxShadow='lg' borderRadius='md' p={6} w='max' mx='auto'>
+        {signedIn && <Redirect to='/entries' />}
+        <FormikProvider value={formik}>
+          <Flex direction='column'>
+            <Heading size='md' mx='auto' fontWeight='semibold'>
+              {mode === "signIn" ? "Login" : "Create New User"}
+            </Heading>
+            <Form onSubmit={formik.handleSubmit}>
+              <Field
+                name='email'
+                type='email'
+                component={InputContext}
+                label='Email'
+              />
+              <Field
+                name='password'
+                type='password'
+                component={InputContext}
+                label='Password'
+              />
+              <FormControl isInvalid={formik.errors.other}>
+                <FormErrorMessage>{formik.errors.other}</FormErrorMessage>
+              </FormControl>
+              <Flex justify='center' direction='column'>
+                <Button
+                  type='submit'
+                  colorScheme='green'
+                  mt={3}
+                  isLoading={formik.isSubmitting}
+                >
+                  Submit
+                </Button>
+                <Button mx='auto' mt={3} variant='link' onClick={toggleMode}>
+                  {`switch to ${mode === "signIn" ? "sign-up" : "sign-in"}`}
+                </Button>
+              </Flex>
+            </Form>
+          </Flex>
+        </FormikProvider>
+      </Box>
     </Box>
   )
 }

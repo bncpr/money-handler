@@ -23,20 +23,16 @@ const initialValues = { tags: [], more: "" }
 
 export const UpdateEntryDrawerForm = ({
   isOpen,
-  onClose: closeDrawer,
+  onClose,
   placement,
   header,
   pickedEntry,
   fields,
   component: Component,
 }) => {
+  const signedIn = useSelector(state => state.authentication.signedIn)
   const entry = useSelector(state => state.data.entries[pickedEntry])
   const dispatch = useDispatch()
-
-  const onClose = () => {
-    closeDrawer()
-    formik.resetForm()
-  }
 
   const {
     isOpen: isOpenAlert,
@@ -48,7 +44,6 @@ export const UpdateEntryDrawerForm = ({
     initialValues,
     validationSchema: entrySchema,
     onSubmit: values => {
-      // dispatch(setLoadingOn())
       setTimeout(() => {
         dispatch(
           updateUserEntriesThunk({
@@ -67,16 +62,20 @@ export const UpdateEntryDrawerForm = ({
     isOpen,
   )
 
-  const { setValues } = formik
+  const { setValues, resetForm } = formik
 
   useEffect(() => {
-    setValues(R.mergeRight(initialValues, entry))
-  }, [entry, setValues])
+    if (!isOpen) {
+      resetForm()
+    } else {
+      setValues(R.mergeRight(initialValues, entry))
+    }
+  }, [isOpen, entry, resetForm, setValues])
 
   const onSubmitAttempt = () => {
     formik.validateForm()
     if (formik.isValid) {
-      onOpenAlert()
+      return !signedIn ? formik.submitForm() : onOpenAlert()
     }
   }
 

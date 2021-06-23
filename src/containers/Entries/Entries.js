@@ -9,25 +9,24 @@ import {
   Table,
   Tbody,
   Tfoot,
-  Tr,
-  VStack,
   Th,
+  Thead,
+  Tr,
+  useToast,
+  VStack,
 } from "@chakra-ui/react"
+import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Filters } from "../../components/Filters/Filters"
 import { DeleteEntryAlert } from "../../components/UI/Alert/DeleteEntryAlert"
 import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
 import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
-import { TableHead } from "../../components/UI/Table/TableHead"
 import { TableRow } from "../../components/UI/Table/TableRow"
 import { usePagination } from "../../hooks/usePagination/usePagination"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
 import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
 import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
-import * as R from "ramda"
-
-const headers = ["Date", "Value", "Payer", "Category", "Tags", "more"]
 
 export const Entries = ({
   surfaceData,
@@ -38,6 +37,8 @@ export const Entries = ({
   signedIn,
 }) => {
   const dispatch = useDispatch()
+
+  const toast = useToast()
 
   const {
     pageSize,
@@ -54,8 +55,8 @@ export const Entries = ({
 
   const [pickedEntry, setPickedEntry] = useState()
 
-  const onPickEntry = event => {
-    setPickedEntry(event.target.value)
+  const onPickEntry = id => {
+    setPickedEntry(id)
   }
 
   const [isOpen, setIsOpen] = useState(false)
@@ -80,79 +81,87 @@ export const Entries = ({
     page * pageSize + pageSize,
   )
 
-  return (
-    <Box>
-      <Grid templateColumns='1fr auto 1fr' columnGap={6} pt={9}>
-        <GridItem colStart='1' rowStart='1' justifySelf='end'>
-          <VStack
-            spacing={6}
-            align='stretch'
-            width='2xs'
-            shadow='xl'
-            px={10}
-            py={6}
-            borderRadius='lg'
-          >
-            <Box>
-              <Heading size='md' fontWeight='semibold' p={2}>
-                Filters
-              </Heading>
-              <Filters
-                filters={filters}
-                counts={counts}
-                fields={fields}
-                setFilter={setFilter}
-              />
-            </Box>
-            {signedIn && (
-              <Button
-                onClick={onOpenNew}
-                leftIcon={<AddIcon />}
-                colorScheme='purple'
-              >
-                ADD ENTRY
-              </Button>
-            )}
-          </VStack>
-        </GridItem>
-        <GridItem colStart='2' rowStart='1' rowSpan='1'>
-          <Box shadow='xl' px={6} py={3} borderRadius='lg'>
-            <Table variant='simple' size='md'>
-              <TableHead headers={headers} />
-              <Tbody>
-                {paginated.map(d => (
-                  <TableRow
-                    key={d.id}
-                    d={d}
-                    onDelete={onOpenDel}
-                    onEdit={onOpenEdit}
-                    onPick={onPickEntry}
-                  />
-                ))}
-              </Tbody>
-              <Tfoot>
-                <Tr>
-                  <Th>Total:</Th>
-                  <Th isNumeric>{R.sum(paginated.map(R.prop("value")))}</Th>
-                </Tr>
-              </Tfoot>
-            </Table>
-          </Box>
-          <PagePanel
-            pos='fixed'
-            bottom='0'
-            left='50%'
-            transform='translate(-50%, 0)'
-            p={2}
-            page={page}
-            pagesNum={pagesNum}
-            pageSize={pageSize}
-            changePage={onChangePage}
-            changePageSize={onChangePageSize}
-          />
-        </GridItem>
-      </Grid>
+  useEffect(() => {
+    console.log(pickedEntry)
+  }, [pickedEntry])
 
+  return (
+    <Grid templateColumns='1fr auto 1fr' columnGap={6} pt={9}>
+      <GridItem colStart='3' rowStart='1' justifySelf='start'>
+        <VStack
+          spacing={6}
+          align='stretch'
+          width='2xs'
+          shadow='xl'
+          px={10}
+          py={6}
+          borderRadius='lg'
+        >
+          <Box>
+            <Heading size='md' fontWeight='semibold' p={2}>
+              Filters
+            </Heading>
+            <Filters
+              filters={filters}
+              counts={counts}
+              fields={fields}
+              setFilter={setFilter}
+            />
+          </Box>
+          <Button
+            onClick={onOpenNew}
+            leftIcon={<AddIcon />}
+            colorScheme='green'
+          >
+            ADD ENTRY
+          </Button>
+        </VStack>
+      </GridItem>
+      <GridItem colStart='2' rowStart='1' rowSpan='1' colSpan='1'>
+        <Box shadow='xl' px={6} py={3} borderRadius='lg'>
+          <Table variant='simple' size='md'>
+            <Thead>
+              <Tr>
+                <Th isNumeric>Date</Th>
+                <Th isNumeric>Value</Th>
+                <Th>Payer</Th>
+                <Th>Category</Th>
+                <Th>Tags</Th>
+                <Th>More</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {paginated.map(d => (
+                <TableRow
+                  key={d.id}
+                  d={d}
+                  onDelete={onOpenDel}
+                  onEdit={onOpenEdit}
+                  onPick={onPickEntry}
+                />
+              ))}
+            </Tbody>
+            <Tfoot>
+              <Tr>
+                <Th isNumeric>Total:</Th>
+                <Th isNumeric>{R.sum(paginated.map(R.prop("value")))}</Th>
+              </Tr>
+            </Tfoot>
+          </Table>
+        </Box>
+        <PagePanel
+          pos='fixed'
+          bottom='0'
+          left='50%'
+          transform='translate(-50%, 0)'
+          p={2}
+          page={page}
+          pagesNum={pagesNum}
+          pageSize={pageSize}
+          changePage={onChangePage}
+          changePageSize={onChangePageSize}
+        />
+      </GridItem>
       <Portal>
         <DeleteEntryAlert
           isOpen={isOpen === "del"}
@@ -178,6 +187,6 @@ export const Entries = ({
           component={EntryForm}
         />
       </Portal>
-    </Box>
+    </Grid>
   )
 }

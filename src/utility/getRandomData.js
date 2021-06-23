@@ -11,10 +11,37 @@ const getLengths = () => ({
   transportation: getRanNum(1, 8),
   utilities: getRanNum(1, 5),
   entertainment: getRanNum(1, 5),
-  cats: getRanNum(0, 3),
   miscellaneous: getRanNum(0, 5),
-  takeout: getRanNum(0, 5),
+  takeout: getRanNum(0, 4),
 })
+
+const tags = {
+  food: ["tuna", "salmon", "chicken", "bread", "cauliflower"],
+  home: ["strings", "tall shelves", "random leaves"],
+  entertainment: [
+    "catnip",
+    "scratchables",
+    "mice",
+    "Marie's kinky leather toy",
+    "clothes tags",
+  ],
+  transportation: ["under-couch pass"],
+  utilities: ["litter, vet, fleas stuff"],
+  takeout: ["sushi", "pizza", "fish tacos"],
+}
+
+const pickTags = (n, tags, picked) => {
+  if (!n || R.isEmpty(tags)) return picked
+  const index = getRanNum(0, tags.length - 1)
+  return pickTags(n - 1, R.remove(index, 1, tags), picked.concat(tags[index]))
+}
+
+const getTags = category => {
+  const array = tags[category]
+  if (!array) return []
+  let n = getRanNum(0, R.min(array.length, 2))
+  return pickTags(n, array, [])
+}
 
 const getRandEntry = (y, m, category, payer) => ({
   id: nanoid(8),
@@ -23,7 +50,9 @@ const getRandEntry = (y, m, category, payer) => ({
   category,
   payer,
   date: `${y}-${m}-${getRanNum(10, 28)}`,
-  value: category === "rent" ? 3800 : getRanNum(1, 500),
+  value: category === "rent" ? 0 : getRanNum(1, 500),
+  more: category === "rent" ? "(cats don't pay rent)" : "",
+  tags: getTags(category),
 })
 
 export const getRandomMonthData = (y, m) => {

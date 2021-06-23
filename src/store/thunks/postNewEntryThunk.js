@@ -1,7 +1,11 @@
+import { createStandaloneToast } from "@chakra-ui/react"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import * as R from "ramda"
 import { pushNewEntry, updateUserFields } from "../../firebase"
 import { showError } from "../slices/errorSlice"
+import { updateEntries } from "../slices/groupedEntriesSlice/groupedEntriesSlice"
+
+const toast = createStandaloneToast()
 
 export const postNewEntryThunk = createAsyncThunk(
   "data/postNewEntry",
@@ -13,7 +17,21 @@ export const postNewEntryThunk = createAsyncThunk(
       const updates = {
         [`entries/${entryId}`]: entryWithId,
       }
-      await updateUserFields(uid, updates)
+      if (!uid) {
+        const entries = getState().data.entries
+        dispatch(
+          updateEntries({ entries: R.assoc(entryId, entryWithId, entries) }),
+        )
+      } else {
+        await updateUserFields(uid, updates)
+      }
+      toast({
+        title: "Entry Added",
+        status: "success",
+        isClosable: true,
+        duration: 1200,
+        variant: "solid",
+      })
     } catch (error) {
       dispatch(showError({ errorMessage: "Could not post new entry" }))
       return rejectWithValue({ errorMessage: error.message })
