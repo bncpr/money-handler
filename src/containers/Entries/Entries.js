@@ -81,10 +81,6 @@ export const Entries = ({
     page * pageSize + pageSize,
   )
 
-  useEffect(() => {
-    console.log(pickedEntry)
-  }, [pickedEntry])
-
   return (
     <Grid templateColumns='1fr auto 1fr' columnGap={6} pt={9}>
       <GridItem colStart='3' rowStart='1' justifySelf='start'>

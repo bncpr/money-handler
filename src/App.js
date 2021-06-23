@@ -121,16 +121,15 @@ export const App = () => {
         <NavigationItem path='/' current={pathname} label='HOME' ml={3} />
         <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
         <NavigationItem path='/about' current={pathname} label='ABOUT' />
-        {signedIn === false && (
-          <NavigationItem path='/login' current={pathname} label='LOGIN' />
-        )}
         <Spacer />
-        {signedIn && (
+        {signedIn ? (
           <ProfilePopover
             variant='subtle'
             colorScheme='purple'
             color='purple.800'
           />
+        ) : (
+          <NavigationItem path='/login' current={pathname} label='LOGIN' />
         )}
       </Toolbar>
 
