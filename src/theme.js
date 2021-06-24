@@ -54,4 +54,10 @@ export const customTheme = extendTheme(
     },
     components: ["Menu"],
   }),
+  withDefaultProps({
+    defaultProps: {
+      overflow: "visible",
+    },
+    components: ["TagLabel"],
+  }),
 )

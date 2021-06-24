@@ -6,7 +6,6 @@ export const Toolbar = forwardRef(({ children, ...rest }, ref) => {
     <Stack
       direction={["column", "row"]}
       pos='fixed'
-      p={3}
       top={0}
       left={0}
       w='full'

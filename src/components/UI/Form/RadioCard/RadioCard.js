@@ -20,7 +20,7 @@ export function RadioCard({ children, label, ...rest }) {
         borderWidth='1px'
         borderRadius='md'
         boxShadow='md'
-        size='md'
+        size='lg'
         _checked={{
           bg: "purple.500",
           color: "white",
@@ -32,7 +32,7 @@ export function RadioCard({ children, label, ...rest }) {
         px={4}
         py={2}
       >
-        {<TagLabel>{capitalizeFirstChar(label)}</TagLabel>}
+        {<TagLabel overflow='visible'>{capitalizeFirstChar(label)}</TagLabel>}
         {children}
       </Tag>
     </Box>

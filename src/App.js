@@ -1,11 +1,12 @@
 import { Box, Spacer } from "@chakra-ui/layout"
-import { Portal, Spinner } from "@chakra-ui/react"
+import { Icon, Portal, Spinner } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { AnimatePresence } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { Route, Switch, useLocation } from "react-router"
 import { Redirect } from "react-router-dom"
+import { About } from "./components/About/About"
 import { ErrorModal } from "./components/ErrorModal/ErrorModal"
 import { Home } from "./components/Home/Home"
 import { MotionContentVariant } from "./components/Motion/MotionContentVariant/MotionContentVariant"
@@ -22,6 +23,7 @@ import { hideError } from "./store/slices/errorSlice"
 import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
 import { setLoadingOff, setLoadingOn } from "./store/slices/loadingSlice"
 import { getRandomData } from "./utility/getRandomData"
+import { GoMarkGithub } from "react-icons/go"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
@@ -70,6 +72,7 @@ export const App = () => {
     filteredEntries: surfaceData,
     filters,
     resetFilters,
+    filterStack,
   } = useFilters({
     entries,
     groupedTree,
@@ -117,11 +120,12 @@ export const App = () => {
         onClose={() => dispatch(hideError())}
         errorMessage={errorMessage}
       />
-      <Toolbar bgColor='purple.500' spacing={6} ref={headerRef}>
+      <Toolbar bgColor='purple.500' spacing={3} ref={headerRef}>
         <NavigationItem path='/' current={pathname} label='HOME' ml={3} />
         <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
         <NavigationItem path='/about' current={pathname} label='ABOUT' />
         <Spacer />
+        <Icon as={GoMarkGithub} h={8} w={8} color='white' />
         {signedIn ? (
           <ProfilePopover
             variant='subtle'
@@ -129,13 +133,23 @@ export const App = () => {
             color='purple.800'
           />
         ) : (
-          <NavigationItem path='/login' current={pathname} label='LOGIN' />
+          <NavigationItem
+            path='/login'
+            current={pathname}
+            label='LOGIN'
+            px={6}
+          />
         )}
       </Toolbar>
 
       <Box mt={`${top}px`}>
         <AnimatePresence exitBeforeEnter initial={false}>
           <Switch location={location} key={location.key}>
+            <Route path='/about'>
+              <MotionContentVariant>
+                <About />
+              </MotionContentVariant>
+            </Route>
             <Route path='/entries'>
               <MotionContentVariant>
                 <Entries
@@ -145,6 +159,9 @@ export const App = () => {
                   counts={counts}
                   setFilter={setFilter}
                   signedIn={signedIn}
+                  isEmptyEntries={isEmptyEntries}
+                  isLoading={isLoading || isLoadingFilter}
+                  filterStack={filterStack}
                 />
               </MotionContentVariant>
             </Route>

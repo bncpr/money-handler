@@ -65,5 +65,12 @@ export const useFilters = ({ groupedTree, entries }) => {
     [dispatch],
   )
 
-  return { setFilter, counts, filteredEntries, filters, resetFilters }
+  return {
+    setFilter,
+    counts,
+    filteredEntries,
+    filters,
+    resetFilters,
+    filterStack,
+  }
 }
