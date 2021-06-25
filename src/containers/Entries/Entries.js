@@ -8,9 +8,6 @@ import {
   HStack,
   Portal,
   Table,
-  Tag,
-  TagCloseButton,
-  TagLabel,
   Tbody,
   Tfoot,
   Th,
@@ -23,14 +20,13 @@ import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Filters } from "../../components/Filters/Filters"
+import { MotionFilterTag } from "../../components/Motion/MotionFilterTag/MotionFilterTag"
 import { DeleteEntryAlert } from "../../components/UI/Alert/DeleteEntryAlert"
 import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
 import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
 import { TableRow } from "../../components/UI/Table/TableRow"
 import { usePagination } from "../../hooks/usePagination/usePagination"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
-import { monthsMap, monthsMapFull } from "../../utility/maps"
-import { capitalizeFirstChar } from "../../utility/utility"
 import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
 import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
 
@@ -48,26 +44,7 @@ const focusVariant = {
   },
 }
 
-const MotionFilterTag = ({ filter, value, setFilter }) => {
-  return (
-    <motion.div
-      key={filter}
-      // initial={{ opacity: 0.5 }}
-      // animate={{ opacity: 1 }}
-      // exit={{ opacity: 0.5 }}
-      layout
-    >
-      <Tag size='lg' borderRadius='full' variant='subtle' colorScheme='gray'>
-        <TagLabel h='full' overflow='visible'>{`${capitalizeFirstChar(
-          filter,
-        )}: ${
-          filter === "month" ? monthsMap.get(value) : capitalizeFirstChar(value)
-        }`}</TagLabel>
-        <TagCloseButton onClick={() => setFilter(filter, "")} />
-      </Tag>
-    </motion.div>
-  )
-}
+const MotionBox = motion(Box)
 
 export const Entries = ({
   surfaceData,
@@ -125,13 +102,13 @@ export const Entries = ({
 
   return (
     <Grid
-      templateColumns='70% auto'
+      templateColumns='1fr auto 1fr'
       templateRows='48px 1fr'
       columnGap={6}
       pt={6}
     >
-      <GridItem colSpan='2' justifySelf='center'>
-        <HStack >
+      <GridItem colSpan='3' justifySelf='center'>
+        <HStack>
           <AnimatePresence>
             {filterStack.map(([key, value]) => (
               <MotionFilterTag
@@ -144,49 +121,44 @@ export const Entries = ({
           </AnimatePresence>
         </HStack>
       </GridItem>
-      <GridItem colStart='2' rowStart='2' justifySelf='start'>
-        <VStack
-          spacing={6}
-          align='stretch'
-          width='2xs'
-          shadow='xl'
-          px={10}
-          py={6}
-          borderRadius='lg'
+
+      <VStack
+        pl={9}
+        pt={6}
+        spacing={5}
+        align='stretch'
+        justifySelf='start'
+        w='2xs'
+      >
+        <Heading size='md' fontWeight='semibold' pl={3}>
+          Filters
+        </Heading>
+        <Filters
+          filters={filters}
+          counts={counts}
+          fields={fields}
+          setFilter={setFilter}
+        />
+        <MotionBox
+          animate={isEmptyEntries && signedIn && !isLoading ? "focus" : "none"}
+          whileHover='none'
+          variants={focusVariant}
+          pt={2}
         >
-          <Box>
-            <Heading size='md' fontWeight='semibold' p={2}>
-              Filters
-            </Heading>
-            <Filters
-              filters={filters}
-              counts={counts}
-              fields={fields}
-              setFilter={setFilter}
-            />
-          </Box>
-          <motion.div
-            animate={
-              isEmptyEntries && signedIn && !isLoading ? "focus" : "none"
-            }
-            whileHover='none'
-            variants={focusVariant}
+          <Button
+            onClick={onOpenNew}
+            leftIcon={<AddIcon />}
+            colorScheme='green'
+            w='full'
           >
-            <Button
-              onClick={onOpenNew}
-              leftIcon={<AddIcon />}
-              colorScheme='green'
-              w='full'
-            >
-              ADD ENTRY
-            </Button>
-          </motion.div>
-        </VStack>
-      </GridItem>
-      <GridItem rowStart='2' justifySelf='end'>
+            ADD ENTRY
+          </Button>
+        </MotionBox>
+      </VStack>
+      <GridItem colStart='2' rowStart='2' justifySelf='center'>
         {!isLoading && (
           <Box shadow='xl' px={6} py={3} borderRadius='lg'>
-            <Table variant='simple' size='md'>
+            <Table variant='simple' size='md' w='max'>
               <Thead>
                 <Tr>
                   <Th isNumeric>Date</Th>

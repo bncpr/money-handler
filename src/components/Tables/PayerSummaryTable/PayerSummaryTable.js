@@ -36,7 +36,7 @@ export const PayerSummaryTable = ({ payerMonthFields }) => {
                 <Td>{capitalizeFirstChar(payer)}</Td>
                 <Td isNumeric>{Math.round(value)}</Td>
                 <Td isNumeric minW='76px'>
-                  {`${sign} ${deviation}`}
+                  {`${deviation === 0 ? "" : sign} ${deviation}`}
                 </Td>
               </Tr>
             )

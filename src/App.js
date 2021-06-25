@@ -114,33 +114,33 @@ export const App = () => {
             zIndex='tooltip'
           />
         )}
+        <ErrorModal
+          isOpen={error}
+          onClose={() => dispatch(hideError())}
+          errorMessage={errorMessage}
+        />
+        <Toolbar bgColor='purple.500' spacing={3} ref={headerRef}>
+          <NavigationItem path='/' current={pathname} label='HOME' ml={3} />
+          <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
+          <NavigationItem path='/about' current={pathname} label='ABOUT' />
+          <Spacer />
+          <Icon as={GoMarkGithub} h={8} w={8} color='white' />
+          {signedIn ? (
+            <ProfilePopover
+              variant='subtle'
+              colorScheme='purple'
+              color='purple.800'
+            />
+          ) : (
+            <NavigationItem
+              path='/login'
+              current={pathname}
+              label='LOGIN'
+              px={6}
+            />
+          )}
+        </Toolbar>
       </Portal>
-      <ErrorModal
-        isOpen={error}
-        onClose={() => dispatch(hideError())}
-        errorMessage={errorMessage}
-      />
-      <Toolbar bgColor='purple.500' spacing={3} ref={headerRef}>
-        <NavigationItem path='/' current={pathname} label='HOME' ml={3} />
-        <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
-        <NavigationItem path='/about' current={pathname} label='ABOUT' />
-        <Spacer />
-        <Icon as={GoMarkGithub} h={8} w={8} color='white' />
-        {signedIn ? (
-          <ProfilePopover
-            variant='subtle'
-            colorScheme='purple'
-            color='purple.800'
-          />
-        ) : (
-          <NavigationItem
-            path='/login'
-            current={pathname}
-            label='LOGIN'
-            px={6}
-          />
-        )}
-      </Toolbar>
 
       <Box mt={`${top}px`}>
         <AnimatePresence exitBeforeEnter initial={false}>

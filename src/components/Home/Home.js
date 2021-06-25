@@ -1,22 +1,8 @@
 import { Grid, GridItem } from "@chakra-ui/layout"
-import {
-  Button,
-  Heading,
-  HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-  VStack,
-} from "@chakra-ui/react"
+import { Heading, HStack, VStack } from "@chakra-ui/react"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { useHistory } from "react-router-dom"
 import { monthsMapFull } from "../../utility/maps"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
@@ -24,6 +10,7 @@ import { PieChart } from "../DataViz/PieChart/PieChart"
 import { CategorySummaryTable } from "../Tables/CategorySummaryTable/CategorySummaryTable"
 import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable"
 import { ForwardBackward } from "../UI/ForwardBackward/ForwardBackward"
+import { NoEntriesModal } from "../NoEntriesModal/NoEntriesModal"
 
 export const groupByProp = prop => R.groupBy(R.prop(prop))
 const getSums = R.map(R.pipe(R.map(R.prop("value")), R.sum))
@@ -242,27 +229,5 @@ export const Home = ({
         />
       </GridItem>
     </Grid>
-  )
-}
-
-const NoEntriesModal = ({ isOpen }) => {
-  const history = useHistory()
-  const redirectToEntries = () => history.push("/entries")
-  return (
-    <Modal isOpen={isOpen} onClose={redirectToEntries}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>No Entries Yet</ModalHeader>
-        <ModalBody>
-          <Text>You need to have data in order to viz it.</Text>
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme='green' onClick={redirectToEntries}>
-            Okay
-          </Button>
-        </ModalFooter>
-        <ModalCloseButton />
-      </ModalContent>
-    </Modal>
   )
 }
