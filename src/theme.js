@@ -6,6 +6,13 @@ import {
 
 export const customTheme = extendTheme(
   {
+    styles: {
+      global: {
+        "html, body": {
+          bg: "gray.50",
+        },
+      },
+    },
     components: {
       Button: {
         baseStyle: {
@@ -44,10 +51,6 @@ export const customTheme = extendTheme(
       },
     },
   },
-  withDefaultColorScheme({
-    colorScheme: "green",
-    components: ["Radio"],
-  }),
   withDefaultProps({
     defaultProps: {
       isLazy: true,

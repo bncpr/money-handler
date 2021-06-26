@@ -2,6 +2,7 @@ import { AddIcon } from "@chakra-ui/icons"
 import { Box } from "@chakra-ui/layout"
 import {
   Button,
+  Divider,
   Grid,
   GridItem,
   Heading,
@@ -22,6 +23,7 @@ import { useDispatch } from "react-redux"
 import { Filters } from "../../components/Filters/Filters"
 import { MotionFilterTag } from "../../components/Motion/MotionFilterTag/MotionFilterTag"
 import { DeleteEntryAlert } from "../../components/UI/Alert/DeleteEntryAlert"
+import { CardBox } from "../../components/UI/Box/CardBox/CardBox"
 import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
 import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
 import { TableRow } from "../../components/UI/Table/TableRow"
@@ -56,6 +58,7 @@ export const Entries = ({
   isEmptyEntries,
   isLoading,
   filterStack,
+  categoryColors,
 }) => {
   const dispatch = useDispatch()
 
@@ -121,43 +124,44 @@ export const Entries = ({
           </AnimatePresence>
         </HStack>
       </GridItem>
-
-      <VStack
-        pl={9}
-        pt={6}
-        spacing={5}
-        align='stretch'
-        justifySelf='start'
-        w='2xs'
-      >
-        <Heading size='md' fontWeight='semibold' pl={3}>
-          Filters
-        </Heading>
-        <Filters
-          filters={filters}
-          counts={counts}
-          fields={fields}
-          setFilter={setFilter}
-        />
-        <MotionBox
-          animate={isEmptyEntries && signedIn && !isLoading ? "focus" : "none"}
-          whileHover='none'
-          variants={focusVariant}
-          pt={2}
-        >
-          <Button
-            onClick={onOpenNew}
-            leftIcon={<AddIcon />}
-            colorScheme='green'
-            w='full'
+      <GridItem>
+        <VStack w='2xs' ml={12} spacing={5} align='stretch' justifySelf='start'>
+          <CardBox p={6}>
+            <Heading size='md' fontWeight='semibold' pl={3} pb={3}>
+              Filters
+            </Heading>
+            <Filters
+              filters={filters}
+              counts={counts}
+              fields={fields}
+              setFilter={setFilter}
+            />
+          </CardBox>
+          <MotionBox
+            animate={
+              isEmptyEntries && signedIn && !isLoading && !isOpen
+                ? "focus"
+                : "none"
+            }
+            whileHover='none'
+            variants={focusVariant}
+            pt={2}
           >
-            ADD ENTRY
-          </Button>
-        </MotionBox>
-      </VStack>
+            <Button
+              onClick={onOpenNew}
+              leftIcon={<AddIcon />}
+              colorScheme='green'
+              w='full'
+              variant='solid'
+            >
+              ADD ENTRY
+            </Button>
+          </MotionBox>
+        </VStack>
+      </GridItem>
       <GridItem colStart='2' rowStart='2' justifySelf='center'>
         {!isLoading && (
-          <Box shadow='xl' px={6} py={3} borderRadius='lg'>
+          <CardBox px={6} py={3}>
             <Table variant='simple' size='md' w='max'>
               <Thead>
                 <Tr>
@@ -167,6 +171,7 @@ export const Entries = ({
                   <Th>Category</Th>
                   <Th>Tags</Th>
                   <Th>More</Th>
+                  <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -177,6 +182,7 @@ export const Entries = ({
                     onDelete={onOpenDel}
                     onEdit={onOpenEdit}
                     onPick={onPickEntry}
+                    categoryColors={categoryColors}
                   />
                 ))}
               </Tbody>
@@ -189,7 +195,7 @@ export const Entries = ({
                 </Tr>
               </Tfoot>
             </Table>
-          </Box>
+          </CardBox>
         )}
         <PagePanel
           pos='fixed'

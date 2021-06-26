@@ -1,6 +1,7 @@
-import { Box, Table, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react"
+import { Table, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react"
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
+import { CardBox } from "../../UI/Box/CardBox/CardBox"
 
 export const CategorySummaryTable = ({ monthFields, averages, hovered }) => {
   const sorted = R.sortWith(
@@ -8,7 +9,7 @@ export const CategorySummaryTable = ({ monthFields, averages, hovered }) => {
     monthFields,
   )
   return (
-    <Box shadow='lg' borderRadius='lg' p={6}>
+    <CardBox p={6}>
       <Table size='sm'>
         <Thead>
           <Tr>
@@ -53,7 +54,7 @@ export const CategorySummaryTable = ({ monthFields, averages, hovered }) => {
           </Tr>
         </Tfoot>
       </Table>
-    </Box>
+    </CardBox>
   )
 }
 

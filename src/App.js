@@ -1,5 +1,5 @@
 import { Box, Spacer } from "@chakra-ui/layout"
-import { Icon, Portal, Spinner } from "@chakra-ui/react"
+import { Icon, LinkBox, LinkOverlay, Portal, Spinner } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { AnimatePresence } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
@@ -124,7 +124,14 @@ export const App = () => {
           <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
           <NavigationItem path='/about' current={pathname} label='ABOUT' />
           <Spacer />
-          <Icon as={GoMarkGithub} h={8} w={8} color='white' />
+          <LinkBox>
+            <Icon as={GoMarkGithub} h={8} w={8} color='white' />
+            <LinkOverlay
+              href='http://www.google.com/'
+              target='_blank'
+              rel='noreferrer noopener'
+            />
+          </LinkBox>
           {signedIn ? (
             <ProfilePopover
               variant='subtle'
@@ -162,6 +169,7 @@ export const App = () => {
                   isEmptyEntries={isEmptyEntries}
                   isLoading={isLoading || isLoadingFilter}
                   filterStack={filterStack}
+                  categoryColors={colors.categoryColors || {}}
                 />
               </MotionContentVariant>
             </Route>

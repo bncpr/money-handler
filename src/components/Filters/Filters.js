@@ -6,7 +6,8 @@ import { sortDescendList, sortAscendList } from "../../utility/utility"
 const getTuples = array => R.prepend(["", "No Filter"], R.zip(array, array))
 
 const selectStyle = {
-  variant: "solid",
+  variant: "outline",
+  colorScheme: "gray",
   textAlign: "left",
   px: 6,
 }
