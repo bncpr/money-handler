@@ -52,7 +52,6 @@ export const NewEntryDrawerForm = ({
     validationSchema: entrySchema,
     onSubmit: values => {
       const entry = addYearAndMonthProps(values)
-      // dispatch(setLoadingOn())
       setTimeout(() => {
         dispatch(postNewEntryThunk({ entry }))
         formik.resetForm()

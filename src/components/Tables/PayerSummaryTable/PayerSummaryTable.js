@@ -45,7 +45,7 @@ export const PayerSummaryTable = ({ payerMonthFields }) => {
         </Tbody>
         <Tfoot>
           <Tr>
-            <Th>Total</Th>
+            <Th isNumeric>Total</Th>
             <Th isNumeric>{total}</Th>
             <Th isNumeric>{average}</Th>
           </Tr>

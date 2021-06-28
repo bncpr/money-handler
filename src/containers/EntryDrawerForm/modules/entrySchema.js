@@ -5,7 +5,7 @@ export const entrySchema = yup.object().shape({
     .date()
     .required()
     .max("2100/01/01", "That's way too far in the future."),
-  value: yup.number().required().positive(),
+  value: yup.number().required().positive().max(1000000),
   payer: yup.string().required(),
   category: yup.string().required(),
   tags: yup.array(),

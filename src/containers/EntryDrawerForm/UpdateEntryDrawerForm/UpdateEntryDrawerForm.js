@@ -75,9 +75,14 @@ export const UpdateEntryDrawerForm = ({
   const onSubmitAttempt = () => {
     formik.validateForm()
     if (formik.isValid) {
+      console.log("VALID")
       return !signedIn ? formik.submitForm() : onOpenAlert()
     }
   }
+
+  useEffect(() => {
+    console.log(formik.errors)
+  }, [formik.errors])
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose} placement={placement} size='md'>

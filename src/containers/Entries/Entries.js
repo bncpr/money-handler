@@ -2,7 +2,6 @@ import { AddIcon } from "@chakra-ui/icons"
 import { Box } from "@chakra-ui/layout"
 import {
   Button,
-  Divider,
   Grid,
   GridItem,
   Heading,
@@ -69,7 +68,7 @@ export const Entries = ({
     onChangePage,
     onChangePageSize,
     resetPage,
-  } = usePagination(surfaceData.length, 12, filters)
+  } = usePagination(surfaceData.length, 10, filters)
 
   useEffect(() => {
     resetPage()
@@ -183,6 +182,8 @@ export const Entries = ({
                     onEdit={onOpenEdit}
                     onPick={onPickEntry}
                     categoryColors={categoryColors}
+                    setFilter={setFilter}
+                    filters={filters}
                   />
                 ))}
               </Tbody>

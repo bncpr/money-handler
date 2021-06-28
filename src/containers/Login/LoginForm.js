@@ -1,6 +1,7 @@
 import { Button } from "@chakra-ui/button"
 import { FormControl, FormErrorMessage } from "@chakra-ui/form-control"
 import { Box, Flex, Heading } from "@chakra-ui/layout"
+import { Input } from "@chakra-ui/react"
 import { Field, Form, FormikProvider, useFormik } from "formik"
 import { useState } from "react"
 import { useSelector } from "react-redux"
@@ -54,7 +55,7 @@ export const LoginForm = () => {
 
   return (
     <Box pt={9}>
-      <Box boxShadow='lg' borderRadius='md' p={6} w='max' mx='auto'>
+      <Box boxShadow='lg' borderRadius='md' py={6} px={8} w='max' mx='auto'>
         {signedIn && <Redirect to='/entries' />}
         <FormikProvider value={formik}>
           <Flex direction='column'>
@@ -62,18 +63,37 @@ export const LoginForm = () => {
               {mode === "signIn" ? "Login" : "Create New User"}
             </Heading>
             <Form onSubmit={formik.handleSubmit}>
-              <Field
-                name='email'
-                type='email'
-                component={InputContext}
-                label='Email'
-              />
-              <Field
-                name='password'
-                type='password'
-                component={InputContext}
-                label='Password'
-              />
+              <Field name='email' type='email'>
+                {({ field, meta: { error, touched } }) => (
+                  <FormControl
+                    id={field.name}
+                    isInvalid={error && touched}
+                    width='max'
+                    p={2}
+                  >
+                    <Input variant='flushed' placeholder='Email' {...field} />
+                    <FormErrorMessage>{error}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
+              <Field name='password' type='password'>
+                {({ field, meta: { error, touched } }) => (
+                  <FormControl
+                    id={field.name}
+                    isInvalid={error && touched}
+                    width='max'
+                    p={2}
+                  >
+                    <Input
+                      variant='flushed'
+                      placeholder='Password'
+                      type='password'
+                      {...field}
+                    />
+                    <FormErrorMessage>{error}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
               <FormControl isInvalid={formik.errors.other}>
                 <FormErrorMessage>{formik.errors.other}</FormErrorMessage>
               </FormControl>

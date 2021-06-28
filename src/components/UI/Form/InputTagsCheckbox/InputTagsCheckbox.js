@@ -10,15 +10,14 @@ import {
   TagLabel,
   Wrap,
 } from "@chakra-ui/react"
-import { useState } from "react"
 import * as R from "ramda"
-import { capitalizeFirstChar } from "../../../../utility/utility"
+import { useState } from "react"
 
 const clean = R.pipe(
   R.toLower,
-  R.replace(/ /g, ""),
   R.split(","),
-  R.reject(R.isEmpty)
+  R.map(R.pipe(R.trim, R.replace(/ /g, "-"))),
+  R.reject(R.isEmpty),
 )
 
 export const InputTagsCheckbox = ({ field, form }) => {
@@ -27,6 +26,7 @@ export const InputTagsCheckbox = ({ field, form }) => {
   const [input, setInput] = useState("")
   const [error, setError] = useState(null)
   const validate = cleaned => {
+    console.log(cleaned)
     if (
       R.any(R.includes(R.__, field.value), cleaned) ||
       R.any(R.gt(R.__, 1), R.values(R.countBy(R.identity, cleaned)))
@@ -56,7 +56,7 @@ export const InputTagsCheckbox = ({ field, form }) => {
         <Wrap p={2}>
           {field.value.map(tag => (
             <Tag key={tag} colorScheme='purple' variant='solid'>
-              <TagLabel>{capitalizeFirstChar(tag)}</TagLabel>
+              <TagLabel>{tag}</TagLabel>
               <TagCloseButton
                 onClick={unselectTag(tag)}
                 _focus={{ boxShadow: "none" }}

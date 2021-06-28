@@ -48,7 +48,7 @@ export const CategorySummaryTable = ({ monthFields, averages, hovered }) => {
         </Tbody>
         <Tfoot>
           <Tr>
-            <Th>Total</Th>
+            <Th isNumeric>Total</Th>
             <Th isNumeric>{roundSum(monthFields.map(R.last))}</Th>
             <Th isNumeric>{roundSum(R.values(averages))}</Th>
           </Tr>
