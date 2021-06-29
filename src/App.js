@@ -1,5 +1,12 @@
 import { Box, Spacer } from "@chakra-ui/layout"
-import { Icon, LinkBox, LinkOverlay, Portal, Spinner } from "@chakra-ui/react"
+import {
+  Icon,
+  LinkBox,
+  LinkOverlay,
+  Portal,
+  Spinner,
+  Tooltip,
+} from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { AnimatePresence } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
@@ -24,6 +31,7 @@ import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntries
 import { setLoadingOff, setLoadingOn } from "./store/slices/loadingSlice"
 import { getRandomData } from "./utility/getRandomData"
 import { GoMarkGithub } from "react-icons/go"
+import { csv, csvParse } from "d3"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
@@ -124,14 +132,18 @@ export const App = () => {
           <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
           <NavigationItem path='/about' current={pathname} label='ABOUT' />
           <Spacer />
-          <LinkBox>
-            <Icon as={GoMarkGithub} h={8} w={8} color='white' />
-            <LinkOverlay
-              href='http://www.google.com/'
-              target='_blank'
-              rel='noreferrer noopener'
-            />
-          </LinkBox>
+          {signedIn !== undefined && (
+            <Tooltip label='Got to GitHub repository'>
+              <LinkBox>
+                <Icon as={GoMarkGithub} h={6} w={6} color='white' />
+                <LinkOverlay
+                  href='http://www.google.com/'
+                  target='_blank'
+                  rel='noreferrer noopener'
+                />
+              </LinkBox>
+            </Tooltip>
+          )}
           {signedIn ? (
             <ProfilePopover
               variant='subtle'
@@ -139,12 +151,14 @@ export const App = () => {
               color='purple.800'
             />
           ) : (
-            <NavigationItem
-              path='/login'
-              current={pathname}
-              label='LOGIN'
-              px={6}
-            />
+            signedIn !== undefined && (
+              <NavigationItem
+                path='/login'
+                current={pathname}
+                label='LOGIN'
+                px={6}
+              />
+            )
           )}
         </Toolbar>
       </Portal>

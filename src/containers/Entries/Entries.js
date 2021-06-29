@@ -12,8 +12,9 @@ import {
   Tfoot,
   Th,
   Thead,
+  Tooltip,
   Tr,
-  VStack,
+  VStack
 } from "@chakra-ui/react"
 import { AnimatePresence, motion } from "framer-motion"
 import * as R from "ramda"
@@ -24,9 +25,11 @@ import { MotionFilterTag } from "../../components/Motion/MotionFilterTag/MotionF
 import { DeleteEntryAlert } from "../../components/UI/Alert/DeleteEntryAlert"
 import { CardBox } from "../../components/UI/Box/CardBox/CardBox"
 import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
+import { SortMenu } from "../../components/UI/Menu/SortMenu"
 import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
 import { TableRow } from "../../components/UI/Table/TableRow"
 import { usePagination } from "../../hooks/usePagination/usePagination"
+import { useSorting } from "../../hooks/useSorting/useSorting"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
 import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
 import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
@@ -60,6 +63,8 @@ export const Entries = ({
   categoryColors,
 }) => {
   const dispatch = useDispatch()
+
+  const { sorted, onChangeSort, sortState } = useSorting({ data: surfaceData })
 
   const {
     pageSize,
@@ -97,10 +102,7 @@ export const Entries = ({
     }, 0)
   }
 
-  const paginated = surfaceData.slice(
-    page * pageSize,
-    page * pageSize + pageSize,
-  )
+  const paginated = sorted.slice(page * pageSize, page * pageSize + pageSize)
 
   return (
     <Grid
@@ -164,13 +166,41 @@ export const Entries = ({
             <Table variant='simple' size='md' w='max'>
               <Thead>
                 <Tr>
-                  <Th isNumeric>Date</Th>
-                  <Th isNumeric>Value</Th>
-                  <Th>Payer</Th>
-                  <Th>Category</Th>
+                  <Th isNumeric>
+                    Date
+                    <SortMenu
+                      value={sortState.date}
+                      onChange={onChangeSort("date")}
+                    />
+                  </Th>
+                  <Th isNumeric>
+                    Value
+                    <SortMenu
+                      value={sortState.value}
+                      onChange={onChangeSort("value")}
+                    />
+                  </Th>
+                  <Th>
+                    Payer
+                    <SortMenu
+                      value={sortState.payer}
+                      onChange={onChangeSort("payer")}
+                    />
+                  </Th>
+                  <Th>
+                    Category
+                    <SortMenu
+                      value={sortState.category}
+                      onChange={onChangeSort("category")}
+                    />
+                  </Th>
                   <Th>Tags</Th>
-                  <Th>More</Th>
-                  <Th></Th>
+                  <Th>
+                    <Tooltip label='Free text for additional information.'>
+                      <span>More</span>
+                    </Tooltip>
+                  </Th>
+                  <Th />
                 </Tr>
               </Thead>
               <Tbody>

@@ -45,9 +45,11 @@ export const About = () => {
           <Divider />
           <Text>
             This is an application I built as a first learning project in
-            Javascript. The goal was to make my personal Excel sheet, which I
+            Javascript. The goal was to make my personal spread-sheet, which I
             use to calculate and store our monthly household expenses in, into a
-            more user friendly experience.
+            friendlier user experience when managing the entries, visualizing the
+            data, and calculating how much one owes to the other at the end of
+            each month.
           </Text>
           <Text>Technologies I used:</Text>
           <UnorderedList px={9} spacing={3}>

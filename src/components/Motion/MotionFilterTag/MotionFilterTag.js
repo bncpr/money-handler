@@ -12,7 +12,7 @@ export const MotionFilterTag = ({ filter, value, setFilter }) => {
       // exit={{ opacity: 0.5 }}
       layout
     >
-      <Tag size='lg' borderRadius='full' variant='subtle' colorScheme='gray'>
+      <Tag size='lg' borderRadius='full' variant='solid' colorScheme='teal'>
         <TagLabel h='full' overflow='visible'>{`${capitalizeFirstChar(
           filter,
         )}: ${

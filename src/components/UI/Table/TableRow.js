@@ -1,8 +1,17 @@
-import { Tag, TagLabel, Td, Text, Tr, Wrap } from "@chakra-ui/react"
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons"
+import {
+  MenuItem,
+  Tag,
+  TagLabel,
+  Td,
+  Text,
+  Tr,
+  Wrap
+} from "@chakra-ui/react"
 import { nanoid } from "@reduxjs/toolkit"
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
-import { MenuEditDelete } from "../Menu/MenuEditDelete"
+import { DownArrowMenu } from "../Menu/DownArrowMenu"
 
 export const TableRow = ({
   d,
@@ -22,9 +31,9 @@ export const TableRow = ({
       <Td>
         <Text
           onClick={filters.payer ? null : () => setFilter("payer", d.payer)}
-          cursor={filters.payer ? "default" : "pointer"}
+          cursor={filters.payer || "pointer"}
           _hover={{
-            fontWeight: "semibold",
+            fontWeight: filters.payer || "semibold",
           }}
         >
           {capitalizeFirstChar(d.payer)}
@@ -39,9 +48,9 @@ export const TableRow = ({
           onClick={
             filters.category ? null : () => setFilter("category", d.category)
           }
-          cursor={filters.category ? "default" : "pointer"}
+          cursor={filters.category || "pointer"}
           _hover={{
-            color: "gray.300",
+            color: filters.category || "gray.200",
           }}
         >
           <TagLabel overflow='visible'>
@@ -60,7 +69,14 @@ export const TableRow = ({
       </Td>
       <Td>{d.more}</Td>
       <Td>
-        <MenuEditDelete onDelete={onDelete} onEdit={onEdit} />
+        <DownArrowMenu size='2xs'>
+          <MenuItem icon={<EditIcon />} onClick={onEdit}>
+            Edit
+          </MenuItem>
+          <MenuItem icon={<DeleteIcon />} onClick={onDelete}>
+            Delete
+          </MenuItem>
+        </DownArrowMenu>
       </Td>
     </Tr>
   )

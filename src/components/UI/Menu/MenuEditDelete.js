@@ -12,8 +12,8 @@ export const MenuEditDelete = ({ id, onDelete, onEdit }) => (
     <MenuButton
       as={IconButton}
       icon={<ChevronDownIcon />}
-      variant='unstyled'
-      size='1xs'
+      variant='ghost'
+      size='2xs'
       _focus={{ boxShadow: "none" }}
     />
     <MenuList>
