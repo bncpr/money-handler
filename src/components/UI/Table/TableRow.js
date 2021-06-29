@@ -1,4 +1,4 @@
-import { Tag, TagLabel, Td, Tr, Wrap } from "@chakra-ui/react"
+import { Tag, TagLabel, Td, Text, Tr, Wrap } from "@chakra-ui/react"
 import { nanoid } from "@reduxjs/toolkit"
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
@@ -19,7 +19,17 @@ export const TableRow = ({
       <Td isNumeric fontWeight='semibold'>
         {Math.round(d.value)}
       </Td>
-      <Td>{capitalizeFirstChar(d.payer)}</Td>
+      <Td>
+        <Text
+          onClick={filters.payer ? null : () => setFilter("payer", d.payer)}
+          cursor={filters.payer ? "default" : "pointer"}
+          _hover={{
+            fontWeight: "semibold",
+          }}
+        >
+          {capitalizeFirstChar(d.payer)}
+        </Text>
+      </Td>
       <Td py={2}>
         <Tag
           rounded='full'
@@ -30,6 +40,9 @@ export const TableRow = ({
             filters.category ? null : () => setFilter("category", d.category)
           }
           cursor={filters.category ? "default" : "pointer"}
+          _hover={{
+            color: "gray.300",
+          }}
         >
           <TagLabel overflow='visible'>
             {capitalizeFirstChar(d.category)}
@@ -47,7 +60,7 @@ export const TableRow = ({
       </Td>
       <Td>{d.more}</Td>
       <Td>
-        <MenuEditDelete id={d.id} onDelete={onDelete} onEdit={onEdit} />
+        <MenuEditDelete onDelete={onDelete} onEdit={onEdit} />
       </Td>
     </Tr>
   )
