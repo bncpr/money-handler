@@ -48,7 +48,6 @@ export const NewEntryDrawerForm = ({
 
   const formik = useFormik({
     initialValues,
-    validateOnBlur: false,
     validationSchema: entrySchema,
     onSubmit: values => {
       const entry = addYearAndMonthProps(values)
