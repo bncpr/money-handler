@@ -136,7 +136,7 @@ export const App = () => {
               <LinkBox>
                 <Icon as={GoMarkGithub} h={6} w={6} color='white' />
                 <LinkOverlay
-                  href='http://www.google.com/'
+                  href='https://github.com/bncpr/money-handler'
                   target='_blank'
                   rel='noreferrer noopener'
                 />
