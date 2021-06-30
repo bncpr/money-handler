@@ -1,5 +1,4 @@
-import { assoc } from "ramda"
-import { pipe } from "rxjs"
+import { assoc, pipe } from "ramda"
 import { Bar } from "./Bar/Bar"
 
 export const Bars = ({ rects, hovered, setHovered, isInitiallyFlat, y }) => {
