@@ -1,3 +1,3 @@
 # About
 
-An expanses handler React web application.
+A household expanses handler web application.
