@@ -1,6 +1,6 @@
 import { createStandaloneToast } from "@chakra-ui/react"
 import { createAsyncThunk } from "@reduxjs/toolkit"
-import { removeEntry as removeEntryFB } from "../../firebase"
+import { removeEntry as removeEntryFB } from "../../api/firebase/firebase"
 import { showError } from "../slices/errorSlice"
 import { updateEntries } from "../slices/groupedEntriesSlice/groupedEntriesSlice"
 import * as R from "ramda"

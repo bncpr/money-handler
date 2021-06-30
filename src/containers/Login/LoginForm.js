@@ -7,8 +7,8 @@ import { useState } from "react"
 import { useSelector } from "react-redux"
 import { Redirect } from "react-router"
 import * as Yup from "yup"
-import { InputContext } from "../../components/UI/Form/InputContext/InputContext"
-import { createUser, signInUser } from "../../firebase"
+import { createUser, signInUser } from "../../api/firebase/firebase"
+import { CardBox } from "../../components/UI/Box/CardBox/CardBox"
 
 const re = /\/((?:\w+-*)+)/
 const keyRe = /email|password|user/
@@ -55,7 +55,12 @@ export const LoginForm = () => {
 
   return (
     <Box pt={9}>
-      <Box boxShadow='lg' borderRadius='md' py={6} px={8} w='max' mx='auto'>
+      <CardBox
+        py={6}
+        px={8}
+        w='max'
+        mx='auto'
+      >
         {signedIn && <Redirect to='/entries' />}
         <FormikProvider value={formik}>
           <Flex direction='column'>
@@ -113,7 +118,7 @@ export const LoginForm = () => {
             </Form>
           </Flex>
         </FormikProvider>
-      </Box>
+      </CardBox>
     </Box>
   )
 }

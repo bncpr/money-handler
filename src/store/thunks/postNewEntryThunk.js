@@ -1,7 +1,7 @@
 import { createStandaloneToast } from "@chakra-ui/react"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import * as R from "ramda"
-import { pushNewEntry, updateUserFields } from "../../firebase"
+import { pushNewEntry, updateUserFields } from "../../api/firebase/firebase"
 import { showError } from "../slices/errorSlice"
 import { updateEntries } from "../slices/groupedEntriesSlice/groupedEntriesSlice"
 

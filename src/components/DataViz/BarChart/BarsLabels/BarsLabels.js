@@ -1,4 +1,4 @@
-import { BarLabel } from "../BarLabel/BarLabel"
+import { BarLabel } from "./BarLabel/BarLabel"
 
 export const BarsLabels = ({ rects, hovered, fontSize }) => {
   return rects.map(

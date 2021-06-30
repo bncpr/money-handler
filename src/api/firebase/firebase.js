@@ -2,16 +2,15 @@ import { initializeApp } from "firebase/app"
 import {
   createUserWithEmailAndPassword,
   getAuth,
-  signInWithEmailAndPassword,
+  signInWithEmailAndPassword
 } from "firebase/auth"
 import {
-  get,
   getDatabase,
   onValue,
   push,
   ref,
   remove,
-  update,
+  update
 } from "firebase/database"
 
 const firebaseConfig = {
@@ -38,16 +37,9 @@ export const createUser = (email, password) =>
 
 export const db = getDatabase()
 
-export const getUserEntries = uid =>
-  get(ref(db, `users/${uid}`)).then(snapshot =>
-    snapshot.exists() ? snapshot.val() : {},
-  )
 
 export const removeEntry = (uid, entryId) =>
   remove(ref(db, `users/${uid}/entries/${entryId}`))
-
-export const updateEntry = (uid, entryId, entry) =>
-  update(ref(db, `users/${uid}/entries/${entryId}`), entry)
 
 export const updateUserFields = (uid, updates) =>
   update(ref(db, `users/${uid}`), updates)

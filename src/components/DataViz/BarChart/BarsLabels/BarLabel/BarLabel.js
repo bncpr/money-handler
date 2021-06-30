@@ -1,4 +1,4 @@
-import { capitalizeFirstChar } from "../../../../utility/utility"
+import { capitalizeFirstChar } from "../../../../../utility/utility"
 import { format } from "d3-format"
 
 export function BarLabel(props) {

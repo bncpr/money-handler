@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, ChevronRightIcon, Icon } from "@chakra-ui/icons"
+import { Icon } from "@chakra-ui/icons"
 import { IconButton } from "@chakra-ui/react"
 import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai"
 

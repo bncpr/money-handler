@@ -5,14 +5,16 @@ import {
   LinkOverlay,
   Portal,
   Spinner,
-  Tooltip,
+  Tooltip
 } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { AnimatePresence } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
+import { GoMarkGithub } from "react-icons/go"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { Route, Switch, useLocation } from "react-router"
 import { Redirect } from "react-router-dom"
+import { auth, getEntriesObserver } from "./api/firebase/firebase"
 import { About } from "./components/About/About"
 import { ErrorModal } from "./components/ErrorModal/ErrorModal"
 import { Home } from "./components/Home/Home"
@@ -22,7 +24,6 @@ import { Toolbar } from "./components/Navigation/Toolbar/Toolbar"
 import { ProfilePopover } from "./components/Profile/ProfilePopover/ProfilePopover"
 import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
-import { auth, getEntriesObserver } from "./firebase"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
@@ -30,8 +31,6 @@ import { hideError } from "./store/slices/errorSlice"
 import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
 import { setLoadingOff, setLoadingOn } from "./store/slices/loadingSlice"
 import { getRandomData } from "./utility/getRandomData"
-import { GoMarkGithub } from "react-icons/go"
-import { csv, csvParse } from "d3"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
@@ -133,7 +132,7 @@ export const App = () => {
           <NavigationItem path='/about' current={pathname} label='ABOUT' />
           <Spacer />
           {signedIn !== undefined && (
-            <Tooltip label='Got to GitHub repository'>
+            <Tooltip label='Go to GitHub repository'>
               <LinkBox>
                 <Icon as={GoMarkGithub} h={6} w={6} color='white' />
                 <LinkOverlay

@@ -1,5 +1,5 @@
 import { format } from "d3-format"
-import { capitalizeFirstChar } from "../../../../utility/utility"
+import { capitalizeFirstChar } from "../../../../../utility/utility"
 
 export const Bar = ({ d, hovered, setHovered }) => {
   return (

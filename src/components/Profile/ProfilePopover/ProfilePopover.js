@@ -12,7 +12,7 @@ import {
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
-import { auth } from "../../../firebase"
+import { auth } from "../../../api/firebase/firebase"
 
 export const ProfilePopover = ({ ...rest }) => {
   const history = useHistory()

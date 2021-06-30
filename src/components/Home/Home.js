@@ -117,6 +117,7 @@ export const Home = ({
     setMonth(R.last(months))
     setYearIndex(getLastIndex(years))
     setMonthIndex(getLastIndex(months))
+    // eslint-disable-next-line
   }, [groupedTree, groupedMonths])
 
   useEffect(() => {
@@ -124,6 +125,7 @@ export const Home = ({
     setMonths(months)
     const index = months.indexOf(month)
     setMonthIndex(index === -1 ? getLastIndex(months) : index)
+    // eslint-disable-next-line
   }, [year, groupedMonths, month])
 
   const initSubField = R.zipObj(subField, subField.map(R.always(0)))

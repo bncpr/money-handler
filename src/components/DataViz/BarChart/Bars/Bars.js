@@ -1,6 +1,6 @@
 import { assoc } from "ramda"
 import { pipe } from "rxjs"
-import { Bar } from "../Bar/Bar"
+import { Bar } from "./Bar/Bar"
 
 export const Bars = ({ rects, hovered, setHovered, isInitiallyFlat, y }) => {
   return rects.map(d => (

@@ -1,5 +1,5 @@
 import { format } from "d3-format"
-import * as styled from "../styles"
+import * as styled from "./_modules/styles"
 
 export const LeftAxis = ({ yScale, width }) => {
   if (!yScale) return null

@@ -10,12 +10,6 @@ import {
 } from "@chakra-ui/react"
 import { CardBox } from "../UI/Box/CardBox/CardBox"
 
-const IndentedParagraph = ({ children, indent = "24px", ...rest }) => (
-  <Text style={{ textIndent: indent }} {...rest}>
-    {children}
-  </Text>
-)
-
 const Bold = ({ children, rest }) => (
   <Text as='span' fontWeight='semibold' {...rest}>
     {children}
@@ -47,9 +41,9 @@ export const About = () => {
             This is an application I built as a first learning project in
             Javascript. The goal was to make my personal spread-sheet, which I
             use to calculate and store our monthly household expenses in, into a
-            friendlier user experience when managing the entries, visualizing the
-            data, and calculating how much one owes to the other at the end of
-            each month.
+            friendlier user experience when managing the entries, visualizing
+            the data, and calculating how much one owes to the other at the end
+            of each month.
           </Text>
           <Text>Technologies I used:</Text>
           <UnorderedList px={9} spacing={3}>

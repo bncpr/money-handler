@@ -27,6 +27,7 @@ export const useFilters = ({ groupedTree, entries }) => {
 
   useEffect(() => {
     setEntriesStack(getEntriesStack(groupedTree, filterStack, entriesStack))
+    // eslint-disable-next-line
   }, [groupedTree, filterStack])
 
   useEffect(() => {

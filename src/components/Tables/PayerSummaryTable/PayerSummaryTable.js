@@ -1,5 +1,4 @@
 import {
-  Box,
   Table,
   TableCaption,
   Tbody,
@@ -7,7 +6,7 @@ import {
   Tfoot,
   Th,
   Thead,
-  Tr,
+  Tr
 } from "@chakra-ui/react"
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
