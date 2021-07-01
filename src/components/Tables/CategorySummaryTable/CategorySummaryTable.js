@@ -1,4 +1,14 @@
-import { Box, Table, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react"
+import {
+  Box,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react"
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
 
@@ -37,13 +47,16 @@ export const CategorySummaryTable = ({
               >
                 <Td>{capitalizeFirstChar(key)}</Td>
 
-                <Td isNumeric minW='72px'>
-                  {Math.round(value)}
+                <Td isNumeric>{Math.round(value)}</Td>
+                <Td isNumeric whiteSpace='nowrap'>
+                  <Text as='span'>
+                    {average && `${average}`}
+                    {percent && (
+                      <Text as='span' fontSize='xs'>{` (${percent}%)`}</Text>
+                    )}
+                  </Text>
                 </Td>
-                <Td isNumeric minW='72px'>
-                  {average && `${average} ${percent ? `(${percent}%)` : ""}`}
-                </Td>
-                <Td isNumeric minW='76px'>
+                <Td isNumeric whiteSpace='nowrap'>
                   {`${
                     average < value ? "+" : average === value ? "" : "-"
                   } ${difference}`}

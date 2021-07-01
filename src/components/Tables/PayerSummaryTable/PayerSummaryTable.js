@@ -7,7 +7,7 @@ import {
   Tfoot,
   Th,
   Thead,
-  Tr
+  Tr,
 } from "@chakra-ui/react"
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
@@ -18,7 +18,7 @@ export const PayerSummaryTable = ({ payerMonthFields, ...rest }) => {
   const average = Math.round(total / payerMonthFields.length || 0)
   return (
     <Box {...rest}>
-      <Table size={payerMonthFields.length <= 2 ? "md" : "sm"}>
+      <Table size='sm'>
         <TableCaption mt={1}>(deviation from the average)</TableCaption>
         <Thead>
           <Tr>
@@ -35,7 +35,7 @@ export const PayerSummaryTable = ({ payerMonthFields, ...rest }) => {
               <Tr key={payer}>
                 <Td>{capitalizeFirstChar(payer)}</Td>
                 <Td isNumeric>{Math.round(value)}</Td>
-                <Td isNumeric minW='76px'>
+                <Td isNumeric whiteSpace='nowrap'>
                   {`${deviation === 0 ? "" : sign} ${deviation}`}
                 </Td>
               </Tr>
