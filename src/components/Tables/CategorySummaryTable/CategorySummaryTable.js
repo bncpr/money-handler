@@ -1,15 +1,20 @@
-import { Table, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react"
+import { Box, Table, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react"
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
-import { CardBox } from "../../UI/Box/CardBox/CardBox"
 
-export const CategorySummaryTable = ({ monthFields, averages, hovered }) => {
+export const CategorySummaryTable = ({
+  monthFields,
+  averages,
+  hovered,
+  ...rest
+}) => {
   const sorted = R.sortWith(
     [R.descend(R.last), R.descend(el => averages[R.head(el)])],
     monthFields,
   )
+  const sum = roundSum(R.values(averages))
   return (
-    <CardBox p={6}>
+    <Box {...rest}>
       <Table size='sm'>
         <Thead>
           <Tr>
@@ -22,6 +27,7 @@ export const CategorySummaryTable = ({ monthFields, averages, hovered }) => {
         <Tbody>
           {sorted.map(([key, value]) => {
             const average = averages[key]
+            const percent = Number.parseFloat((average / sum) * 100).toFixed(1)
             const difference = Math.round(Math.abs(value - average))
             return (
               <Tr
@@ -35,7 +41,7 @@ export const CategorySummaryTable = ({ monthFields, averages, hovered }) => {
                   {Math.round(value)}
                 </Td>
                 <Td isNumeric minW='72px'>
-                  {average}
+                  {average && `${average} ${percent ? `(${percent}%)` : ""}`}
                 </Td>
                 <Td isNumeric minW='76px'>
                   {`${
@@ -50,11 +56,11 @@ export const CategorySummaryTable = ({ monthFields, averages, hovered }) => {
           <Tr>
             <Th isNumeric>Total</Th>
             <Th isNumeric>{roundSum(monthFields.map(R.last))}</Th>
-            <Th isNumeric>{roundSum(R.values(averages))}</Th>
+            <Th isNumeric>{sum}</Th>
           </Tr>
         </Tfoot>
       </Table>
-    </CardBox>
+    </Box>
   )
 }
 

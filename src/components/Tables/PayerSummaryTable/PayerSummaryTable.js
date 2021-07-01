@@ -1,4 +1,5 @@
 import {
+  Box,
   Table,
   TableCaption,
   Tbody,
@@ -10,14 +11,13 @@ import {
 } from "@chakra-ui/react"
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
-import { CardBox } from "../../UI/Box/CardBox/CardBox"
 
-export const PayerSummaryTable = ({ payerMonthFields }) => {
+export const PayerSummaryTable = ({ payerMonthFields, ...rest }) => {
   const sorted = R.sort(R.ascend(R.head), payerMonthFields)
   const total = Math.round(R.sum(payerMonthFields.map(R.last)))
   const average = Math.round(total / payerMonthFields.length || 0)
   return (
-    <CardBox p={4}>
+    <Box {...rest}>
       <Table size={payerMonthFields.length <= 2 ? "md" : "sm"}>
         <TableCaption mt={1}>(deviation from the average)</TableCaption>
         <Thead>
@@ -50,6 +50,6 @@ export const PayerSummaryTable = ({ payerMonthFields }) => {
           </Tr>
         </Tfoot>
       </Table>
-    </CardBox>
+    </Box>
   )
 }

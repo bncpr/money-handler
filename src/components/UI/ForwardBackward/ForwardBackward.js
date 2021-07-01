@@ -5,6 +5,32 @@ import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai"
 const Back = <Icon as={AiFillCaretLeft} />
 const Forward = <Icon as={AiFillCaretRight} />
 
+export const BackButton = ({ onDec, isDisabledDec }) => {
+  return (
+    <IconButton
+      icon={Back}
+      variant='ghost'
+      fontSize={30}
+      onClick={onDec}
+      isDisabled={isDisabledDec}
+      size='sm'
+    />
+  )
+}
+
+export const ForwardButton = ({ onInc, isDisabledInc }) => {
+  return (
+    <IconButton
+      icon={Forward}
+      variant='ghost'
+      fontSize={30}
+      onClick={onInc}
+      isDisabled={isDisabledInc}
+      size='sm'
+    />
+  )
+}
+
 export const ForwardBackward = ({
   onDec,
   onInc,
