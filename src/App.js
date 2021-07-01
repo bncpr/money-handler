@@ -1,16 +1,14 @@
-import { Box, Spacer } from "@chakra-ui/layout"
+import { HamburgerIcon } from "@chakra-ui/icons"
+import { Box } from "@chakra-ui/layout"
 import {
-  Icon,
-  LinkBox,
-  LinkOverlay,
+  IconButton,
   Portal,
   Spinner,
-  Tooltip
+  useMediaQuery
 } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { AnimatePresence } from "framer-motion"
-import { useEffect, useRef, useState } from "react"
-import { GoMarkGithub } from "react-icons/go"
+import { useEffect, useState } from "react"
 import { shallowEqual, useDispatch, useSelector } from "react-redux"
 import { Route, Switch, useLocation } from "react-router"
 import { Redirect } from "react-router-dom"
@@ -19,9 +17,8 @@ import { About } from "./components/About/About"
 import { ErrorModal } from "./components/ErrorModal/ErrorModal"
 import { Home } from "./components/Home/Home"
 import { MotionContentVariant } from "./components/Motion/MotionContentVariant/MotionContentVariant"
-import { NavigationItem } from "./components/Navigation/NavigationItems/NavigationItem/NavigationItem"
+import { NavigationItems } from "./components/Navigation/NavigationItems/NavigationItems"
 import { Toolbar } from "./components/Navigation/Toolbar/Toolbar"
-import { ProfilePopover } from "./components/Profile/ProfilePopover/ProfilePopover"
 import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
 import { useColors } from "./hooks/useColors/useColors"
@@ -42,9 +39,6 @@ export const App = () => {
 
   const signedIn = useSelector(state => state.authentication.signedIn)
   const uid = useSelector(state => state.authentication.uid)
-
-  const headerRef = useRef()
-  const top = headerRef.current?.clientHeight
 
   const location = useLocation()
 
@@ -106,6 +100,8 @@ export const App = () => {
   const error = useSelector(state => state.error.error)
   const errorMessage = useSelector(state => state.error.errorMessage)
 
+  const [isDesktop] = useMediaQuery("(min-width: 500px)")
+
   return (
     <Box>
       <Portal>
@@ -126,43 +122,22 @@ export const App = () => {
           onClose={() => dispatch(hideError())}
           errorMessage={errorMessage}
         />
-        <Toolbar bgColor='purple.500' spacing={3} ref={headerRef}>
-          <NavigationItem path='/' current={pathname} label='HOME' ml={3} />
-          <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
-          <NavigationItem path='/about' current={pathname} label='ABOUT' />
-          <Spacer />
-          {signedIn !== undefined && (
-            <Tooltip label='Go to GitHub repository'>
-              <LinkBox>
-                <Icon as={GoMarkGithub} h={6} w={6} color='white' />
-                <LinkOverlay
-                  href='https://github.com/bncpr/money-handler'
-                  target='_blank'
-                  rel='noreferrer noopener'
-                />
-              </LinkBox>
-            </Tooltip>
-          )}
-          {signedIn ? (
-            <ProfilePopover
-              variant='subtle'
-              colorScheme='purple'
-              color='purple.800'
-            />
+        <Toolbar bgColor='purple.500' spacing={3}>
+          {isDesktop ? (
+            <NavigationItems signedIn={signedIn} pathname={pathname} />
           ) : (
-            signedIn !== undefined && (
-              <NavigationItem
-                path='/login'
-                current={pathname}
-                label='LOGIN'
-                px={6}
-              />
-            )
+            <IconButton
+              icon={<HamburgerIcon w={6} h={6} />}
+              size='sm'
+              ml={2}
+              color='purple.200'
+              variant='unstyled'
+            />
           )}
         </Toolbar>
       </Portal>
 
-      <Box mt={`${top}px`}>
+      <Box mt='46px'>
         <AnimatePresence exitBeforeEnter initial={false}>
           <Switch location={location} key={location.key}>
             <Route path='/about'>

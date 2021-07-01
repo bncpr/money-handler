@@ -147,7 +147,7 @@ export const Home = ({
   )(groupedMonths?.[year]?.[month] || [])
 
   return (
-    <Grid justifyContent='center' rowGap={0} columnGap={8} pt={1}>
+    <Grid justifyContent='center' rowGap={0} columnGap={8}>
       <NoEntriesModal isOpen={isEmptyEntries && !isLoading && isSignedIn} />
       <GridItem rowStart='1' colStart='1' colSpan='2'>
         <Heading size='lg' p={2} ml={3}>
