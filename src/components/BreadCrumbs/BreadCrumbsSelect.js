@@ -42,7 +42,7 @@ export const BreadCrumbsSelect = ({
             <MenuList>
               <MenuOptionGroup value={label} onChange={onChange}>
                 {field.map(val => (
-                  <MenuItemOption value={val} onClick={onClose}>
+                  <MenuItemOption key={val} value={val} onClick={onClose}>
                     {value === "month" ? monthsMapFull.get(val) : val}
                   </MenuItemOption>
                 ))}

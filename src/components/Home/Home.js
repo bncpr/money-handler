@@ -173,10 +173,7 @@ export const Home = ({
     defaultIsOpen: true,
   })
 
-  const [isMedium] = useMediaQuery([
-    "(max-width: 1045px)",
-  ])
-
+  const [isMedium] = useMediaQuery(["(max-width: 1045px)"])
 
   const chartWidth = isMedium ? 600 : 960
   const chartHeight = isMedium ? 300 : 500
@@ -220,7 +217,7 @@ export const Home = ({
               />
               <PayerSummaryTable payerMonthFields={payerMonthFields} />
               <Heading size='sm' p={2} fontWeight='semibold'>
-                Monthly Averages
+                Monthly Averages of {year}
               </Heading>
               <PieChart
                 width={250}

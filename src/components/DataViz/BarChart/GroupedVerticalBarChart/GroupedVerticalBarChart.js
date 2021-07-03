@@ -32,6 +32,7 @@ export const GroupedVerticalBarChart = ({
   hovered,
   average,
   month,
+  setMonth,
   ...rest
 }) => {
   const innerHeight = height - margin.top - margin.bottom
