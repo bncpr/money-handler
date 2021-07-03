@@ -169,7 +169,7 @@ export const Home = ({
     R.toPairs,
   )(groupedMonths?.[year]?.[month] || [])
 
-  const { isOpen, onOpen, onClose, onToggle } = useDisclosure({
+  const { isOpen, onOpen, onClose } = useDisclosure({
     defaultIsOpen: true,
   })
 
@@ -177,7 +177,6 @@ export const Home = ({
     "(max-width: 1045px)",
   ])
 
-  // const { width, height } = useWindowSize()
 
   const chartWidth = isMedium ? 600 : 960
   const chartHeight = isMedium ? 300 : 500
