@@ -16,6 +16,7 @@ import {
 import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
+import { useWindowSize } from "../../hooks/useWindowSize/useWindowSize"
 import { monthsMapFull } from "../../utility/maps"
 import { capitalizeFirstChar } from "../../utility/utility"
 import { BreadCrumbsSelect } from "../BreadCrumbs/BreadCrumbsSelect"
@@ -172,11 +173,14 @@ export const Home = ({
     defaultIsOpen: true,
   })
 
-  const [isNarrow, isWide, isHigh] = useMediaQuery([
-    "(max-width: 1390px)",
-    "(min-width: 1920px)",
-    "(min-height: 958px)",
+  const [isMedium] = useMediaQuery([
+    "(max-width: 1045px)",
   ])
+
+  // const { width, height } = useWindowSize()
+
+  const chartWidth = isMedium ? 600 : 960
+  const chartHeight = isMedium ? 300 : 500
 
   return (
     !isLoading && (
@@ -289,8 +293,8 @@ export const Home = ({
               />
               <VerticalBarChart
                 fields={monthFields}
-                height={500}
-                width={960}
+                height={chartHeight}
+                width={chartWidth}
                 fieldName='category'
                 colors={colors.categoryColors || {}}
                 margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
@@ -313,8 +317,8 @@ export const Home = ({
               <BackButton onDec={onDecYear} isDisabledDec={isDisabledDecYear} />
               <GroupedVerticalBarChart
                 fields={yearFields}
-                height={500}
-                width={960}
+                height={chartHeight}
+                width={chartWidth}
                 fieldName='month'
                 subFieldName='category'
                 subField={subField}

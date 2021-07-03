@@ -98,8 +98,6 @@ export const App = () => {
 
   const [isDesktop] = useMediaQuery("(min-width: 500px)")
 
-  const { width, height } = useWindowSize()
-
   return (
     <Box>
       <Portal>
@@ -135,7 +133,7 @@ export const App = () => {
         </Toolbar>
       </Portal>
 
-      <Box pt='46px' w={width} h={height}>
+      <Box pt='46px'>
         <AnimatePresence exitBeforeEnter initial={false}>
           <Switch location={location} key={location.key}>
             <Route path='/about'>
