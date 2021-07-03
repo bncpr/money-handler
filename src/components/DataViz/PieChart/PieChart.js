@@ -40,8 +40,8 @@ export const PieChart = ({
           strokeWidth={hovered === d.data[0] ? "1px" : "0.5px"}
           fill={colors[d.data[0]]}
           name={d.data[0]}
-          onMouseEnter={e => setHovered(e.target.getAttribute("name"))}
-          onMouseOut={() => setHovered("")}
+          // onMouseEnter={e => setHovered(e.target.getAttribute("name"))}
+          // onMouseOut={() => setHovered("")}
         >
           <title>{`${capitalizeFirstChar(d.data[0])}: ${format(",")(
             d.value,

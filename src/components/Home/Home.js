@@ -17,6 +17,8 @@ import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { monthsMapFull } from "../../utility/maps"
+import { capitalizeFirstChar } from "../../utility/utility"
+import { BreadCrumbsSelect } from "../BreadCrumbs/BreadCrumbsSelect"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
 import { PieChart } from "../DataViz/PieChart/PieChart"
@@ -158,7 +160,7 @@ export const Home = ({
 
   const averages = getAverages(subField, yearFields)
 
-  const [view, setView] = useState("month")
+  const [view, setView] = useState("year")
 
   const payerMonthFields = R.pipe(
     groupByProp("payer"),
@@ -191,18 +193,43 @@ export const Home = ({
             position='fixed'
             w={RIGHT_DRAWER_WIDTH}
             bg='white'
-            h='full'
+            h='calc(100% - 46px)'
             overflow='auto'
+            overflowX='hidden'
             shadow='base'
           >
-            <CloseButton mr='auto' ml={3} my={3} onClick={onClose} />
-            <VStack spacing={6} align='stretch' px={9}>
+            <CloseButton
+              mr='auto'
+              ml={3}
+              my={3}
+              onClick={onClose}
+              pos='absolute'
+            />
+            <VStack spacing={3} align='stretch' px={6} pt={4}>
+              <Heading size='sm' p={2} fontWeight='semibold' alignSelf='center'>
+                {`${monthsMapFull.get(month)} ${year}`}
+              </Heading>
               <CategorySummaryTable
                 monthFields={monthFields}
                 averages={averages}
+                setHovered={setHovered}
                 hovered={hovered}
               />
               <PayerSummaryTable payerMonthFields={payerMonthFields} />
+              <Heading size='sm' p={2} fontWeight='semibold'>
+                Monthly Averages
+              </Heading>
+              <PieChart
+                width={250}
+                height={250}
+                margin={0}
+                data={R.toPairs(averages)}
+                colors={colors.categoryColors || {}}
+                // setHovered={setHovered}
+                hovered={hovered}
+                shadow='none'
+                alignSelf='center'
+              />
             </VStack>
           </Box>
         </Slide>
@@ -221,115 +248,91 @@ export const Home = ({
           Summary
         </Button>
 
-        <Flex
-          direction={isNarrow || (isOpen && !isWide) ? "column" : "row"}
-          align='start'
-          // px={12}
+        <VStack
           w='min'
-          ml='auto'
-          mr={isOpen ? RIGHT_DRAWER_WIDTH + (isWide ? 40 : 20) : "auto"}
+          spacing={4}
+          mx='auto'
+          mr={isOpen && RIGHT_DRAWER_WIDTH + 20}
         >
-          <VStack w='min' spacing={4}>
-            {!isLoading && (
-              <HStack alignSelf='start' pl={16}>
-                <ChevronRightIcon h={6} w={6} />
-                <Button
-                  size='sm'
-                  variant='solid'
-                  fontSize='xl'
-                  onClick={() => setView("year")}
-                >
-                  <Text as={view === "year" && "u"}>{year}</Text>
-                </Button>
-                <ChevronRightIcon
-                  opacity={view !== "month" && "0.3"}
-                  h={6}
-                  w={6}
-                />
-                <Button
-                  size='sm'
-                  variant={view === "month" ? "solid" : "subtle"}
-                  fontSize='xl'
-                  onClick={() => setView("month")}
-                  opacity={view !== "month" && "0.3"}
-                >
-                  <Text as={view === "month" && "u"}>
-                    {monthsMapFull.get(month)}
-                  </Text>
-                </Button>
-              </HStack>
-            )}
+          {!isLoading && (
+            <HStack alignSelf='start' pl={16} pr={16} w='100%'>
+              <BreadCrumbsSelect
+                view='year'
+                value='year'
+                label={year}
+                field={years}
+                onChange={setYear}
+              />
+              <BreadCrumbsSelect
+                view={view}
+                value='month'
+                label={month}
+                field={months}
+                onChange={setMonth}
+              />
+              <Spacer />
+              <Button
+                alignSelf='flex-end'
+                onClick={() => setView(view === "month" ? "year" : "month")}
+              >
+                {view === "month" && "View Year"}
+                {view === "year" && "View Month"}
+              </Button>
+            </HStack>
+          )}
 
-            {view === "month" && (
-              <HStack spacing={3}>
-                <BackButton
-                  onDec={onDecMonth}
-                  isDisabledDec={isDisabledDecMonth}
-                />
-                <VerticalBarChart
-                  fields={monthFields}
-                  height={500}
-                  width={960}
-                  fieldName='category'
-                  colors={colors.categoryColors || {}}
-                  margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
-                  sortByValue
-                  subField={subField}
-                  fontSize='0.9em'
-                  setHovered={setHovered}
-                  hovered={hovered}
-                  average={averages[hovered]}
-                />
-                <ForwardButton
-                  onInc={onIncMonth}
-                  isDisabledInc={isDisabledIncMonth}
-                />
-              </HStack>
-            )}
+          {view === "month" && (
+            <HStack spacing={3}>
+              <BackButton
+                onDec={onDecMonth}
+                isDisabledDec={isDisabledDecMonth}
+              />
+              <VerticalBarChart
+                fields={monthFields}
+                height={500}
+                width={960}
+                fieldName='category'
+                colors={colors.categoryColors || {}}
+                margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
+                sortByValue
+                subField={subField}
+                fontSize='0.9em'
+                setHovered={setHovered}
+                hovered={hovered}
+                average={averages[hovered]}
+              />
+              <ForwardButton
+                onInc={onIncMonth}
+                isDisabledInc={isDisabledIncMonth}
+              />
+            </HStack>
+          )}
 
-            {view === "year" && (
-              <HStack spacing={3}>
-                <BackButton
-                  onDec={onDecYear}
-                  isDisabledDec={isDisabledDecYear}
-                />
-                <GroupedVerticalBarChart
-                  fields={yearFields}
-                  height={500}
-                  width={960}
-                  fieldName='month'
-                  subFieldName='category'
-                  subField={subField}
-                  colors={colors.categoryColors || {}}
-                  margin={{ top: 20, right: 20, bottom: 40, left: 55 }}
-                  setHovered={setHovered}
-                  hovered={hovered}
-                  average={averages[hovered]}
-                  month={month}
-                />
-                <ForwardButton
-                  onInc={onIncYear}
-                  isDisabledInc={isDisabledIncYear}
-                />
-              </HStack>
-            )}
-          </VStack>
-
-          {/* <VStack spacing={3} align='start' ml={9}>
-            <Heading size='md' p={2} ml={3} fontWeight='semibold'>
-              Monthly Averages
-            </Heading>
-            <PieChart
-              width={300}
-              height={300}
-              margin={10}
-              data={R.toPairs(averages)}
-              colors={colors.categoryColors || {}}
-              setHovered={setHovered}
-              hovered={hovered}
-            />
-          </VStack> */}
-        </Flex>
+          {view === "year" && (
+            <HStack spacing={3}>
+              <BackButton onDec={onDecYear} isDisabledDec={isDisabledDecYear} />
+              <GroupedVerticalBarChart
+                fields={yearFields}
+                height={500}
+                width={960}
+                fieldName='month'
+                subFieldName='category'
+                subField={subField}
+                colors={colors.categoryColors || {}}
+                margin={{ top: 20, right: 20, bottom: 40, left: 55 }}
+                setHovered={setHovered}
+                hovered={hovered}
+                average={averages[hovered]}
+                month={month}
+                setMonth={setMonth}
+              />
+              <ForwardButton
+                onInc={onIncYear}
+                isDisabledInc={isDisabledIncYear}
+              />
+            </HStack>
+          )}
+        </VStack>
       </Box>
     )
   )

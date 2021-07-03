@@ -1,11 +1,6 @@
 import { HamburgerIcon } from "@chakra-ui/icons"
 import { Box } from "@chakra-ui/layout"
-import {
-  IconButton,
-  Portal,
-  Spinner,
-  useMediaQuery
-} from "@chakra-ui/react"
+import { IconButton, Portal, Spinner, useMediaQuery } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
@@ -23,6 +18,7 @@ import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
+import { useWindowSize } from "./hooks/useWindowSize/useWindowSize"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { hideError } from "./store/slices/errorSlice"
 import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
@@ -102,6 +98,8 @@ export const App = () => {
 
   const [isDesktop] = useMediaQuery("(min-width: 500px)")
 
+  const { width, height } = useWindowSize()
+
   return (
     <Box>
       <Portal>
@@ -137,7 +135,7 @@ export const App = () => {
         </Toolbar>
       </Portal>
 
-      <Box mt='46px'>
+      <Box pt='46px' w={width} h={height}>
         <AnimatePresence exitBeforeEnter initial={false}>
           <Switch location={location} key={location.key}>
             <Route path='/about'>

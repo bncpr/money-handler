@@ -1,4 +1,7 @@
-import { motion } from "framer-motion";
+import { Box } from "@chakra-ui/react"
+import { motion } from "framer-motion"
+
+const MotionBox = motion(Box)
 
 export const MotionContentVariant = ({ children }) => {
   const contentVariants = {
@@ -11,16 +14,18 @@ export const MotionContentVariant = ({ children }) => {
     out: {
       opacity: 0,
     },
-  };
+  }
   return (
-    <motion.div
+    <MotionBox
       initial='initial'
       animate='in'
       exit='out'
       variants={contentVariants}
       transition={{ duration: 0.2 }}
+      w='full'
+      h='full'
     >
       {children}
-    </motion.div>
-  );
-};
+    </MotionBox>
+  )
+}
