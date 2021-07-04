@@ -29,25 +29,27 @@ console.log(currentYear, currentMonth)
 
 export const App = () => {
   const dispatch = useDispatch()
-  const isLoading = useSelector(state => state.loading.isLoading)
-  const isLoadingFilter = useSelector(state => state.loading.isLoadingFilter)
+  const isLoading = useSelector((state: any) => state.loading.isLoading)
+  const isLoadingFilter = useSelector(
+    (state: any) => state.loading.isLoadingFilter,
+  )
 
-  const signedIn = useSelector(state => state.authentication.signedIn)
-  const uid = useSelector(state => state.authentication.uid)
+  const signedIn = useSelector((state: any) => state.authentication.signedIn)
+  const uid = useSelector((state: any) => state.authentication.uid)
 
   const location = useLocation()
 
   useEffect(() => {
     dispatch(setLoadingOn())
     onAuthStateChanged(auth, user => {
-      dispatch(user ? signIn({ uid: user.uid, email: user.email }) : signOut())
+      dispatch(user ? signIn({ uid: user.uid, email: user.email }) : signOut(null))
     })
   }, [dispatch])
 
   const [isEmptyEntries, setIsEmptyEntries] = useState(false)
 
   useEffect(() => {
-    const unsubscribe = getEntriesObserver(uid, snapshot => {
+    const unsubscribe = getEntriesObserver(uid, (snapshot: any) => {
       setIsEmptyEntries(snapshot.exists() ? false : true)
       dispatch(updateEntries({ entries: snapshot.val() || {} }))
       setTimeout(() => {
@@ -58,7 +60,7 @@ export const App = () => {
   }, [uid, dispatch])
 
   const { entries, groupedTree, fields } = useSelector(
-    state => state.groupedEntries,
+    (state: any) => state.groupedEntries,
     shallowEqual,
   )
 
@@ -92,8 +94,8 @@ export const App = () => {
 
   const pathname = location.pathname
 
-  const error = useSelector(state => state.error.error)
-  const errorMessage = useSelector(state => state.error.errorMessage)
+  const error = useSelector((state: any) => state.error.error)
+  const errorMessage = useSelector((state: any) => state.error.errorMessage)
 
   const [isDesktop] = useMediaQuery("(min-width: 500px)")
 
@@ -122,6 +124,7 @@ export const App = () => {
             <NavigationItems signedIn={signedIn} pathname={pathname} />
           ) : (
             <IconButton
+              aria-label="menu"
               icon={<HamburgerIcon w={6} h={6} />}
               size='sm'
               ml={2}

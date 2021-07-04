@@ -1,18 +1,19 @@
 import {
-  Button, Modal,
+  Button,
+  Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text
-} from "@chakra-ui/react";
-import { useHistory } from "react-router-dom";
+  Text,
+} from "@chakra-ui/react"
+import { useHistory } from "react-router-dom"
 
-export const NoEntriesModal = ({ isOpen }) => {
-  const history = useHistory();
-  const redirectToEntries = () => history.push("/entries");
+export const NoEntriesModal = ({ isOpen }: { isOpen: boolean }) => {
+  const history = useHistory()
+  const redirectToEntries = () => history.push("/entries")
   return (
     <Modal isOpen={isOpen} onClose={redirectToEntries}>
       <ModalOverlay />
@@ -29,5 +30,5 @@ export const NoEntriesModal = ({ isOpen }) => {
         <ModalCloseButton />
       </ModalContent>
     </Modal>
-  );
-};
+  )
+}

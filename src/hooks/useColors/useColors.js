@@ -9,7 +9,10 @@ const assignColors = (array, colorsGen) =>
   )
 
 export const useColors = ({ payers, categories }) => {
-  const [colors, setColors] = useState({})
+  const [colors, setColors] = useState({
+    payerColors: [],
+    categoryColors: [],
+  })
 
   useEffect(() => {
     const colorsGenerator = getColorsGenerator()

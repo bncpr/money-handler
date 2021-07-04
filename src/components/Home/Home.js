@@ -187,173 +187,170 @@ export const Home = ({
   const chartWidth = isMedium ? 600 : 960
   const chartHeight = isMedium ? 300 : 500
 
-  return (
-    !isLoading && (
-      <Box py={3}>
-        <NoEntriesModal isOpen={isEmptyEntries && !isLoading && isSignedIn} />
-        <Slide
-          in={isOpen}
-          direction='right'
-          width={RIGHT_DRAWER_WIDTH}
-          style={{ zIndex: 10, maxWidth: RIGHT_DRAWER_WIDTH }}
+  return isLoading ? null : (
+    <Box py={3}>
+      <NoEntriesModal isOpen={isEmptyEntries && !isLoading && isSignedIn} />
+      <Slide
+        in={isOpen}
+        direction='right'
+        width={RIGHT_DRAWER_WIDTH}
+        style={{ zIndex: 10, maxWidth: RIGHT_DRAWER_WIDTH }}
+      >
+        <Box
+          top='46px'
+          position='fixed'
+          w={RIGHT_DRAWER_WIDTH}
+          bg='white'
+          h='calc(100% - 46px)'
+          overflow='auto'
+          overflowX='hidden'
+          shadow='base'
         >
-          <Box
-            top='46px'
-            position='fixed'
-            w={RIGHT_DRAWER_WIDTH}
-            bg='white'
-            h='calc(100% - 46px)'
-            overflow='auto'
-            overflowX='hidden'
-            shadow='base'
+          <CloseButton
+            mr='auto'
+            ml={3}
+            my={3}
+            onClick={onClose}
+            pos='absolute'
+          />
+          <VStack spacing={3} align='stretch' px={6} pt={4}>
+            <Heading size='sm' p={2} fontWeight='semibold' alignSelf='center'>
+              {`${monthsMapFull.get(month)} ${year}`}
+            </Heading>
+
+            <CategorySummaryTable
+              monthFields={monthFields}
+              averages={averages}
+              setHovered={setHovered}
+              hovered={hovered}
+            />
+
+            <PayerSummaryTable payerMonthFields={payerMonthFields} />
+
+            <Heading size='sm' p={2} fontWeight='semibold'>
+              Monthly Averages of {year}
+            </Heading>
+
+            <PieChart
+              width={250}
+              height={250}
+              margin={0}
+              data={R.toPairs(averages)}
+              colors={colors.categoryColors || {}}
+              hovered={hovered}
+              shadow='none'
+              alignSelf='center'
+            />
+          </VStack>
+        </Box>
+      </Slide>
+
+      <Button
+        onClick={onOpen}
+        pos='absolute'
+        bottom='80%'
+        right='0'
+        transform='rotate(-90deg)'
+        transformOrigin='bottom right'
+        colorScheme='gray'
+        roundedBottom='none'
+        rightIcon={<ChevronUpIcon w={5} h={5} />}
+      >
+        Summary
+      </Button>
+
+      <Grid
+        mr={isOpen && RIGHT_DRAWER_WIDTH + 20}
+        align='center'
+        templateColumns='1fr auto 1fr'
+        columnGap={3}
+        rowGap={4}
+      >
+        <GridItem as={HStack} colStart='2' px={2}>
+          <BreadCrumbsSelect
+            view='year'
+            value='year'
+            label={year}
+            field={years}
+            onChange={val => {
+              setYear(val)
+              setView("year")
+            }}
+          />
+          <BreadCrumbsSelect
+            view={view}
+            value='month'
+            label={month}
+            field={months}
+            onChange={val => {
+              setMonth(val)
+              onOpen()
+              setView("month")
+            }}
+          />
+          <Spacer />
+          <Button
+            alignSelf='flex-end'
+            onClick={() => setView(view === "month" ? "year" : "month")}
+            colorScheme='teal'
           >
-            <CloseButton
-              mr='auto'
-              ml={3}
-              my={3}
-              onClick={onClose}
-              pos='absolute'
-            />
-            <VStack spacing={3} align='stretch' px={6} pt={4}>
-              <Heading size='sm' p={2} fontWeight='semibold' alignSelf='center'>
-                {`${monthsMapFull.get(month)} ${year}`}
-              </Heading>
+            {view === "month" && "View Year"}
+            {view === "year" && "View Month"}
+          </Button>
+        </GridItem>
 
-              <CategorySummaryTable
-                monthFields={monthFields}
-                averages={averages}
-                setHovered={setHovered}
-                hovered={hovered}
-              />
+        <GridItem rowStart='2' alignSelf='center' justifySelf='end'>
+          <BackButton onDec={onDecIndex} isDisabledDec={isDisabledDec} />
+        </GridItem>
 
-              <PayerSummaryTable payerMonthFields={payerMonthFields} />
-
-              <Heading size='sm' p={2} fontWeight='semibold'>
-                Monthly Averages of {year}
-              </Heading>
-
-              <PieChart
-                width={250}
-                height={250}
-                margin={0}
-                data={R.toPairs(averages)}
-                colors={colors.categoryColors || {}}
-                // setHovered={setHovered}
-                hovered={hovered}
-                shadow='none'
-                alignSelf='center'
-              />
-            </VStack>
-          </Box>
-        </Slide>
-
-        <Button
-          onClick={onOpen}
-          pos='absolute'
-          bottom='80%'
-          right='0'
-          transform='rotate(-90deg)'
-          transformOrigin='bottom right'
-          colorScheme='gray'
-          roundedBottom='none'
-          rightIcon={<ChevronUpIcon w={5} h={5} />}
+        <GridItem
+          colStart='3'
+          rowStart='2'
+          alignSelf='center'
+          justifySelf='start'
         >
-          Summary
-        </Button>
+          <ForwardButton onInc={onIncIndex} isDisabledInc={isDisabledInc} />
+        </GridItem>
 
-        <Grid
-          mr={isOpen && RIGHT_DRAWER_WIDTH + 20}
-          align='center'
-          templateColumns='1fr auto 1fr'
-          columnGap={3}
-          rowGap={4}
-        >
-          <GridItem as={HStack} colStart='2' px={2}>
-            <BreadCrumbsSelect
-              view='year'
-              value='year'
-              label={year}
-              field={years}
-              onChange={val => {
-                setYear(val)
-                setView("year")
-              }}
+        {view === "month" && (
+          <GridItem colStart='2' rowStart='2'>
+            <VerticalBarChart
+              fields={monthFields}
+              height={chartHeight}
+              width={chartWidth}
+              fieldName='category'
+              colors={colors.categoryColors || {}}
+              margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
+              sortByValue
+              subField={subField}
+              fontSize='0.9em'
+              setHovered={setHovered}
+              hovered={hovered}
+              average={averages[hovered]}
             />
-            <BreadCrumbsSelect
-              view={view}
-              value='month'
-              label={month}
-              field={months}
-              onChange={val => {
-                setMonth(val)
-                onOpen()
-                setView("month")
-              }}
+          </GridItem>
+        )}
+
+        {view === "year" && (
+          <GridItem colStart='2' rowStart='2'>
+            <GroupedVerticalBarChart
+              fields={yearFields}
+              height={chartHeight}
+              width={chartWidth}
+              fieldName='month'
+              subFieldName='category'
+              subField={subField}
+              colors={colors.categoryColors || {}}
+              margin={{ top: 20, right: 20, bottom: 40, left: 55 }}
+              setHovered={setHovered}
+              hovered={hovered}
+              average={averages[hovered]}
+              month={month}
+              setMonth={setMonth}
             />
-            <Spacer />
-            <Button
-              alignSelf='flex-end'
-              onClick={() => setView(view === "month" ? "year" : "month")}
-              colorScheme='teal'
-            >
-              {view === "month" && "View Year"}
-              {view === "year" && "View Month"}
-            </Button>
           </GridItem>
-
-          <GridItem rowStart='2' alignSelf='center' justifySelf='end'>
-            <BackButton onDec={onDecIndex} isDisabledDec={isDisabledDec} />
-          </GridItem>
-
-          <GridItem
-            colStart='3'
-            rowStart='2'
-            alignSelf='center'
-            justifySelf='start'
-          >
-            <ForwardButton onInc={onIncIndex} isDisabledInc={isDisabledInc} />
-          </GridItem>
-
-          {view === "month" && (
-            <GridItem colStart='2' rowStart='2'>
-              <VerticalBarChart
-                fields={monthFields}
-                height={chartHeight}
-                width={chartWidth}
-                fieldName='category'
-                colors={colors.categoryColors || {}}
-                margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
-                sortByValue
-                subField={subField}
-                fontSize='0.9em'
-                setHovered={setHovered}
-                hovered={hovered}
-                average={averages[hovered]}
-              />
-            </GridItem>
-          )}
-
-          {view === "year" && (
-            <GridItem colStart='2' rowStart='2'>
-              <GroupedVerticalBarChart
-                fields={yearFields}
-                height={chartHeight}
-                width={chartWidth}
-                fieldName='month'
-                subFieldName='category'
-                subField={subField}
-                colors={colors.categoryColors || {}}
-                margin={{ top: 20, right: 20, bottom: 40, left: 55 }}
-                setHovered={setHovered}
-                hovered={hovered}
-                average={averages[hovered]}
-                month={month}
-                setMonth={setMonth}
-              />
-            </GridItem>
-          )}
-        </Grid>
-      </Box>
-    )
+        )}
+      </Grid>
+    </Box>
   )
 }
