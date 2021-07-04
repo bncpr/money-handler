@@ -94,7 +94,7 @@ export const getRandomData = () => {
 
   return R.pipe(
     R.chain(year =>
-      (year === currentYear ? months.slice(0, +currentMonth) : months).map(
+      (year === currentYear ? months.slice(0, +currentMonth + 1) : months).map(
         month => getRandomMonthData(year, month),
       ),
     ),
