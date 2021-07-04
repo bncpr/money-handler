@@ -1,14 +1,14 @@
-import { ChevronRightIcon, ChevronUpIcon } from "@chakra-ui/icons"
+import { ChevronUpIcon } from "@chakra-ui/icons"
 import {
   Box,
   Button,
   CloseButton,
-  Flex,
+  Grid,
+  GridItem,
   Heading,
   HStack,
   Slide,
   Spacer,
-  Text,
   useDisclosure,
   useMediaQuery,
   VStack,
@@ -16,9 +16,7 @@ import {
 import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { useWindowSize } from "../../hooks/useWindowSize/useWindowSize"
 import { monthsMapFull } from "../../utility/maps"
-import { capitalizeFirstChar } from "../../utility/utility"
 import { BreadCrumbsSelect } from "../BreadCrumbs/BreadCrumbsSelect"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
@@ -33,8 +31,6 @@ import {
 
 export const groupByProp = prop => R.groupBy(R.prop(prop))
 const getSums = R.map(R.pipe(R.map(R.prop("value")), R.sum))
-
-const sortKeysAscending = R.pipe(R.keys, R.sortBy(R.identity))
 
 const getCategorySums = init =>
   R.pipe(R.groupBy(R.prop("category")), getSums, R.mergeRight(init))
@@ -56,36 +52,11 @@ function getAverages(subField, yearFields) {
   )
 }
 
-const useIncrementSelect = ({ array }) => {
-  const [index, setIndex] = useState(0)
-  const [selected, setSelected] = useState("")
-
-  const clamp = R.clamp(0, (array.length || 1) - 1)
-
-  const onIncIndex = () => setIndex(clamp(index + 1))
-  const onDecIndex = () => setIndex(clamp(index - 1))
-
-  useEffect(() => {
-    setSelected(array[index])
-  }, [index, array])
-
-  const isDisabledInc = array && index === array.length - 1
-  const isDisabledDec = array && index === 0
-
-  return {
-    selected,
-    setSelected,
-    setIndex,
-    onIncIndex,
-    onDecIndex,
-    isDisabledDec,
-    isDisabledInc,
-  }
-}
-
 const getLastIndex = arr => arr.length - 1
 
 const RIGHT_DRAWER_WIDTH = 420
+
+const sortAscend = R.sort(R.ascend(R.identity))
 
 export const Home = ({
   groupedTree,
@@ -98,28 +69,72 @@ export const Home = ({
   const [hovered, setHovered] = useState("")
   const [years, setYears] = useState([])
   const [months, setMonths] = useState([])
-
-  const {
-    selected: year,
-    setSelected: setYear,
-    setIndex: setYearIndex,
-    onIncIndex: onIncYear,
-    onDecIndex: onDecYear,
-    isDisabledDec: isDisabledDecYear,
-    isDisabledInc: isDisabledIncYear,
-  } = useIncrementSelect({ array: years })
-
-  const {
-    selected: month,
-    setSelected: setMonth,
-    setIndex: setMonthIndex,
-    onIncIndex: onIncMonth,
-    onDecIndex: onDecMonth,
-    isDisabledDec: isDisabledDecMonth,
-    isDisabledInc: isDisabledIncMonth,
-  } = useIncrementSelect({ array: months })
+  const [month, setMonth] = useState("")
+  const [year, setYear] = useState("")
+  const [yearIndex, setYearIndex] = useState(0)
+  const [monthIndex, setMonthIndex] = useState(0)
 
   const [groupedMonths, setGroupedMonths] = useState({})
+
+  const isDisabledInc =
+    monthIndex === getLastIndex(months) && yearIndex === getLastIndex(years)
+
+  const isDisabledDec = monthIndex === 0 && yearIndex === 0
+
+  const onDecIndex = () => {
+    if (isDisabledDec) return
+    if (monthIndex > 0) {
+      const index = monthIndex - 1
+      setMonthIndex(index)
+      setMonth(months[index])
+      return
+    }
+    const _yearIndex = yearIndex - 1
+    const _year = years[_yearIndex]
+    const _months = sortAscend(R.keys(groupedMonths[_year]))
+    const _monthIndex = getLastIndex(_months)
+    const _month = R.last(_months)
+    setYearIndex(_yearIndex)
+    setYear(_year)
+    setMonth(_month)
+    setMonths(_months)
+    setMonthIndex(_monthIndex)
+  }
+
+  const onIncIndex = () => {
+    if (isDisabledInc) return
+    if (monthIndex < getLastIndex(months)) {
+      const index = monthIndex + 1
+      setMonthIndex(index)
+      setMonth(months[index])
+      return
+    }
+    const _yearIndex = yearIndex + 1
+    const _year = years[_yearIndex]
+    const _months = sortAscend(R.keys(groupedMonths[_year]))
+    const _month = R.head(_months)
+    setYearIndex(_yearIndex)
+    setYear(_year)
+    setMonth(_month)
+    setMonths(_months)
+    setMonthIndex(0)
+  }
+
+  useEffect(() => {
+    const months = sortAscend(R.keys(groupedMonths[year]))
+    setMonths(months)
+    setYearIndex(years.indexOf(year))
+  }, [year, groupedMonths, years])
+
+  useEffect(() => {
+    const index = months.indexOf(month)
+    if (index === -1) {
+      setMonth(R.last(months))
+      setMonthIndex(getLastIndex(months))
+    } else {
+      setMonthIndex(index)
+    }
+  }, [months, month])
 
   useEffect(() => {
     const groupedMonths = R.pipe(
@@ -130,24 +145,18 @@ export const Home = ({
   }, [groupedTree])
 
   useEffect(() => {
-    const years = sortKeysAscending(groupedTree.year)
+    const years = R.keys(groupedMonths)
+    const year = R.last(years)
     setYears(years)
-    setYear(R.last(years))
-    const months = sortKeysAscending(groupedMonths[R.last(years)])
-    setMonths(months)
-    setMonth(R.last(months))
+    setYear(year)
     setYearIndex(getLastIndex(years))
-    setMonthIndex(getLastIndex(months))
-    // eslint-disable-next-line
-  }, [groupedTree, groupedMonths])
 
-  useEffect(() => {
-    const months = sortKeysAscending(groupedMonths[year])
+    const months = sortAscend(R.keys(groupedMonths[year] || []))
+    const month = R.last(months)
     setMonths(months)
-    const index = months.indexOf(month)
-    setMonthIndex(index === -1 ? getLastIndex(months) : index)
-    // eslint-disable-next-line
-  }, [year, groupedMonths, month])
+    setMonth(month)
+    setMonthIndex(getLastIndex(months))
+  }, [groupedMonths])
 
   const initSubField = R.zipObj(subField, subField.map(R.always(0)))
 
@@ -209,16 +218,20 @@ export const Home = ({
               <Heading size='sm' p={2} fontWeight='semibold' alignSelf='center'>
                 {`${monthsMapFull.get(month)} ${year}`}
               </Heading>
+
               <CategorySummaryTable
                 monthFields={monthFields}
                 averages={averages}
                 setHovered={setHovered}
                 hovered={hovered}
               />
+
               <PayerSummaryTable payerMonthFields={payerMonthFields} />
+
               <Heading size='sm' p={2} fontWeight='semibold'>
                 Monthly Averages of {year}
               </Heading>
+
               <PieChart
                 width={250}
                 height={250}
@@ -248,45 +261,61 @@ export const Home = ({
           Summary
         </Button>
 
-        <VStack
-          w='min'
-          spacing={4}
-          mx='auto'
+        <Grid
           mr={isOpen && RIGHT_DRAWER_WIDTH + 20}
+          align='center'
+          templateColumns='1fr auto 1fr'
+          columnGap={3}
+          rowGap={4}
         >
-          {!isLoading && (
-            <HStack alignSelf='start' pl={16} pr={16} w='100%'>
-              <BreadCrumbsSelect
-                view='year'
-                value='year'
-                label={year}
-                field={years}
-                onChange={setYear}
-              />
-              <BreadCrumbsSelect
-                view={view}
-                value='month'
-                label={month}
-                field={months}
-                onChange={setMonth}
-              />
-              <Spacer />
-              <Button
-                alignSelf='flex-end'
-                onClick={() => setView(view === "month" ? "year" : "month")}
-              >
-                {view === "month" && "View Year"}
-                {view === "year" && "View Month"}
-              </Button>
-            </HStack>
-          )}
+          <GridItem as={HStack} colStart='2' px={2}>
+            <BreadCrumbsSelect
+              view='year'
+              value='year'
+              label={year}
+              field={years}
+              onChange={val => {
+                setYear(val)
+                setView("year")
+              }}
+            />
+            <BreadCrumbsSelect
+              view={view}
+              value='month'
+              label={month}
+              field={months}
+              onChange={val => {
+                setMonth(val)
+                onOpen()
+                setView("month")
+              }}
+            />
+            <Spacer />
+            <Button
+              alignSelf='flex-end'
+              onClick={() => setView(view === "month" ? "year" : "month")}
+              colorScheme='teal'
+            >
+              {view === "month" && "View Year"}
+              {view === "year" && "View Month"}
+            </Button>
+          </GridItem>
+
+          <GridItem rowStart='2' alignSelf='center' justifySelf='end'>
+            <BackButton onDec={onDecIndex} isDisabledDec={isDisabledDec} />
+          </GridItem>
+
+          <GridItem
+            colStart='3'
+            rowStart='2'
+            alignSelf='center'
+            justifySelf='start'
+          >
+            <ForwardButton onInc={onIncIndex} isDisabledInc={isDisabledInc} />
+          </GridItem>
 
           {view === "month" && (
-            <HStack spacing={3}>
-              <BackButton
-                onDec={onDecMonth}
-                isDisabledDec={isDisabledDecMonth}
-              />
+            <GridItem colStart='2' rowStart='2'>
               <VerticalBarChart
                 fields={monthFields}
                 height={chartHeight}
@@ -301,16 +330,11 @@ export const Home = ({
                 hovered={hovered}
                 average={averages[hovered]}
               />
-              <ForwardButton
-                onInc={onIncMonth}
-                isDisabledInc={isDisabledIncMonth}
-              />
-            </HStack>
+            </GridItem>
           )}
 
           {view === "year" && (
-            <HStack spacing={3}>
-              <BackButton onDec={onDecYear} isDisabledDec={isDisabledDecYear} />
+            <GridItem colStart='2' rowStart='2'>
               <GroupedVerticalBarChart
                 fields={yearFields}
                 height={chartHeight}
@@ -326,13 +350,9 @@ export const Home = ({
                 month={month}
                 setMonth={setMonth}
               />
-              <ForwardButton
-                onInc={onIncYear}
-                isDisabledInc={isDisabledIncYear}
-              />
-            </HStack>
+            </GridItem>
           )}
-        </VStack>
+        </Grid>
       </Box>
     )
   )
