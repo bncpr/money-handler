@@ -2,12 +2,23 @@ import {
   Alert,
   AlertDescription,
   AlertIcon,
-  AlertTitle, Flex,
-  Modal, ModalCloseButton,
-  ModalContent, ModalOverlay
-} from "@chakra-ui/react";
+  AlertTitle,
+  Flex,
+  Modal,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
+} from "@chakra-ui/react"
 
-export const ErrorModal = ({ isOpen, onClose, errorMessage }) => {
+export const ErrorModal = ({
+  isOpen,
+  onClose,
+  errorMessage,
+}: {
+  isOpen: boolean
+  onClose: () => void
+  errorMessage: string
+}) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -22,5 +33,5 @@ export const ErrorModal = ({ isOpen, onClose, errorMessage }) => {
         </Alert>
       </ModalContent>
     </Modal>
-  );
-};
+  )
+}

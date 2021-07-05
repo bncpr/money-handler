@@ -1,10 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit"
 import * as R from "ramda"
+import { Entry } from "../../../types/Entry"
 import { getFields, getInitialGroupedTree } from "./modules/modules"
 
-const initialState = {
+type GroupedTree = {
+  year: {
+    [x: string]: Entry[]
+  }
+  payer: {
+    [x: string]: Entry[]
+  }
+  category: {
+    [x: string]: Entry[]
+  }
+}
+
+type SliceState = {
+  entries: Entry[]
+  groupedTree: GroupedTree
+  fields: {
+    year: string[]
+    payer: string[]
+    category: string[]
+  }
+}
+
+const initialState: SliceState = {
   entries: [],
-  groupedTree: {},
+  groupedTree: { year: {}, payer: {}, category: {} },
   fields: { year: [], payer: [], category: [] },
 }
 
@@ -14,7 +37,7 @@ const groupedEntriesSlice = createSlice({
   reducers: {
     updateEntries(state, { payload: { entries } }) {
       const entriesArr = R.values(entries)
-      const groupedTree = R.pipe(getInitialGroupedTree)(entriesArr)
+      const groupedTree = getInitialGroupedTree(entriesArr)
       const fields = getFields(groupedTree)
       state.entries = entriesArr
       state.groupedTree = groupedTree

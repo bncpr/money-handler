@@ -1,22 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const initial = {
+type AuthState = {
+  signedIn: boolean
+  email: string | null
+  uid: string | null
+  touched: boolean
+}
+
+const initialState: AuthState = {
   signedIn: false,
   email: null,
   uid: null,
+  touched: false,
 }
 
 const authenticationSlice = createSlice({
   name: "authentication",
-  initialState: { signedIn: undefined },
+  initialState,
   reducers: {
     signIn(state, { payload: { uid, email } }) {
       state.signedIn = true
       state.uid = uid
       state.email = email
     },
-    signOut() {
-      return initial
+    signOut(state) {
+      state.signedIn = false
+      state.email = null
+      state.uid = null
+      state.touched = true
     },
   },
 })

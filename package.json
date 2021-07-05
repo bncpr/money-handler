@@ -59,6 +59,7 @@
     ]
   },
   "devDependencies": {
+    "@types/ramda": "^0.27.42",
     "@types/react-redux": "^7.1.16",
     "@types/react-router": "^5.1.15",
     "@types/react-router-dom": "^5.1.7",

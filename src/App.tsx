@@ -4,7 +4,7 @@ import { IconButton, Portal, Spinner, useMediaQuery } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
-import { shallowEqual, useDispatch, useSelector } from "react-redux"
+import { shallowEqual } from "react-redux"
 import { Route, Switch, useLocation } from "react-router"
 import { Redirect } from "react-router-dom"
 import { auth, getEntriesObserver } from "./api/firebase/firebase"
@@ -16,6 +16,10 @@ import { NavigationItems } from "./components/Navigation/NavigationItems/Navigat
 import { Toolbar } from "./components/Navigation/Toolbar/Toolbar"
 import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "./hooks/reduxTypedHooks/reduxTypedHooks"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
@@ -28,21 +32,20 @@ const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
 
 export const App = () => {
-  const dispatch = useDispatch()
-  const isLoading = useSelector((state: any) => state.loading.isLoading)
-  const isLoadingFilter = useSelector(
-    (state: any) => state.loading.isLoadingFilter,
-  )
+  const dispatch = useAppDispatch()
+  const isLoading = useAppSelector(state => state.loading.isLoading)
+  const isLoadingFilter = useAppSelector(state => state.loading.isLoadingFilter)
 
-  const signedIn = useSelector((state: any) => state.authentication.signedIn)
-  const uid = useSelector((state: any) => state.authentication.uid)
+  const signedIn = useAppSelector(state => state.authentication.signedIn)
+  const touchedAuth = useAppSelector(state => state.authentication.touched)
+  const uid = useAppSelector(state => state.authentication.uid)
 
   const location = useLocation()
 
   useEffect(() => {
     dispatch(setLoadingOn())
     onAuthStateChanged(auth, user => {
-      dispatch(user ? signIn({ uid: user.uid, email: user.email }) : signOut(null))
+      dispatch(user ? signIn({ uid: user.uid, email: user.email }) : signOut())
     })
   }, [dispatch])
 
@@ -59,8 +62,8 @@ export const App = () => {
     return () => unsubscribe()
   }, [uid, dispatch])
 
-  const { entries, groupedTree, fields } = useSelector(
-    (state: any) => state.groupedEntries,
+  const { entries, groupedTree, fields } = useAppSelector(
+    state => state.groupedEntries,
     shallowEqual,
   )
 
@@ -85,17 +88,17 @@ export const App = () => {
     resetColors()
     resetFilters({ year: currentYear, month: currentMonth })
     setIsEmptyEntries(true)
-    if (!uid && signedIn !== undefined) {
+    if (!signedIn && touchedAuth) {
       dispatch({ type: "app/makingRandomData" })
       dispatch(updateEntries({ entries: getRandomData() }))
       dispatch(setLoadingOff())
     }
-  }, [uid, signedIn, dispatch, resetFilters, resetColors])
+  }, [touchedAuth, signedIn, dispatch, resetFilters, resetColors])
 
   const pathname = location.pathname
 
-  const error = useSelector((state: any) => state.error.error)
-  const errorMessage = useSelector((state: any) => state.error.errorMessage)
+  const error = useAppSelector(state => state.error.error)
+  const errorMessage = useAppSelector(state => state.error.errorMessage)
 
   const [isDesktop] = useMediaQuery("(min-width: 500px)")
 
@@ -124,7 +127,7 @@ export const App = () => {
             <NavigationItems signedIn={signedIn} pathname={pathname} />
           ) : (
             <IconButton
-              aria-label="menu"
+              aria-label='menu'
               icon={<HamburgerIcon w={6} h={6} />}
               size='sm'
               ml={2}
@@ -155,7 +158,7 @@ export const App = () => {
                   isEmptyEntries={isEmptyEntries}
                   isLoading={isLoading || isLoadingFilter}
                   filterStack={filterStack}
-                  categoryColors={colors.categoryColors || {}}
+                  categoryColors={colors.categoryColors}
                 />
               </MotionContentVariant>
             </Route>

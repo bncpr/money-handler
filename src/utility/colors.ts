@@ -39,7 +39,7 @@ const colors3 = [
 
 const colors = colors1.concat(colors2).concat(colors3)
 
-function* generateColors(colors) {
+function* generateColors(colors: string[]) {
   let i = 0
   while (true) {
     yield colors[i]

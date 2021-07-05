@@ -29,7 +29,7 @@ import {
   ForwardButton,
 } from "../UI/ForwardBackward/ForwardBackward"
 
-export const groupByProp = prop => R.groupBy(R.prop(prop))
+const groupByProp = prop => R.groupBy(R.prop(prop))
 const getSums = R.map(R.pipe(R.map(R.prop("value")), R.sum))
 
 const getCategorySums = init =>

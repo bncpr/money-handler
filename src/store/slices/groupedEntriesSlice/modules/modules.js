@@ -23,7 +23,7 @@ const getKeysOfProp = prop => R.pipe(R.prop(prop), R.keys, R.defaultTo([]))
 const sortAscend = R.sort(R.ascend(R.identity))
 
 export const getFields = R.applySpec({
-  year: getKeysOfProp("year"),
+  year: R.pipe(getKeysOfProp("year"), sortAscend),
   payer: R.pipe(getKeysOfProp("payer"), sortAscend),
   category: R.pipe(getKeysOfProp("category"), sortAscend),
   // month: R.pipe(R.prop("year"), R.map(getKeysOfProp("month"))),
