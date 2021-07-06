@@ -8,7 +8,6 @@ import { useRadioGroup } from "@chakra-ui/radio"
 import { TagCloseButton } from "@chakra-ui/tag"
 import { PopoverFormContainer } from "../../../../containers/PopoverFormContainer/PopoverFormContainer"
 import { capitalizeFirstChar } from "../../../../utility/utility"
-import { PopoverForm } from "../PopoverForm/PopoverForm"
 
 export const RadioWithAddOption = ({
   field: { name, value },
@@ -50,7 +49,6 @@ export const RadioWithAddOption = ({
 
         <PopoverFormContainer
           name={name}
-          component={PopoverForm}
           options={options}
           addedFields={addedFields}
           portalRef={portalRef}

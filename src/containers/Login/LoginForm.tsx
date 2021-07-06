@@ -2,20 +2,21 @@ import { Button } from "@chakra-ui/button"
 import { FormControl, FormErrorMessage } from "@chakra-ui/form-control"
 import { Box, Flex, Heading } from "@chakra-ui/layout"
 import { Input } from "@chakra-ui/react"
-import { Field, Form, FormikProvider, useFormik } from "formik"
+import { Field, FieldProps, Form, FormikProvider, useFormik } from "formik"
 import { useState } from "react"
-import { useSelector } from "react-redux"
 import { Redirect } from "react-router"
 import * as Yup from "yup"
 import { createUser, signInUser } from "../../api/firebase/firebase"
 import { CardBox } from "../../components/UI/Box/CardBox/CardBox"
+import { useAppSelector } from "../../hooks/reduxTypedHooks/reduxTypedHooks"
 
 const re = /\/((?:\w+-*)+)/
 const keyRe = /email|password|user/
-const stripHyphen = match => match[1].replaceAll("-", " ")
-const reUserToMail = match => match[0].replace("user", "email")
+const stripHyphen = (match: RegExpMatchArray) => match[1].replaceAll("-", " ")
+const reUserToMail = (match: RegExpMatchArray) =>
+  match[0].replace("user", "email")
 
-const extractErrorCode = code => {
+function extractErrorCode(code: string) {
   const key = code.match(keyRe)
   const value = code.match(re)
   return key && value
@@ -30,13 +31,14 @@ const validationSchema = Yup.object().shape({
 
 export const LoginForm = () => {
   // const history = useHistory()
-  const signedIn = useSelector(state => state.authentication.signedIn)
+  const signedIn = useAppSelector(state => state.authentication.signedIn)
   const [mode, setMode] = useState("signIn")
   const toggleMode = () => setMode(mode === "signIn" ? "signUp" : "signIn")
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
+      other: "",
     },
     validationSchema,
     validateOnBlur: false,
@@ -45,22 +47,18 @@ export const LoginForm = () => {
       try {
         await fn(email, password)
         formik.resetForm()
-        // history.push(mode === "signIn" ? "/" : "entries")
       } catch (error) {
         const { key, value } = extractErrorCode(error.code)
-        formik.errors[key] = value
+        if (key === "email" || key === "password" || key === "other") {
+          formik.errors[key] = value
+        }
       }
     },
   })
 
   return (
     <Box pt={9}>
-      <CardBox
-        py={6}
-        px={8}
-        w='max'
-        mx='auto'
-      >
+      <CardBox py={6} px={8} w='max' mx='auto'>
         {signedIn && <Redirect to='/entries' />}
         <FormikProvider value={formik}>
           <Flex direction='column'>
@@ -69,10 +67,10 @@ export const LoginForm = () => {
             </Heading>
             <Form onSubmit={formik.handleSubmit}>
               <Field name='email' type='email'>
-                {({ field, meta: { error, touched } }) => (
+                {({ field, meta: { error, touched } }: FieldProps) => (
                   <FormControl
                     id={field.name}
-                    isInvalid={error && touched}
+                    isInvalid={Boolean(error && touched)}
                     width='max'
                     p={2}
                   >
@@ -82,10 +80,10 @@ export const LoginForm = () => {
                 )}
               </Field>
               <Field name='password' type='password'>
-                {({ field, meta: { error, touched } }) => (
+                {({ field, meta: { error, touched } }: FieldProps) => (
                   <FormControl
                     id={field.name}
-                    isInvalid={error && touched}
+                    isInvalid={Boolean(error && touched)}
                     width='max'
                     p={2}
                   >
@@ -99,7 +97,7 @@ export const LoginForm = () => {
                   </FormControl>
                 )}
               </Field>
-              <FormControl isInvalid={formik.errors.other}>
+              <FormControl isInvalid={Boolean(formik.errors.other)}>
                 <FormErrorMessage>{formik.errors.other}</FormErrorMessage>
               </FormControl>
               <Flex justify='center' direction='column'>
