@@ -52,6 +52,9 @@ export const About = () => {
               new Hooks-API.
             </ListItem>
             <ListItem>
+              <Bold>Typescript</Bold> for type checking.
+            </ListItem>
+            <ListItem>
               <Bold>Redux</Bold> for store management with the{" "}
               <Bold>Redux Toolkit</Bold> which made things a whole lot tidier.
             </ListItem>
