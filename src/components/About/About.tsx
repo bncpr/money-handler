@@ -8,9 +8,10 @@ import {
   UnorderedList,
   VStack,
 } from "@chakra-ui/react"
+import { FC } from "react"
 import { CardBox } from "../UI/Box/CardBox/CardBox"
 
-const Bold = ({ children, rest }) => (
+const Bold: FC = ({ children, ...rest }) => (
   <Text as='span' fontWeight='semibold' {...rest}>
     {children}
   </Text>
@@ -19,10 +20,7 @@ const Bold = ({ children, rest }) => (
 export const About = () => {
   return (
     <Box pt={6}>
-      <Container
-        // shadow='lg'
-        maxW='container.lg'
-      >
+      <Container maxW='container.lg'>
         <CardBox
           mt={9}
           rounded='sm'
@@ -52,7 +50,7 @@ export const About = () => {
               new Hooks-API.
             </ListItem>
             <ListItem>
-              <Bold>Typescript</Bold> for type checking.
+              <Bold>TypeScript</Bold> for type checking.
             </ListItem>
             <ListItem>
               <Bold>Redux</Bold> for store management with the{" "}
