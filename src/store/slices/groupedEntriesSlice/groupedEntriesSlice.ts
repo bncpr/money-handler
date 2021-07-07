@@ -1,19 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit"
 import * as R from "ramda"
 import { Entry } from "../../../types/Entry"
+import { GroupedTree } from "../../../types/GroupedTree"
 import { getFields, getInitialGroupedTree } from "./modules/modules"
-
-type GroupedTree = {
-  year: {
-    [x: string]: Entry[]
-  }
-  payer: {
-    [x: string]: Entry[]
-  }
-  category: {
-    [x: string]: Entry[]
-  }
-}
 
 type SliceState = {
   entries: Entry[]

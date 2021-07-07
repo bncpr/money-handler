@@ -4,8 +4,8 @@ export type Entry = {
   payer: string
   category: string
   id: string
-  tags?: string[]
-  more?: string
   year: string
   month: string
+  tags?: string[]
+  more?: string
 }
