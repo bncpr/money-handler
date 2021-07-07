@@ -44,9 +44,10 @@ export const App = () => {
 
   useEffect(() => {
     dispatch(setLoadingOn())
-    onAuthStateChanged(auth, user => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
       dispatch(user ? signIn({ uid: user.uid, email: user.email }) : signOut())
     })
+    return () => unsubscribe()
   }, [dispatch])
 
   const [isEmptyEntries, setIsEmptyEntries] = useState(false)
