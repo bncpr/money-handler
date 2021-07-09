@@ -1,9 +1,10 @@
 import { Stack } from "@chakra-ui/layout"
 import * as R from "ramda"
-import { SelectMenu } from "../../components/UI/Menu/SelectMenu"
-import { sortDescendList, sortAscendList } from "../../utility/utility"
+import { sortAscendList, sortDescendList } from "../../utility/utility"
+import { SelectMenu } from "../UI/Menu/SelectMenu"
 
-const getTuples = array => R.prepend(["", "No Filter"], R.zip(array, array))
+const getTuples = (array: string[]) =>
+  R.prepend(["", "No Filter"], R.zip(array, array))
 
 const selectStyle = {
   variant: "outline",
@@ -27,14 +28,14 @@ const monthsArray = [
   ["12", "December"],
 ]
 
-export const Filters = ({
+export const Filters= ({
   children,
   fields,
   filters,
   counts,
   setFilter,
   ...rest
-}) => {
+}: any) => {
   return (
     <Stack width='full' {...rest}>
       {children}

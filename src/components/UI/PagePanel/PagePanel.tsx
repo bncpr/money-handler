@@ -11,10 +11,11 @@ export const PagePanel = ({
   onDecPage,
   changePageSize,
   ...rest
-}) => {
+}: any) => {
   return (
     <HStack {...rest}>
       <IconButton
+        aria-label='previous-page'
         variant='link'
         onClick={onDecPage}
         isDisabled={page <= 0}
@@ -24,6 +25,7 @@ export const PagePanel = ({
         {page + 1} / {pagesNum}
       </Text>
       <IconButton
+        aria-label='next-page'
         variant='link'
         onClick={onIncPage}
         isDisabled={page + 1 >= pagesNum}

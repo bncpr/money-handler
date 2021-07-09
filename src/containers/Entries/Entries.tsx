@@ -19,7 +19,6 @@ import {
 import { AnimatePresence, motion } from "framer-motion"
 import * as R from "ramda"
 import { useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
 import { Filters } from "../../components/Filters/Filters"
 import { MotionFilterTag } from "../../components/Motion/MotionFilterTag/MotionFilterTag"
 import { DeleteEntryAlert } from "../../components/UI/Alert/DeleteEntryAlert"
@@ -28,6 +27,7 @@ import { EntryForm } from "../../components/UI/Form/EntryForm/EntryForm"
 import { SortMenu } from "../../components/UI/Menu/SortMenu"
 import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
 import { TableRow } from "../../components/UI/Table/TableRow"
+import { useAppDispatch } from "../../hooks/reduxTypedHooks/reduxTypedHooks"
 import { usePagination } from "../../hooks/usePagination/usePagination"
 import { useSorting } from "../../hooks/useSorting/useSorting"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
@@ -61,8 +61,8 @@ export const Entries = ({
   isLoading,
   filterStack,
   categoryColors,
-}) => {
-  const dispatch = useDispatch()
+}: any) => {
+  const dispatch = useAppDispatch()
 
   const { sorted, onChangeSort, sortState } = useSorting({ data: surfaceData })
 
@@ -74,20 +74,20 @@ export const Entries = ({
     resetPage,
     onIncPage,
     onDecPage,
-  } = usePagination(surfaceData.length, 10, filters)
+  } = usePagination(surfaceData.length, 10)
 
   useEffect(() => {
     resetPage()
   }, [sorted, resetPage])
 
-  const [pickedEntry, setPickedEntry] = useState()
+  const [pickedEntry, setPickedEntry] = useState("")
 
-  const onPickEntry = id => {
+  const onPickEntry = (id: string) => {
     setPickedEntry(id)
   }
 
-  const [isOpen, setIsOpen] = useState(false)
-  const onClose = () => setIsOpen()
+  const [isOpen, setIsOpen] = useState<false | "edit" | "del" | "new">(false)
+  const onClose = () => setIsOpen(false)
   const onOpenEdit = () => setIsOpen("edit")
   const onOpenDel = () => setIsOpen("del")
   const onOpenNew = () => setIsOpen("new")
@@ -112,10 +112,10 @@ export const Entries = ({
       columnGap={6}
       pt={6}
     >
-      <GridItem colSpan='3' justifySelf='center'>
+      <GridItem colSpan={3} justifySelf='center'>
         <HStack>
           <AnimatePresence>
-            {filterStack.map(([key, value]) => (
+            {filterStack.map(([key, value]: [string, string]) => (
               <MotionFilterTag
                 key={key}
                 filter={key}
@@ -161,7 +161,7 @@ export const Entries = ({
           </MotionBox>
         </VStack>
       </GridItem>
-      <GridItem colStart='2' rowStart='2' justifySelf='center'>
+      <GridItem colStart={2} rowStart={2} justifySelf='center'>
         {!isLoading && (
           <CardBox px={6} py={3}>
             <Table variant='simple' size='md' w='max'>
@@ -257,7 +257,6 @@ export const Entries = ({
           header='Edit Entry'
           pickedEntry={pickedEntry}
           fields={fields}
-          component={EntryForm}
         />
         <NewEntryDrawerForm
           isOpen={isOpen === "new"}

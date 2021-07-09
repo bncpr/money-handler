@@ -12,9 +12,10 @@ export const EntryForm = ({
   fields,
   addedFields,
   initialFocusRef,
-  ...rest
-}) => {
-  const portalRef = useRef()
+  onAddField,
+  onRemoveAddedField,
+}: any) => {
+  const portalRef = useRef(null)
   return (
     <FormikProvider value={formik}>
       <Form
@@ -29,11 +30,7 @@ export const EntryForm = ({
             label='Date'
             initialFocusRef={initialFocusRef}
           />
-          <Field
-            component={NumberInputContext}
-            name='value'
-            label='Value'
-          />
+          <Field component={NumberInputContext} name='value' label='Value' />
         </Wrap>
         {["payer", "category"].map(value => (
           <Field
@@ -44,7 +41,8 @@ export const EntryForm = ({
             options={fields[value]}
             addedFields={addedFields[value]}
             portalRef={portalRef}
-            {...rest}
+            onAddField={onAddField}
+            onRemoveAddedField={onRemoveAddedField}
           />
         ))}
         <Field name='tags' component={InputTagsCheckbox} />

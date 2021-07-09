@@ -9,8 +9,8 @@ const toast = createStandaloneToast()
 
 export const postNewEntryThunk = createAsyncThunk(
   "data/postNewEntry",
-  async ({ entry }, { getState, dispatch, rejectWithValue }) => {
-    const uid = getState().authentication.uid
+  async ({ entry }: any, { getState, dispatch, rejectWithValue }) => {
+    const uid = (getState() as any).authentication.uid
     try {
       const entryId = (await pushNewEntry(uid)).key
       const entryWithId = R.assoc("id", entryId, entry)
@@ -18,9 +18,11 @@ export const postNewEntryThunk = createAsyncThunk(
         [`entries/${entryId}`]: entryWithId,
       }
       if (!uid) {
-        const entries = getState().data.entries
+        const entries = (getState() as any).data.entries
         dispatch(
-          updateEntries({ entries: R.assoc(entryId, entryWithId, entries) }),
+          updateEntries({
+            entries: R.assoc(entryId!, entryWithId, entries),
+          }),
         )
       } else {
         await updateUserFields(uid, updates)
@@ -33,7 +35,7 @@ export const postNewEntryThunk = createAsyncThunk(
         variant: "solid",
       })
     } catch (error) {
-      dispatch(showError({ errorMessage: "Could not post new entry" }))
+      dispatch(showError("Could not post new entry"))
       return rejectWithValue({ errorMessage: error.message })
     }
   },

@@ -9,11 +9,11 @@ const toast = createStandaloneToast()
 
 export const removeEntryFromDbThunk = createAsyncThunk(
   "data/removeEntryFromDb",
-  async (entryId, { dispatch, getState, rejectWithValue }) => {
-    const uid = getState().authentication.uid
+  async (entryId: string, { dispatch, getState, rejectWithValue }) => {
+    const uid = (getState() as any).authentication.uid
     try {
       if (!uid) {
-        const entries = getState().data.entries
+        const entries = (getState() as any).data.entries
         dispatch(updateEntries({ entries: R.omit([entryId], entries) }))
       } else {
         console.log(entryId)

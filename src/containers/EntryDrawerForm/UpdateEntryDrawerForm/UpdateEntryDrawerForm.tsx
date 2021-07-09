@@ -13,13 +13,28 @@ import {
 import { useFormik } from "formik"
 import * as R from "ramda"
 import { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
 import { AlertYesNo } from "../../../components/UI/Alert/AlertYesNo"
+import { EntryForm } from "../../../components/UI/Form/EntryForm/EntryForm"
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../hooks/reduxTypedHooks/reduxTypedHooks"
 import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
 import { updateUserEntriesThunk } from "../../../store/thunks/updateUserEntriesThunk"
+import { Entry } from "../../../types/Entry"
 import { entrySchema } from "../modules/entrySchema"
 
-const initialValues = { tags: [], more: "" }
+const initialValues: Entry = {
+  date: "",
+  payer: "",
+  value: 0,
+  category: "",
+  month: "",
+  year: "",
+  tags: [],
+  more: "",
+  id: "",
+}
 
 export const UpdateEntryDrawerForm = ({
   isOpen,
@@ -28,11 +43,10 @@ export const UpdateEntryDrawerForm = ({
   header,
   pickedEntry,
   fields,
-  component: Component,
-}) => {
-  const signedIn = useSelector(state => state.authentication.signedIn)
-  const entry = useSelector(state => state.data.entries[pickedEntry])
-  const dispatch = useDispatch()
+}: any) => {
+  const signedIn = useAppSelector(state => state.authentication.signedIn)
+  const entry = useAppSelector(state => state.data.entries[pickedEntry])
+  const dispatch = useAppDispatch()
 
   const {
     isOpen: isOpenAlert,
@@ -76,7 +90,6 @@ export const UpdateEntryDrawerForm = ({
   const onSubmitAttempt = () => {
     formik.validateForm()
     if (formik.isValid) {
-      console.log("VALID")
       return !signedIn ? formik.submitForm() : onOpenAlert()
     }
   }
@@ -94,7 +107,7 @@ export const UpdateEntryDrawerForm = ({
         <DrawerHeader>{header}</DrawerHeader>
 
         <DrawerBody>
-          <Component
+          <EntryForm
             formik={formik}
             fields={fields}
             addedFields={addedFields}

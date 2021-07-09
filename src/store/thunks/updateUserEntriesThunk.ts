@@ -9,14 +9,14 @@ const toast = createStandaloneToast()
 
 export const updateUserEntriesThunk = createAsyncThunk(
   "data/updateEntryInDb",
-  async ({ entryId, entry }, { getState, dispatch, rejectWithValue }) => {
+  async ({ entryId, entry }: any, { getState, dispatch, rejectWithValue }) => {
     const updates = {
       [`entries/${entryId}`]: entry,
     }
-    const uid = getState().authentication.uid
+    const uid = (getState() as any).authentication.uid
     try {
       if (!uid) {
-        const entries = getState().data.entries
+        const entries = (getState() as any).data.entries
         dispatch(updateEntries({ entries: assoc(entryId, entry, entries) }))
       } else {
         await updateUserFields(uid, updates)
