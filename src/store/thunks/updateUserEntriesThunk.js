@@ -29,7 +29,7 @@ export const updateUserEntriesThunk = createAsyncThunk(
         variant: "solid",
       })
     } catch (error) {
-      dispatch(showError({ errorMessage: "Could not update entry" }))
+      dispatch(showError("Could not update entry"))
       return rejectWithValue({ error: error.message })
     }
   },

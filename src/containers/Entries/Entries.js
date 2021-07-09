@@ -14,7 +14,7 @@ import {
   Thead,
   Tooltip,
   Tr,
-  VStack
+  VStack,
 } from "@chakra-ui/react"
 import { AnimatePresence, motion } from "framer-motion"
 import * as R from "ramda"
@@ -70,14 +70,15 @@ export const Entries = ({
     pageSize,
     page,
     pagesNum,
-    onChangePage,
     onChangePageSize,
     resetPage,
+    onIncPage,
+    onDecPage,
   } = usePagination(surfaceData.length, 10, filters)
 
   useEffect(() => {
     resetPage()
-  }, [filters, resetPage])
+  }, [sorted, resetPage])
 
   const [pickedEntry, setPickedEntry] = useState()
 
@@ -237,7 +238,8 @@ export const Entries = ({
           page={page}
           pagesNum={pagesNum}
           pageSize={pageSize}
-          changePage={onChangePage}
+          onIncPage={onIncPage}
+          onDecPage={onDecPage}
           changePageSize={onChangePageSize}
         />
       </GridItem>

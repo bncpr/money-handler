@@ -1,4 +1,4 @@
-export type Entry = {
+export interface Entry {
   date: string
   value: number
   payer: string

@@ -1,7 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import * as R from "ramda"
 import { Entry } from "../../../types/Entry"
 import { GroupedTree } from "../../../types/GroupedTree"
+import { DataSliceState } from "../../../types/DataSliceState"
 import { getFields, getInitialGroupedTree } from "./modules/modules"
 
 type SliceState = {
@@ -24,8 +25,8 @@ const groupedEntriesSlice = createSlice({
   name: "groupedEntries",
   initialState,
   reducers: {
-    updateEntries(state, { payload: { entries } }) {
-      const entriesArr = R.values(entries)
+    updateEntries(state, action: PayloadAction<DataSliceState>) {
+      const entriesArr = R.values(action.payload.entries)
       const groupedTree = getInitialGroupedTree(entriesArr)
       const fields = getFields(groupedTree)
       state.entries = entriesArr

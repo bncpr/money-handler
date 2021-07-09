@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
-import * as R from "ramda"
 
-export const usePagination = (length, size) => {
+export const usePagination = (length: number, size: number) => {
   const [pageSize, setPageSize] = useState(size)
   const [page, setPage] = useState(0)
   const [pagesNum, setPagesNum] = useState(0)
@@ -10,13 +9,12 @@ export const usePagination = (length, size) => {
     setPagesNum(Math.ceil(length / pageSize))
   }, [length, pageSize])
 
-  const onChangePage = n => () => {
-    setPage(R.clamp(0, pagesNum, page + n))
-  }
+  const onIncPage = () => setPage(Math.min(page + 1, pagesNum))
+  const onDecPage = () => setPage(Math.max(page - 1, 0))
 
-  const onChangePageSize = value => {
+  const onChangePageSize = (value: number) => {
     setPage(0)
-    setPageSize(+value)
+    setPageSize(value)
   }
 
   const resetPage = useCallback(() => setPage(0), [])
@@ -25,8 +23,9 @@ export const usePagination = (length, size) => {
     pageSize,
     page,
     pagesNum,
-    onChangePage,
     onChangePageSize,
     resetPage,
+    onDecPage,
+    onIncPage,
   }
 }

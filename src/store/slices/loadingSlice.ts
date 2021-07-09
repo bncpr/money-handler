@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 const loadingSlice = createSlice({
   name: "loading",
@@ -13,7 +13,7 @@ const loadingSlice = createSlice({
     setLoadingOff(state) {
       state.isLoading = false
     },
-    setLoadingFilter(state, action) {
+    setLoadingFilter(state, action: PayloadAction<boolean>) {
       state.isLoadingFilter = action.payload
     },
   },

@@ -57,10 +57,11 @@ export const UpdateEntryDrawerForm = ({
     },
   })
 
-  const { addedFields, onAddField, onRemoveAddedField } = useAddedFields(
-    formik,
+  const { addedFields, onAddField, onRemoveAddedField } = useAddedFields({
+    values: formik.values,
+    setValues: formik.setFieldValue,
     isOpen,
-  )
+  })
 
   const { setValues, resetForm } = formik
 

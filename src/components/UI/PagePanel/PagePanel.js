@@ -7,7 +7,8 @@ export const PagePanel = ({
   page,
   pagesNum,
   pageSize,
-  changePage,
+  onIncPage,
+  onDecPage,
   changePageSize,
   ...rest
 }) => {
@@ -15,7 +16,7 @@ export const PagePanel = ({
     <HStack {...rest}>
       <IconButton
         variant='link'
-        onClick={changePage(-1)}
+        onClick={onDecPage}
         isDisabled={page <= 0}
         icon={<ArrowBackIcon />}
       />
@@ -24,7 +25,7 @@ export const PagePanel = ({
       </Text>
       <IconButton
         variant='link'
-        onClick={changePage(1)}
+        onClick={onIncPage}
         isDisabled={page + 1 >= pagesNum}
         icon={<ArrowForwardIcon />}
       />

@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-type AuthState = {
+interface AuthState {
   signedIn: boolean
   email: string | null
   uid: string | null
@@ -18,10 +18,10 @@ const authenticationSlice = createSlice({
   name: "authentication",
   initialState,
   reducers: {
-    signIn(state, { payload: { uid, email } }) {
+    signIn(state, action: PayloadAction<Pick<AuthState, "uid" | "email">>) {
       state.signedIn = true
-      state.uid = uid
-      state.email = email
+      state.uid = action.payload.uid
+      state.email = action.payload.email
     },
     signOut(state) {
       state.signedIn = false

@@ -4,17 +4,19 @@ import { addProp } from "remeda"
 import { Entry } from "../../types/Entry"
 
 type SortValue = "ascend" | "descend" | ""
-type SortField = keyof SortState
-type SortedValueState = {
-  field: SortField | ""
-  value: SortValue
-}
 
-type SortState = {
+interface SortState {
   date: SortValue
   value: SortValue
   payer: SortValue
   category: SortValue
+}
+
+type SortField = keyof SortState
+
+interface SortedValueState {
+  field: SortField | ""
+  value: SortValue
 }
 
 const initialState: SortState = {
@@ -33,8 +35,7 @@ export const useSorting = ({ data }: { data: Entry[] }) => {
   const [sortState, setSortState] = useState(initialState)
 
   const onChangeSort = R.curry((field: SortField, value: SortValue) => {
-    const newState = addProp(initialState, field, value)
-    setSortState(newState)
+    setSortState(addProp(initialState, field, value))
     setSortedValue({ field, value })
   })
 
@@ -49,13 +50,13 @@ export const useSorting = ({ data }: { data: Entry[] }) => {
 function sortEntries(field: SortField | "", value: SortValue, data: Entry[]) {
   if (field && value) {
     if (field === "value") {
-      return [...data].sort(({ [field]: a }: Entry, { [field]: b }: Entry) => {
-        return compMap[value].number(a, b)
-      })
+      return [...data].sort(({ [field]: a }: Entry, { [field]: b }: Entry) =>
+        compMap[value].number(a, b),
+      )
     } else {
-      return [...data].sort(({ [field]: a }: Entry, { [field]: b }: Entry) => {
-        return compMap[value].string(a, b)
-      })
+      return [...data].sort(({ [field]: a }: Entry, { [field]: b }: Entry) =>
+        compMap[value].string(a, b),
+      )
     }
   }
   return data

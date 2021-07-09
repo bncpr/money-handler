@@ -101,7 +101,7 @@ export const PopoverFormContainer = ({
                   {({ field, form: { errors, touched } }: FieldProps) => (
                     <FormControl
                       width='max'
-                      isInvalid={Boolean(errors[name] && touched[name])}
+                      isInvalid={!!(errors[name] && touched[name])}
                     >
                       <Input {...field} ref={initialFocusRef} bg='white' />
                       <Portal containerRef={ref}>

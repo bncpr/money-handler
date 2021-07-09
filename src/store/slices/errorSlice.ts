@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 const initialState = {
   error: false,
@@ -9,9 +9,9 @@ const errorSlice = createSlice({
   name: "error",
   initialState,
   reducers: {
-    showError(state, { payload }) {
+    showError(state, action: PayloadAction<string>) {
       state.error = true
-      state.errorMessage = payload.errorMessage
+      state.errorMessage = action.payload
     },
     hideError() {
       return initialState

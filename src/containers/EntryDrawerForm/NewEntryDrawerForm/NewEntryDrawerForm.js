@@ -6,7 +6,7 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
-  DrawerOverlay
+  DrawerOverlay,
 } from "@chakra-ui/react"
 import { useFormik } from "formik"
 import * as R from "ramda"
@@ -61,7 +61,11 @@ export const NewEntryDrawerForm = ({
   })
 
   const { addedFields, onAddField, onRemoveAddedField, resetAddedFields } =
-    useAddedFields(formik, isOpen)
+    useAddedFields({
+      values: formik.values,
+      setValues: formik.setFieldValue,
+      isOpen,
+    })
 
   return (
     <Drawer

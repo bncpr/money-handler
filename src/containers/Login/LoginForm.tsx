@@ -70,7 +70,7 @@ export const LoginForm = () => {
                 {({ field, meta: { error, touched } }: FieldProps) => (
                   <FormControl
                     id={field.name}
-                    isInvalid={Boolean(error && touched)}
+                    isInvalid={!!error && touched}
                     width='max'
                     p={2}
                   >
@@ -83,7 +83,7 @@ export const LoginForm = () => {
                 {({ field, meta: { error, touched } }: FieldProps) => (
                   <FormControl
                     id={field.name}
-                    isInvalid={Boolean(error && touched)}
+                    isInvalid={!!error && touched}
                     width='max'
                     p={2}
                   >
@@ -97,7 +97,7 @@ export const LoginForm = () => {
                   </FormControl>
                 )}
               </Field>
-              <FormControl isInvalid={Boolean(formik.errors.other)}>
+              <FormControl isInvalid={!!formik.errors.other}>
                 <FormErrorMessage>{formik.errors.other}</FormErrorMessage>
               </FormControl>
               <Flex justify='center' direction='column'>
