@@ -11,11 +11,13 @@ import {
   Spacer,
   useDisclosure,
   useMediaQuery,
-  VStack,
+  VStack
 } from "@chakra-ui/react"
-import * as R from "ramda"
-import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useEffect, useMemo, useState } from "react"
+import * as R from "remeda"
+import { useAppSelector } from "../../hooks/reduxTypedHooks/reduxTypedHooks"
+import { Entry } from "../../types/Entry"
+import { GroupedTree } from "../../types/GroupedTree"
 import { monthsMapFull } from "../../utility/maps"
 import { BreadCrumbsSelect } from "../BreadCrumbs/BreadCrumbsSelect"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
@@ -26,37 +28,23 @@ import { CategorySummaryTable } from "../Tables/CategorySummaryTable/CategorySum
 import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable"
 import {
   BackButton,
-  ForwardButton,
+  ForwardButton
 } from "../UI/ForwardBackward/ForwardBackward"
+import { getAverages } from "./modules"
 
-const groupByProp = prop => R.groupBy(R.prop(prop))
-const getSums = R.map(R.pipe(R.map(R.prop("value")), R.sum))
-
-const getCategorySums = init =>
-  R.pipe(R.groupBy(R.prop("category")), getSums, R.mergeRight(init))
-
-const getCategorySumsOfMonths = init =>
-  R.pipe(groupByProp("month"), R.map(getCategorySums(init)))
-
-function getAverages(subField, yearFields) {
-  return R.zipObj(
-    subField,
-    subField.map(key =>
-      R.pipe(
-        R.map(R.path([1, key])),
-        R.converge(R.divide, [R.sum, R.length]),
-        Math.round,
-        R.defaultTo(0),
-      )(yearFields),
-    ),
-  )
-}
-
-const getLastIndex = arr => arr.length - 1
+const getLastIndex = (arr: any[]) => arr.length - 1
 
 const RIGHT_DRAWER_WIDTH = 420
 
-const sortAscend = R.sort(R.ascend(R.identity))
+const getAscendingKeys = (obj: Record<string, any> = {}) =>
+  Object.keys(obj).sort((a: string, b: string) => a.localeCompare(b))
+
+const groupByCategory = R.groupBy(R.prop<Entry, keyof Entry>("category"))
+const getSums = R.createPipe(
+  R.map(R.prop<Entry, "value">("value")),
+  R.reduce((a, b) => a + b, 0),
+)
+const getCategorySums = R.createPipe(groupByCategory, R.mapValues(getSums))
 
 export const Home = ({
   groupedTree,
@@ -64,17 +52,24 @@ export const Home = ({
   subField,
   isEmptyEntries,
   isSignedIn,
+}: {
+  groupedTree: GroupedTree
+  colors: any
+  subField: string[]
+  isEmptyEntries: boolean
+  isSignedIn: boolean
 }) => {
-  const isLoading = useSelector(state => state.loading.isLoading)
+  const isLoading = useAppSelector(state => state.loading.isLoading)
+  const groupedMonths = useAppSelector(
+    state => state.groupedEntries.groupedMonths,
+  )
   const [hovered, setHovered] = useState("")
-  const [years, setYears] = useState([])
-  const [months, setMonths] = useState([])
+  const [years, setYears] = useState<string[]>([])
+  const [months, setMonths] = useState<string[]>([])
   const [month, setMonth] = useState("")
   const [year, setYear] = useState("")
   const [yearIndex, setYearIndex] = useState(0)
   const [monthIndex, setMonthIndex] = useState(0)
-
-  const [groupedMonths, setGroupedMonths] = useState({})
 
   const isDisabledInc =
     monthIndex === getLastIndex(months) && yearIndex === getLastIndex(years)
@@ -91,9 +86,9 @@ export const Home = ({
     }
     const _yearIndex = yearIndex - 1
     const _year = years[_yearIndex]
-    const _months = sortAscend(R.keys(groupedMonths[_year]))
+    const _months = getAscendingKeys(groupedMonths[_year])
     const _monthIndex = getLastIndex(_months)
-    const _month = R.last(_months)
+    const _month = R.last(_months) || ""
     setYearIndex(_yearIndex)
     setYear(_year)
     setMonth(_month)
@@ -111,8 +106,8 @@ export const Home = ({
     }
     const _yearIndex = yearIndex + 1
     const _year = years[_yearIndex]
-    const _months = sortAscend(R.keys(groupedMonths[_year]))
-    const _month = R.head(_months)
+    const _months = getAscendingKeys(groupedMonths[_year])
+    const _month = R.first(_months) || ""
     setYearIndex(_yearIndex)
     setYear(_year)
     setMonth(_month)
@@ -121,7 +116,7 @@ export const Home = ({
   }
 
   useEffect(() => {
-    const months = sortAscend(R.keys(groupedMonths[year]))
+    const months = getAscendingKeys(groupedMonths[year])
     setMonths(months)
     setYearIndex(years.indexOf(year))
   }, [year, groupedMonths, years])
@@ -129,7 +124,7 @@ export const Home = ({
   useEffect(() => {
     const index = months.indexOf(month)
     if (index === -1) {
-      setMonth(R.last(months))
+      setMonth(R.last(months) || "")
       setMonthIndex(getLastIndex(months))
     } else {
       setMonthIndex(index)
@@ -137,46 +132,66 @@ export const Home = ({
   }, [months, month])
 
   useEffect(() => {
-    const groupedMonths = R.pipe(
-      R.propOr({}, "year"),
-      R.map(R.groupBy(R.prop("month"))),
-    )(groupedTree)
-    setGroupedMonths(groupedMonths)
-  }, [groupedTree])
-
-  useEffect(() => {
-    const years = R.keys(groupedMonths)
-    const year = R.last(years)
+    const years = Object.keys(groupedMonths)
+    const year = R.last(years) || ""
     setYears(years)
     setYear(year)
     setYearIndex(getLastIndex(years))
 
-    const months = sortAscend(R.keys(groupedMonths[year] || []))
-    const month = R.last(months)
+    const months = getAscendingKeys(groupedMonths[year])
+    const month = R.last(months) || ""
     setMonths(months)
     setMonth(month)
     setMonthIndex(getLastIndex(months))
   }, [groupedMonths])
 
-  const initSubField = R.zipObj(subField, subField.map(R.always(0)))
-
-  const monthFields = R.toPairs(
-    getCategorySums(initSubField)(groupedMonths?.[year]?.[month] || []),
+  const initSubField = useMemo(
+    () => R.mapToObj(subField, (x: string) => [x, 0]),
+    [subField],
   )
 
-  const yearFields = R.toPairs(
-    getCategorySumsOfMonths(initSubField)(groupedTree.year?.[year] || []),
-  )
+  const [monthCategorySumsPairs, setMonthCategorySumsPairs] = useState<
+    [string, number][]
+  >([])
 
-  const averages = getAverages(subField, yearFields)
+  useEffect(() => {
+    const monthEntries = groupedMonths?.[year]?.[month] || []
+    const sums = getCategorySums(monthEntries)
+    setMonthCategorySumsPairs(R.toPairs(R.merge(initSubField, sums)))
+  }, [groupedMonths, year, month, initSubField])
+
+  const [yearMonthCategorySumsPairs, setYearMonthCategorySumsPairs] = useState<
+    [string, Record<string, number>][]
+  >([])
+
+  useEffect(() => {
+    const yearEntries = groupedTree.year?.[year] || []
+    const sums = R.pipe(
+      yearEntries,
+      R.groupBy(R.prop("month")),
+      R.mapValues(getCategorySums),
+      R.mapValues(obj => R.merge(initSubField, obj)),
+    )
+    setYearMonthCategorySumsPairs(R.toPairs(sums))
+  }, [initSubField, year, groupedTree])
+
+  const averages = getAverages(subField, yearMonthCategorySumsPairs)
 
   const [view, setView] = useState("year")
 
-  const payerMonthFields = R.pipe(
-    groupByProp("payer"),
-    getSums,
-    R.toPairs,
-  )(groupedMonths?.[year]?.[month] || [])
+  const [payerMonthSumsPairs, setPayerMonthSumsPairs] = useState<
+    [string, number][]
+  >([])
+
+  useEffect(() => {
+    const monthEntries = groupedMonths?.[year]?.[month] || []
+    const sums = R.pipe(
+      monthEntries,
+      R.groupBy(R.prop("payer")),
+      R.mapValues(getSums),
+    )
+    setPayerMonthSumsPairs(R.toPairs(sums))
+  }, [groupedMonths, year, month])
 
   const { isOpen, onOpen, onClose } = useDisclosure({
     defaultIsOpen: true,
@@ -193,7 +208,6 @@ export const Home = ({
       <Slide
         in={isOpen}
         direction='right'
-        width={RIGHT_DRAWER_WIDTH}
         style={{ zIndex: 10, maxWidth: RIGHT_DRAWER_WIDTH }}
       >
         <Box
@@ -219,13 +233,12 @@ export const Home = ({
             </Heading>
 
             <CategorySummaryTable
-              monthFields={monthFields}
+              monthFields={monthCategorySumsPairs}
               averages={averages}
-              setHovered={setHovered}
               hovered={hovered}
             />
 
-            <PayerSummaryTable payerMonthFields={payerMonthFields} />
+            <PayerSummaryTable payerMonthFields={payerMonthSumsPairs} />
 
             <Heading size='sm' p={2} fontWeight='semibold'>
               Monthly Averages of {year}
@@ -260,19 +273,19 @@ export const Home = ({
       </Button>
 
       <Grid
-        mr={isOpen && RIGHT_DRAWER_WIDTH + 20}
+        mr={isOpen ? RIGHT_DRAWER_WIDTH + 20 : ""}
         align='center'
         templateColumns='1fr auto 1fr'
         columnGap={3}
         rowGap={4}
       >
-        <GridItem as={HStack} colStart='2' px={2}>
+        <GridItem as={HStack} colStart={2} px={2}>
           <BreadCrumbsSelect
             view='year'
             value='year'
             label={year}
             field={years}
-            onChange={val => {
+            onChange={(val: string) => {
               setYear(val)
               setView("year")
             }}
@@ -282,7 +295,7 @@ export const Home = ({
             value='month'
             label={month}
             field={months}
-            onChange={val => {
+            onChange={(val: string) => {
               setMonth(val)
               onOpen()
               setView("month")
@@ -299,13 +312,13 @@ export const Home = ({
           </Button>
         </GridItem>
 
-        <GridItem rowStart='2' alignSelf='center' justifySelf='end'>
+        <GridItem rowStart={2} alignSelf='center' justifySelf='end'>
           <BackButton onDec={onDecIndex} isDisabledDec={isDisabledDec} />
         </GridItem>
 
         <GridItem
-          colStart='3'
-          rowStart='2'
+          colStart={3}
+          rowStart={2}
           alignSelf='center'
           justifySelf='start'
         >
@@ -313,9 +326,9 @@ export const Home = ({
         </GridItem>
 
         {view === "month" && (
-          <GridItem colStart='2' rowStart='2'>
+          <GridItem colStart={2} rowStart={2}>
             <VerticalBarChart
-              fields={monthFields}
+              fields={monthCategorySumsPairs}
               height={chartHeight}
               width={chartWidth}
               fieldName='category'
@@ -332,9 +345,9 @@ export const Home = ({
         )}
 
         {view === "year" && (
-          <GridItem colStart='2' rowStart='2'>
+          <GridItem colStart={2} rowStart={2}>
             <GroupedVerticalBarChart
-              fields={yearFields}
+              fields={yearMonthCategorySumsPairs}
               height={chartHeight}
               width={chartWidth}
               fieldName='month'
