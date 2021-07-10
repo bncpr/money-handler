@@ -10,18 +10,19 @@ import {
   PopoverTrigger,
 } from "@chakra-ui/popover"
 import { useState } from "react"
-import { useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
 import { auth } from "../../../api/firebase/firebase"
+import { useAppSelector } from "../../../hooks/reduxTypedHooks/reduxTypedHooks"
 
 export const ProfilePopover = ({ ...rest }) => {
   const history = useHistory()
-  const email = useSelector(state => state.authentication.email)
+  const email = useAppSelector(state => state.authentication.email)
   const [isLoading, setIsLoading] = useState(false)
   return (
     <Popover>
       <PopoverTrigger>
         <IconButton
+          aria-label='profile'
           icon={<TriangleDownIcon />}
           _focus={{ boxShadow: "none" }}
           {...rest}

@@ -20,13 +20,12 @@ const clean = R.pipe(
   R.reject(R.isEmpty),
 )
 
-export const InputTagsCheckbox = ({ field, form }) => {
-  const unselectTag = tag => () =>
+export const InputTagsCheckbox = ({ field, form }: any) => {
+  const unselectTag = (tag: string) => () =>
     form.setFieldValue(field.name, R.reject(R.equals(tag), field.value))
   const [input, setInput] = useState("")
-  const [error, setError] = useState(null)
-  const validate = cleaned => {
-    console.log(cleaned)
+  const [error, setError] = useState("")
+  const validate = (cleaned: string[]) => {
     if (
       R.any(R.includes(R.__, field.value), cleaned) ||
       R.any(R.gt(R.__, 1), R.values(R.countBy(R.identity, cleaned)))
@@ -44,7 +43,7 @@ export const InputTagsCheckbox = ({ field, form }) => {
     }
     form.setFieldValue(field.name, field.value.concat(cleaned))
     setInput("")
-    setError()
+    setError("")
   }
 
   return (
@@ -54,7 +53,7 @@ export const InputTagsCheckbox = ({ field, form }) => {
       </FormLabel>
       {!R.isEmpty(field.value) && (
         <Wrap p={2}>
-          {field.value.map(tag => (
+          {field.value.map((tag: string) => (
             <Tag key={tag} colorScheme='purple' variant='solid'>
               <TagLabel>{tag}</TagLabel>
               <TagCloseButton
@@ -72,7 +71,7 @@ export const InputTagsCheckbox = ({ field, form }) => {
           value={input}
           onChange={e => {
             setInput(e.target.value)
-            setError()
+            setError("")
           }}
           onKeyPress={e => e.key === "Enter" && handleSubmit()}
         />

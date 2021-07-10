@@ -40,7 +40,6 @@ export const PagePanel = ({
         min={0}
         max={100}
         maxW={20}
-        focus={{ boxShadow: "none" }}
       />
     </HStack>
   )

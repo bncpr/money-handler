@@ -16,11 +16,14 @@ export const CategorySummaryTable = ({
   monthFields,
   averages,
   hovered,
-  setHovered,
   ...rest
+}: {
+  monthFields: [string, number][]
+  averages: { [x: string]: number }
+  hovered: string
 }) => {
   const sorted = R.sortWith(
-    [R.descend(R.last), R.descend(el => averages[R.head(el)])],
+    [R.descend(R.last), R.descend(el => averages[el[0]])],
     monthFields,
   )
   const sum = roundSum(R.values(averages))
@@ -38,12 +41,12 @@ export const CategorySummaryTable = ({
         <Tbody>
           {sorted.map(([key, value]) => {
             const average = averages[key]
-            const percent = Number.parseFloat((average / sum) * 100).toFixed(1)
+            const percent = ((average / sum) * 100).toFixed(1)
             const difference = Math.round(Math.abs(value - average))
             return (
               <Tr
                 key={key}
-                bg={hovered === key && "gray.100"}
+                bg={hovered === key ? "gray.100" : ""}
                 transition='opacity ease 100ms 100ms'
               >
                 <Td>{capitalizeFirstChar(key)}</Td>
@@ -69,7 +72,7 @@ export const CategorySummaryTable = ({
         <Tfoot>
           <Tr>
             <Th isNumeric>Total</Th>
-            <Th isNumeric>{roundSum(monthFields.map(R.last))}</Th>
+            <Th isNumeric>{roundSum(monthFields.map(R.last) as number[])}</Th>
             <Th isNumeric>{sum}</Th>
           </Tr>
         </Tfoot>
@@ -78,6 +81,6 @@ export const CategorySummaryTable = ({
   )
 }
 
-function roundSum(arr) {
+function roundSum(arr: number[]) {
   return Math.round(R.sum(arr))
 }

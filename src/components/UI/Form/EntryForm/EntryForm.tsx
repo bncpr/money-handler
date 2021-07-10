@@ -1,11 +1,10 @@
 import { Box, Wrap } from "@chakra-ui/react"
 import { Field, Form, FormikProvider } from "formik"
-import { NumberInputContext } from "../NumberInputContext/NumberInputContext"
-import { InputContext } from "../InputContext/InputContext"
-import { RadioWithAddOption } from "../RadioWithAddOption/RadioWithAddOption"
-import { RadioCard } from "../RadioCard/RadioCard"
 import { useRef } from "react"
+import { InputContext } from "../InputContext/InputContext"
 import { InputTagsCheckbox } from "../InputTagsCheckbox/InputTagsCheckbox"
+import { NumberInputContext } from "../NumberInputContext/NumberInputContext"
+import { RadioWithAddOption } from "../RadioWithAddOption/RadioWithAddOption"
 
 export const EntryForm = ({
   formik,
@@ -20,6 +19,7 @@ export const EntryForm = ({
     <FormikProvider value={formik}>
       <Form
         id='entry-form'
+        onSubmit={formik.handleSubmit}
         onKeyPress={e => e.key === "Enter" && e.preventDefault()}
       >
         <Wrap spacing={5}>
@@ -37,7 +37,6 @@ export const EntryForm = ({
             key={value}
             name={value}
             component={RadioWithAddOption}
-            radioComp={RadioCard}
             options={fields[value]}
             addedFields={addedFields[value]}
             portalRef={portalRef}

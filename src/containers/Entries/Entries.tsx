@@ -171,28 +171,30 @@ export const Entries = ({
                     Date
                     <SortMenu
                       value={sortState.date}
-                      onChange={onChangeSort("date")}
+                      onChange={onChangeSort("date") as unknown as () => void}
                     />
                   </Th>
                   <Th isNumeric>
                     Value
                     <SortMenu
                       value={sortState.value}
-                      onChange={onChangeSort("value")}
+                      onChange={onChangeSort("value") as unknown as () => void}
                     />
                   </Th>
                   <Th>
                     Payer
                     <SortMenu
                       value={sortState.payer}
-                      onChange={onChangeSort("payer")}
+                      onChange={onChangeSort("payer") as unknown as () => void}
                     />
                   </Th>
                   <Th>
                     Category
                     <SortMenu
                       value={sortState.category}
-                      onChange={onChangeSort("category")}
+                      onChange={
+                        onChangeSort("category") as unknown as () => void
+                      }
                     />
                   </Th>
                   <Th>Tags</Th>

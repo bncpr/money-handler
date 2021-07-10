@@ -10,8 +10,15 @@ import {
   Portal,
 } from "@chakra-ui/react"
 import { BiSortDown, BiSortUp } from "react-icons/bi"
+import { SortValue } from "../../../types/SortValue"
 
-export const SortMenu = ({ value, onChange }) => {
+export const SortMenu = ({
+  value,
+  onChange,
+}: {
+  value: SortValue
+  onChange: () => void
+}) => {
   return (
     <Menu isLazy={false}>
       {({ onClose }) => (

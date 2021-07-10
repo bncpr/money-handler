@@ -3,7 +3,7 @@ import { useRadio } from "@chakra-ui/radio"
 import { Tag, TagLabel } from "@chakra-ui/tag"
 import { capitalizeFirstChar } from "../../../../utility/utility"
 
-export function RadioCard({ children, label, ...rest }) {
+export function RadioCard({ children, label, ...rest }: any) {
   const { getInputProps, getCheckboxProps } = useRadio(rest)
 
   const input = getInputProps()

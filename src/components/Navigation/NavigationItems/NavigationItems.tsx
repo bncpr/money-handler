@@ -1,14 +1,16 @@
-import { Spacer } from "@chakra-ui/layout";
-import {
-  Icon,
-  LinkBox,
-  LinkOverlay, Tooltip
-} from "@chakra-ui/react";
-import { GoMarkGithub } from "react-icons/go";
-import { NavigationItem } from "./NavigationItem/NavigationItem";
-import { ProfilePopover } from "../../Profile/ProfilePopover/ProfilePopover";
+import { Spacer } from "@chakra-ui/layout"
+import { Icon, LinkBox, LinkOverlay, Tooltip } from "@chakra-ui/react"
+import { GoMarkGithub } from "react-icons/go"
+import { ProfilePopover } from "../../Profile/ProfilePopover/ProfilePopover"
+import { NavigationItem } from "./NavigationItem/NavigationItem"
 
-export const NavigationItems = ({ signedIn, pathname }) => {
+export const NavigationItems = ({
+  signedIn,
+  pathname,
+}: {
+  signedIn: boolean
+  pathname: string
+}) => {
   return (
     <>
       <NavigationItem path='/' current={pathname} label='HOME' ml={3} />
@@ -22,7 +24,8 @@ export const NavigationItems = ({ signedIn, pathname }) => {
             <LinkOverlay
               href='https://github.com/bncpr/money-handler'
               target='_blank'
-              rel='noreferrer noopener' />
+              rel='noreferrer noopener'
+            />
           </LinkBox>
         </Tooltip>
       )}
@@ -30,16 +33,18 @@ export const NavigationItems = ({ signedIn, pathname }) => {
         <ProfilePopover
           variant='subtle'
           colorScheme='purple'
-          color='purple.800' />
+          color='purple.800'
+        />
       ) : (
         signedIn !== undefined && (
           <NavigationItem
             path='/login'
             current={pathname}
             label='LOGIN'
-            px={6} />
+            px={6}
+          />
         )
       )}
     </>
-  );
-};
+  )
+}

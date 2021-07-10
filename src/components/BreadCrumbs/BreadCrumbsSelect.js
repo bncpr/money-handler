@@ -16,7 +16,6 @@ export const BreadCrumbsSelect = ({
   label,
   field = [],
   onChange,
-  onClick,
 }) => {
   return (
     <HStack spacing={1}>
@@ -34,7 +33,6 @@ export const BreadCrumbsSelect = ({
               variant='solid'
               fontSize='xl'
               // opacity={view !== value && "0.3"}
-              onClick={onClick}
             >
               {value === "month" ? monthsMapFull.get(label) : label}
             </MenuButton>

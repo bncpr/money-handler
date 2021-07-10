@@ -2,7 +2,7 @@ import { StackItem } from "@chakra-ui/layout"
 import { Box } from "@chakra-ui/react"
 import { Link } from "react-router-dom"
 
-export const NavigationItem = ({ path, current, label, ...rest }) => {
+export const NavigationItem = ({ path, current, label, ...rest }: any) => {
   const isSelected = current === path
   return (
     <StackItem
@@ -10,8 +10,8 @@ export const NavigationItem = ({ path, current, label, ...rest }) => {
       fontWeight='700'
       color={isSelected ? "purple.500" : "white"}
       _hover={{ color: isSelected ? "purple.400" : "gray.200" }}
-      bgColor={isSelected && "white"}
-      shadow={isSelected && "md"}
+      bgColor={isSelected ? "white" : ""}
+      shadow={isSelected ? "md" : ""}
       height='full'
       py={2}
       px={3}

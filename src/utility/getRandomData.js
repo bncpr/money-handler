@@ -55,7 +55,7 @@ const getRandEntry = (y, m, category, payer) => ({
   tags: getTags(category),
 })
 
-export const getRandomMonthData = (y, m) => {
+const getRandomMonthData = (y, m) => {
   const payers = ["george", "marie"]
   const lengths = getLengths()
   return R.pipe(

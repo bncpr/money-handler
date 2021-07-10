@@ -17,15 +17,14 @@ export const AlertYesNo = ({
   header,
   body,
   isLoading,
-}) => {
-  const focusRef = useRef()
+}: any) => {
+  const focusRef = useRef(null)
   return (
     <AlertDialog
       leastDestructiveRef={focusRef}
       onClose={onClose}
       isOpen={isOpen}
       isCentered
-      isLazy
     >
       <AlertDialogOverlay />
       <AlertDialogContent>

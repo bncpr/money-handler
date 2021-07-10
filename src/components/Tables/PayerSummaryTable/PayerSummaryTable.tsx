@@ -12,9 +12,14 @@ import {
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
 
-export const PayerSummaryTable = ({ payerMonthFields, ...rest }) => {
+export const PayerSummaryTable = ({
+  payerMonthFields,
+  ...rest
+}: {
+  payerMonthFields: [string, number][]
+}) => {
   const sorted = R.sort(R.ascend(R.head), payerMonthFields)
-  const total = Math.round(R.sum(payerMonthFields.map(R.last)))
+  const total = Math.round(R.sum(payerMonthFields.map(R.last) as number[]))
   const average = Math.round(total / payerMonthFields.length || 0)
   return (
     <Box {...rest}>

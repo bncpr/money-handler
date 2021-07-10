@@ -1,6 +1,6 @@
 import { Stack } from "@chakra-ui/layout"
 
-export const Toolbar = ({ children, ...rest }) => {
+export const Toolbar = ({ children, ...rest }: any) => {
   return (
     <Stack
       direction='row'

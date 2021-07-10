@@ -18,7 +18,7 @@ export const SelectMenu = ({
   onChange,
   counts,
   ...rest
-}) => (
+}: any) => (
   <Menu isLazy>
     {({ onClose }) => (
       <>
@@ -35,7 +35,7 @@ export const SelectMenu = ({
         </MenuButton>
         <MenuList maxH={96} overflow='auto'>
           <MenuOptionGroup value={buttonVal} onChange={onChange} type='radio'>
-            {array.map(([a, b]) => (
+            {array.map(([a, b]: [string, string]) => (
               <MenuItemOption
                 key={a}
                 value={a}

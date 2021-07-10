@@ -1,17 +1,14 @@
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons"
-import {
-  MenuItem,
-  Tag,
-  TagLabel,
-  Td,
-  Text,
-  Tr,
-  Wrap
-} from "@chakra-ui/react"
+import { MenuItem, Tag, TagLabel, Td, Text, Tr, Wrap } from "@chakra-ui/react"
 import { nanoid } from "@reduxjs/toolkit"
-import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
 import { DownArrowMenu } from "../Menu/DownArrowMenu"
+
+const formatDate = (s: string) => {
+  const arr = s.split("-")
+  arr.reverse()
+  return arr.join("-")
+}
 
 export const TableRow = ({
   d,
@@ -21,16 +18,18 @@ export const TableRow = ({
   categoryColors,
   setFilter,
   filters,
-}) => {
+}: any) => {
   return (
     <Tr _hover={{ boxShadow: "inner" }} onClick={() => onPick(d.id)}>
-      <Td isNumeric>{R.pipe(R.split("-"), R.reverse, R.join("-"))(d.date)}</Td>
+      <Td isNumeric>{formatDate(d.date)}</Td>
       <Td isNumeric fontWeight='semibold'>
         {Math.round(d.value)}
       </Td>
       <Td>
         <Text
-          onClick={filters.payer ? null : () => setFilter("payer", d.payer)}
+          onClick={
+            filters.payer ? undefined : () => setFilter("payer", d.payer)
+          }
           cursor={filters.payer || "pointer"}
           _hover={{
             fontWeight: filters.payer || "semibold",
@@ -46,7 +45,9 @@ export const TableRow = ({
           bgColor={categoryColors[d.category] + "e6"}
           color='white'
           onClick={
-            filters.category ? null : () => setFilter("category", d.category)
+            filters.category
+              ? undefined
+              : () => setFilter("category", d.category)
           }
           cursor={filters.category || "pointer"}
           _hover={{
@@ -60,7 +61,7 @@ export const TableRow = ({
       </Td>
       <Td>
         <Wrap maxW='256px'>
-          {d.tags?.map(label => (
+          {d.tags?.map((label: string) => (
             <Tag key={nanoid()} mx='2px'>
               <TagLabel>{label}</TagLabel>
             </Tag>

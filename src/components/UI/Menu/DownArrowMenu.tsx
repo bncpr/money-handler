@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react"
 import { ChevronDownIcon } from "@chakra-ui/icons"
 
-export const DownArrowMenu = ({ children, size, ...rest }) => {
+export const DownArrowMenu = ({ children, size, ...rest }: any) => {
   return (
     <Menu isLazy>
       <MenuButton

@@ -12,7 +12,7 @@ export const FormControlContext = ({
   label,
   helperText,
   ...rest
-}) => {
+}: any) => {
   return (
     <FormControl
       id={name}

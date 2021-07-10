@@ -13,7 +13,7 @@ export const CalendarSelect = ({
   months,
   setMonth,
   ...rest
-}) => {
+}: any) => {
   return (
     <Flex
       direction='column'
@@ -28,6 +28,7 @@ export const CalendarSelect = ({
     >
       <Stack direction='row' align='center'>
         <IconButton
+          aria-label='previous'
           icon={<ChevronLeftIcon />}
           variant='ghost'
           fontSize={30}
@@ -38,6 +39,7 @@ export const CalendarSelect = ({
           {year}
         </Box>
         <IconButton
+          aria-label='next'
           icon={<ChevronRightIcon />}
           variant='ghost'
           fontSize={30}
@@ -46,7 +48,7 @@ export const CalendarSelect = ({
         />
       </Stack>
       <SimpleGrid columns={4} spacing={1} mt={2}>
-        {months.map(m => (
+        {months.map((m: string) => (
           <Button
             key={m}
             variant={m === month ? "solid" : "ghost"}

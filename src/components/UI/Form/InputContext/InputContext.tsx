@@ -7,7 +7,7 @@ export const InputContext = ({
   type,
   initialFocusRef,
   ...rest
-}) => {
+}: any) => {
   return (
     <FormControlContext field={field} {...rest}>
       <Input {...field} type={type} ref={initialFocusRef} />

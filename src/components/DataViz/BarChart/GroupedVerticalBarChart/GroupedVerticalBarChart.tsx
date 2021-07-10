@@ -10,12 +10,7 @@ import { LeftAxis } from "../LeftAxis"
 import { AverageStroke } from "../Stroke/AverageStroke/AverageStroke"
 import { getDescendingKeys } from "../_modules/getDescendingKeys"
 import { getDomainXAlphanumerical } from "../_modules/getDomainX"
-
-const getMaxOfSubFields = R.pipe(
-  R.map(R.prop(1)),
-  R.chain(R.values),
-  R.reduce(R.max, 0),
-)
+import { getMaxOfSubFields } from "./getMaxOfSubFields"
 
 export const GroupedVerticalBarChart = ({
   fields,
@@ -34,23 +29,23 @@ export const GroupedVerticalBarChart = ({
   month,
   setMonth,
   ...rest
-}) => {
+}: any) => {
   const innerHeight = height - margin.top - margin.bottom
   const innerWidth = width - margin.left - margin.right
 
   const domainX = getDomainXAlphanumerical(fields)
-  const domainY = [0, getMaxOfSubFields(fields) || 100]
+  const domainY = [0, (getMaxOfSubFields(fields) as number) || 100]
 
   const xScale = scaleBand().domain(domainX).range([0, innerWidth]).padding(0.1)
 
   const yScale = scaleLinear().domain(domainY).range([innerHeight, 0])
 
   const rects = R.unnest(
-    fields.map(([key, series]) => {
+    fields.map(([key, series]: any) => {
       const subScale = scaleBand()
         .domain(getDescendingKeys(series))
-        .range([xScale(key), xScale(key) + xScale.bandwidth()])
-      return subScale.domain().map((d, i) => ({
+        .range([xScale(key), (xScale(key) as any) + xScale.bandwidth()] as any)
+      return subScale.domain().map((d: any, i: number) => ({
         key: key + d + i,
         x: subScale(d),
         y: yScale(series[d]),

@@ -3,13 +3,10 @@ import { motion } from "framer-motion"
 import { monthsMap } from "../../../utility/maps"
 import { capitalizeFirstChar } from "../../../utility/utility"
 
-export const MotionFilterTag = ({ filter, value, setFilter }) => {
+export const MotionFilterTag = ({ filter, value, setFilter }: any) => {
   return (
     <motion.div
       key={filter}
-      // initial={{ opacity: 0.5 }}
-      // animate={{ opacity: 1 }}
-      // exit={{ opacity: 0.5 }}
       layout
     >
       <Tag size='lg' borderRadius='full' variant='solid' colorScheme='teal'>

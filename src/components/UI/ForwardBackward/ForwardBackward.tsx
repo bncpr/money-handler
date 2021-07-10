@@ -5,9 +5,16 @@ import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai"
 const Back = <Icon as={AiFillCaretLeft} />
 const Forward = <Icon as={AiFillCaretRight} />
 
-export const BackButton = ({ onDec, isDisabledDec }) => {
+export const BackButton = ({
+  onDec,
+  isDisabledDec,
+}: {
+  onDec: () => void
+  isDisabledDec: boolean
+}) => {
   return (
     <IconButton
+      aria-label='back'
       icon={Back}
       variant='ghost'
       fontSize={30}
@@ -18,9 +25,16 @@ export const BackButton = ({ onDec, isDisabledDec }) => {
   )
 }
 
-export const ForwardButton = ({ onInc, isDisabledInc }) => {
+export const ForwardButton = ({
+  onInc,
+  isDisabledInc,
+}: {
+  onInc: () => void
+  isDisabledInc: boolean
+}) => {
   return (
     <IconButton
+      aria-label='forward'
       icon={Forward}
       variant='ghost'
       fontSize={30}
@@ -28,31 +42,5 @@ export const ForwardButton = ({ onInc, isDisabledInc }) => {
       isDisabled={isDisabledInc}
       size='sm'
     />
-  )
-}
-
-export const ForwardBackward = ({
-  onDec,
-  onInc,
-  isDisabledInc,
-  isDisabledDec,
-}) => {
-  return (
-    <>
-      <IconButton
-        icon={Back}
-        variant='ghost'
-        fontSize={30}
-        onClick={onDec}
-        isDisabled={isDisabledDec}
-      />
-      <IconButton
-        icon={Forward}
-        variant='ghost'
-        fontSize={30}
-        onClick={onInc}
-        isDisabled={isDisabledInc}
-      />
-    </>
   )
 }

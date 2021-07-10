@@ -2,22 +2,12 @@ import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { addProp } from "remeda"
 import { Entry } from "../../types/Entry"
-
-type SortValue = "ascend" | "descend" | ""
-
-interface SortState {
-  date: SortValue
-  value: SortValue
-  payer: SortValue
-  category: SortValue
-}
-
-type SortField = keyof SortState
-
-interface SortedValueState {
-  field: SortField | ""
-  value: SortValue
-}
+import {
+  SortState,
+  SortedValueState,
+  SortField,
+  SortValue,
+} from "../../types/SortValue"
 
 const initialState: SortState = {
   date: "",

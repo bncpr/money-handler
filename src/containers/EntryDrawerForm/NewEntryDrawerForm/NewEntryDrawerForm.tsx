@@ -12,8 +12,10 @@ import { useFormik } from "formik"
 import * as R from "ramda"
 import { useRef } from "react"
 import { useDispatch } from "react-redux"
+import { EntryForm } from "../../../components/UI/Form/EntryForm/EntryForm"
 import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
 import { postNewEntryThunk } from "../../../store/thunks/postNewEntryThunk"
+import { Entry } from "../../../types/Entry"
 import { entrySchema } from "../modules/entrySchema"
 
 const initialValues = {
@@ -23,9 +25,12 @@ const initialValues = {
   category: "",
   tags: [],
   more: "",
+  id: "",
+  month: "",
+  year: "",
 }
 
-const addYearAndMonthProps = values => {
+const addYearAndMonthProps = (values: Entry) => {
   const [y, m] = values.date.split("-")
   return R.pipe(R.assoc("year", y), R.assoc("month", m))(values)
 }
@@ -36,10 +41,9 @@ export const NewEntryDrawerForm = ({
   placement,
   header,
   fields,
-  component: Component,
-}) => {
+}: any) => {
   const dispatch = useDispatch()
-  const initialFocusRef = useRef()
+  const initialFocusRef = useRef<HTMLElement>(null)
 
   const onClose = () => {
     closeDrawer()
@@ -55,7 +59,7 @@ export const NewEntryDrawerForm = ({
         dispatch(postNewEntryThunk({ entry }))
         formik.resetForm()
         resetAddedFields()
-        initialFocusRef.current.focus()
+        initialFocusRef.current?.focus()
       }, 0)
     },
   })
@@ -82,7 +86,7 @@ export const NewEntryDrawerForm = ({
         <DrawerHeader>{header}</DrawerHeader>
 
         <DrawerBody>
-          <Component
+          <EntryForm
             formik={formik}
             fields={fields}
             addedFields={addedFields}
@@ -98,7 +102,8 @@ export const NewEntryDrawerForm = ({
           </Button>
           <Button
             colorScheme='green'
-            onClick={formik.handleSubmit}
+            type='submit'
+            form='entry-form'
             isLoading={formik.isSubmitting}
           >
             Submit
