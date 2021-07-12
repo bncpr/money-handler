@@ -6,7 +6,7 @@ import {
   MenuButton,
   MenuItemOption,
   MenuList,
-  MenuOptionGroup
+  MenuOptionGroup,
 } from "@chakra-ui/react"
 import { monthsMapFull } from "../../utility/maps"
 
@@ -16,7 +16,7 @@ export const BreadCrumbsSelect = ({
   label,
   field = [],
   onChange,
-}) => {
+}: any) => {
   return (
     <HStack spacing={1}>
       <ChevronRightIcon
@@ -39,7 +39,7 @@ export const BreadCrumbsSelect = ({
 
             <MenuList>
               <MenuOptionGroup value={label} onChange={onChange}>
-                {field.map(val => (
+                {field.map((val: string) => (
                   <MenuItemOption key={val} value={val} onClick={onClose}>
                     {value === "month" ? monthsMapFull.get(val) : val}
                   </MenuItemOption>

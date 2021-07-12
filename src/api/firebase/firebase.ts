@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app"
 import {
   createUserWithEmailAndPassword,
   getAuth,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
 } from "firebase/auth"
 import {
   getDatabase,
@@ -10,7 +10,7 @@ import {
   push,
   ref,
   remove,
-  update
+  update,
 } from "firebase/database"
 
 const firebaseConfig = {
@@ -29,22 +29,24 @@ initializeApp(firebaseConfig)
 
 export const auth = getAuth()
 
-export const signInUser = (email, password) =>
+export const signInUser = (email: string, password: string) =>
   signInWithEmailAndPassword(auth, email, password)
 
-export const createUser = (email, password) =>
+export const createUser = (email: string, password: string) =>
   createUserWithEmailAndPassword(auth, email, password)
 
 export const db = getDatabase()
 
-
-export const removeEntry = (uid, entryId) =>
+export const removeEntry = (uid: string, entryId: string) =>
   remove(ref(db, `users/${uid}/entries/${entryId}`))
 
-export const updateUserFields = (uid, updates) =>
+export const updateUserFields = (uid: string, updates: object) =>
   update(ref(db, `users/${uid}`), updates)
 
-export const pushNewEntry = uid => push(ref(db, `users/${uid}/entries`))
+export const pushNewEntry = (uid: string) =>
+  push(ref(db, `users/${uid}/entries`))
 
-export const getEntriesObserver = (uid, callback) =>
-  onValue(ref(db, `users/${uid}/entries`), callback)
+export const getEntriesObserver = (
+  uid: string,
+  callback: (...args: any) => void,
+) => onValue(ref(db, `users/${uid}/entries`), callback)

@@ -1,6 +1,5 @@
 import { format } from "d3-format"
 import * as d3 from "d3-shape"
-import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
 import { ChartBox } from "../ChartBox/ChartBox"
 
@@ -12,15 +11,17 @@ export const PieChart = ({
   colors,
   hovered,
   ...rest
-}) => {
+}: any) => {
   const r = Math.min(width, height) / 2 - margin
-  const pie = d3.pie().value(R.prop(1))(data)
+  const pie = d3.pie().value((pair: any) => pair[1])(data)
   const arc = d3.arc()
   const arcLabel = d3
     .arc()
     .innerRadius(r * 0.7)
     .outerRadius(r * 0.7)
-  const sum = R.sum(R.map(R.prop(1), data))
+  const sum = (data as [string, number][])
+    .map(pair => pair[1])
+    .reduce((a, b) => a + b, 0)
 
   return (
     <ChartBox
@@ -30,11 +31,10 @@ export const PieChart = ({
       mt={height / 2}
       {...rest}
     >
-      {pie.map(d => (
+      {pie.map((d: any) => (
         <path
           key={d.data[0]}
-          value={"" + d.value}
-          d={arc.innerRadius(0).outerRadius(r)(d)}
+          d={arc.innerRadius(0).outerRadius(r)(d) || undefined}
           stroke={hovered === d.data[0] ? "black" : ""}
           strokeWidth={hovered === d.data[0] ? "1px" : "0.5px"}
           fill={colors[d.data[0]]}
@@ -45,7 +45,7 @@ export const PieChart = ({
           )}`}</title>
         </path>
       ))}
-      {pie.map(d => {
+      {pie.map((d: any) => {
         const percent = Math.floor((d.value / sum) * 100)
         return (
           percent >= 5 && (

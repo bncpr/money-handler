@@ -10,7 +10,7 @@ import { LeftAxis } from "../LeftAxis"
 import { AverageStroke } from "../Stroke/AverageStroke/AverageStroke"
 import {
   getDomainXAlphanumerical,
-  getDomainXDescendingValue
+  getDomainXDescendingValue,
 } from "../_modules/getDomainX"
 
 export const VerticalBarChart = ({
@@ -27,7 +27,7 @@ export const VerticalBarChart = ({
   hovered,
   average,
   ...rest
-}) => {
+}: any) => {
   const innerHeight = height - margin.top - margin.bottom
   const innerWidth = width - margin.left - margin.right
 
@@ -35,13 +35,13 @@ export const VerticalBarChart = ({
     ? getDomainXDescendingValue(fields)
     : getDomainXAlphanumerical(fields)
 
-  const domainY = [0, fields.map(R.prop(1)).reduce(R.max, 0) || 1000]
+  const domainY = [0, fields.map((el: any[]) => el[1]).reduce(R.max, 0) || 1000]
 
   const xScale = scaleBand().domain(domainX).range([0, innerWidth]).padding(0.1)
 
   const yScale = scaleLinear().domain(domainY).range([innerHeight, 0])
 
-  const rects = fields.map(([key, value]) => ({
+  const rects = fields.map(([key, value]: [string, number]) => ({
     key,
     x: xScale(key),
     y: yScale(value),
@@ -54,7 +54,7 @@ export const VerticalBarChart = ({
   }))
 
   useEffect(() => {
-    rects.forEach(rect => {
+    rects.forEach((rect: any) => {
       select(rect.ref.current)
         .transition()
         .ease(easeCubicOut)

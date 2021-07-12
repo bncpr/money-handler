@@ -11,7 +11,7 @@ import {
   Spacer,
   useDisclosure,
   useMediaQuery,
-  VStack
+  VStack,
 } from "@chakra-ui/react"
 import { useEffect, useMemo, useState } from "react"
 import * as R from "remeda"
@@ -19,6 +19,7 @@ import { useAppSelector } from "../../hooks/reduxTypedHooks/reduxTypedHooks"
 import { Entry } from "../../types/Entry"
 import { GroupedTree } from "../../types/GroupedTree"
 import { monthsMapFull } from "../../utility/maps"
+import { sortCompMap } from "../../utility/sorting/sortCompMap"
 import { BreadCrumbsSelect } from "../BreadCrumbs/BreadCrumbsSelect"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
@@ -28,16 +29,16 @@ import { CategorySummaryTable } from "../Tables/CategorySummaryTable/CategorySum
 import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable"
 import {
   BackButton,
-  ForwardButton
+  ForwardButton,
 } from "../UI/ForwardBackward/ForwardBackward"
+import { getLastIndex } from "../../utility/functions/getLastIndex"
 import { getAverages } from "./modules"
-
-const getLastIndex = (arr: any[]) => arr.length - 1
 
 const RIGHT_DRAWER_WIDTH = 420
 
-const getAscendingKeys = (obj: Record<string, any> = {}) =>
-  Object.keys(obj).sort((a: string, b: string) => a.localeCompare(b))
+function getAscendingKeys(obj: Record<string, any> = {}) {
+  return Object.keys(obj).sort(sortCompMap.ascend.string)
+}
 
 const groupByCategory = R.groupBy(R.prop<Entry, keyof Entry>("category"))
 const getSums = R.createPipe(
@@ -153,19 +154,18 @@ export const Home = ({
   const [monthCategorySumsPairs, setMonthCategorySumsPairs] = useState<
     [string, number][]
   >([])
-
-  useEffect(() => {
-    const monthEntries = groupedMonths?.[year]?.[month] || []
-    const sums = getCategorySums(monthEntries)
-    setMonthCategorySumsPairs(R.toPairs(R.merge(initSubField, sums)))
-  }, [groupedMonths, year, month, initSubField])
-
   const [yearMonthCategorySumsPairs, setYearMonthCategorySumsPairs] = useState<
     [string, Record<string, number>][]
   >([])
 
   useEffect(() => {
-    const yearEntries = groupedTree.year?.[year] || []
+    const monthEntries = R.pathOr(groupedMonths, [year, month], [])
+    const sums = getCategorySums(monthEntries)
+    setMonthCategorySumsPairs(R.toPairs(R.merge(initSubField, sums)))
+  }, [groupedMonths, year, month, initSubField])
+
+  useEffect(() => {
+    const yearEntries = R.pathOr(groupedTree, ["year", year], [])
     const sums = R.pipe(
       yearEntries,
       R.groupBy(R.prop("month")),
@@ -175,16 +175,12 @@ export const Home = ({
     setYearMonthCategorySumsPairs(R.toPairs(sums))
   }, [initSubField, year, groupedTree])
 
-  const averages = getAverages(subField, yearMonthCategorySumsPairs)
-
-  const [view, setView] = useState("year")
-
   const [payerMonthSumsPairs, setPayerMonthSumsPairs] = useState<
     [string, number][]
   >([])
 
   useEffect(() => {
-    const monthEntries = groupedMonths?.[year]?.[month] || []
+    const monthEntries = R.pathOr(groupedMonths, [year, month], [])
     const sums = R.pipe(
       monthEntries,
       R.groupBy(R.prop("payer")),
@@ -192,6 +188,13 @@ export const Home = ({
     )
     setPayerMonthSumsPairs(R.toPairs(sums))
   }, [groupedMonths, year, month])
+
+  const averages = getAverages(subField, yearMonthCategorySumsPairs) as Record<
+    string,
+    number
+  >
+
+  const [view, setView] = useState("year")
 
   const { isOpen, onOpen, onClose } = useDisclosure({
     defaultIsOpen: true,

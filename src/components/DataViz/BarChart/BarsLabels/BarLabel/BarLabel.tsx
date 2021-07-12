@@ -1,7 +1,7 @@
 import { capitalizeFirstChar } from "../../../../../utility/utility"
 import { format } from "d3-format"
 
-export function BarLabel(props) {
+export function BarLabel(props: any) {
   return (
     <text
       transform={`translate(${props.d.x + props.d.width},${props.d.y})`}

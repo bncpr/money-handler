@@ -7,9 +7,9 @@ export const BottomAxis = ({
   showBy,
   fontSize,
   selected,
-}) => {
+}: any) => {
   if (!xScale) return null
-  return xScale.domain().map(tick => (
+  return xScale.domain().map((tick: string) => (
     <text
       key={tick}
       x={xScale(tick) + xScale.bandwidth() / 2}
@@ -21,7 +21,7 @@ export const BottomAxis = ({
           ? `rotate(-15 ${xScale(tick) + xScale.bandwidth() / 2} ${
               height + yOffset
             })`
-          : null
+          : undefined
       }
       fontWeight={tick === selected ? "bold" : ""}
     >

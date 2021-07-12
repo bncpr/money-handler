@@ -8,6 +8,7 @@ import {
   SortField,
   SortValue,
 } from "../../types/SortValue"
+import { sortCompMap } from "../../utility/sorting/sortCompMap"
 
 const initialState: SortState = {
   date: "",
@@ -41,24 +42,15 @@ function sortEntries(field: SortField | "", value: SortValue, data: Entry[]) {
   if (field && value) {
     if (field === "value") {
       return [...data].sort(({ [field]: a }: Entry, { [field]: b }: Entry) =>
-        compMap[value].number(a, b),
+        sortCompMap[value].number(a, b),
       )
     } else {
       return [...data].sort(({ [field]: a }: Entry, { [field]: b }: Entry) =>
-        compMap[value].string(a, b),
+        sortCompMap[value].string(a, b),
       )
     }
   }
   return data
 }
 
-const compMap = {
-  ascend: {
-    number: (a: number, b: number) => a - b,
-    string: (a: string, b: string) => a.localeCompare(b),
-  },
-  descend: {
-    number: (a: number, b: number) => b - a,
-    string: (a: string, b: string) => b.localeCompare(a),
-  },
-} as const
+

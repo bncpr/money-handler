@@ -1,4 +1,4 @@
-import * as R from "ramda"
+import * as R from "remeda"
 import { useCallback, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { setLoadingFilter } from "../../store/slices/loadingSlice"
@@ -9,6 +9,7 @@ import {
   updateFilters,
   updateFilterStack,
 } from "./modules/modules"
+import { curry, isEmpty } from "ramda"
 
 const initialFilters = {
   year: "",
@@ -17,10 +18,10 @@ const initialFilters = {
   month: "",
 }
 
-export const useFilters = ({ groupedTree, entries }) => {
+export const useFilters = ({ groupedTree, entries }: any) => {
   const dispatch = useDispatch()
-  const [filterStack, setFilterStack] = useState([])
-  const [entriesStack, setEntriesStack] = useState([])
+  const [filterStack, setFilterStack] = useState<any>([])
+  const [entriesStack, setEntriesStack] = useState<any[]>([])
   const [filters, setFilters] = useState(initialFilters)
   const [filteredEntries, setFilteredEntries] = useState([])
   const [counts, setCounts] = useState({})
@@ -32,9 +33,7 @@ export const useFilters = ({ groupedTree, entries }) => {
 
   useEffect(() => {
     setFilteredEntries(
-      R.isEmpty(entriesStack)
-        ? entries
-        : R.prop("entries", R.last(entriesStack)),
+      isEmpty(entriesStack) ? entries : R.last(entriesStack).entries,
     )
 
     const t = setTimeout(() => {
@@ -49,18 +48,18 @@ export const useFilters = ({ groupedTree, entries }) => {
     setCounts(getUpdatedCounts(groupedTree, entriesStack, rest))
   }, [groupedTree, entriesStack])
 
-  const setFilter = R.curry((key, value) => {
+  const setFilter = curry((key, value) => {
     dispatch(setLoadingFilter(true))
     setFilters(updateFilters(key, value, filters))
     setTimeout(() => {
-      setFilterStack(updateFilterStack(key, value, filterStack))
+      setFilterStack(updateFilterStack(key, value, filterStack) as any)
     }, 0)
   })
 
   const resetFilters = useCallback(
     filters => {
       dispatch(setLoadingFilter(true))
-      setFilters(R.mergeRight(initialFilters, filters))
+      setFilters(R.merge(initialFilters, filters))
       setFilterStack(R.toPairs(filters) || [])
     },
     [dispatch],

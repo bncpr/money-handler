@@ -53,7 +53,7 @@ export const App = () => {
   const [isEmptyEntries, setIsEmptyEntries] = useState(false)
 
   useEffect(() => {
-    const unsubscribe = getEntriesObserver(uid, (snapshot: any) => {
+    const unsubscribe = getEntriesObserver(uid || "", (snapshot: any) => {
       setIsEmptyEntries(snapshot.exists() ? false : true)
       dispatch(updateEntries({ entries: snapshot.val() || {} }))
       setTimeout(() => {
