@@ -2,6 +2,7 @@ import { HamburgerIcon } from "@chakra-ui/icons"
 import { Box } from "@chakra-ui/layout"
 import { IconButton, Portal, Spinner, useMediaQuery } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
+import { DataSnapshot } from "firebase/database"
 import { AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
 import { shallowEqual } from "react-redux"
@@ -53,7 +54,7 @@ export const App = () => {
   const [isEmptyEntries, setIsEmptyEntries] = useState(false)
 
   useEffect(() => {
-    const unsubscribe = getEntriesObserver(uid || "", (snapshot: any) => {
+    const unsubscribe = getEntriesObserver(uid, (snapshot: DataSnapshot) => {
       setIsEmptyEntries(snapshot.exists() ? false : true)
       dispatch(updateEntries({ entries: snapshot.val() || {} }))
       setTimeout(() => {

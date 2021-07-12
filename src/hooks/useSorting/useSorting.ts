@@ -17,7 +17,7 @@ const initialState: SortState = {
   category: "",
 }
 
-export const useSorting = ({ data }: { data: Entry[] }) => {
+export const useSorting = (data: Entry[]) => {
   const [sorted, setSorted] = useState<Entry[]>([])
   const [sortedValue, setSortedValue] = useState<SortedValueState>({
     field: "",
@@ -25,17 +25,18 @@ export const useSorting = ({ data }: { data: Entry[] }) => {
   })
   const [sortState, setSortState] = useState(initialState)
 
-  const onChangeSort = R.curry((field: SortField, value: SortValue) => {
+  // fn_2 == curry two arguments
+  const onChangeSort_ = (field: SortField) => (value: SortValue) => {
     setSortState(addProp(initialState, field, value))
     setSortedValue({ field, value })
-  })
+  }
 
   useEffect(() => {
     const { field, value } = sortedValue
     setSorted(sortEntries(field, value, data))
   }, [data, sortedValue])
 
-  return { sorted, onChangeSort, sortState }
+  return { sorted, onChangeSort_, sortState }
 }
 
 function sortEntries(field: SortField | "", value: SortValue, data: Entry[]) {
@@ -52,5 +53,3 @@ function sortEntries(field: SortField | "", value: SortValue, data: Entry[]) {
   }
   return data
 }
-
-

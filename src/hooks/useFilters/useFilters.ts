@@ -1,15 +1,15 @@
-import * as R from "remeda"
+import { curry, isEmpty } from "ramda"
 import { useCallback, useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
+import * as R from "remeda"
 import { setLoadingFilter } from "../../store/slices/loadingSlice"
+import { useAppDispatch } from "../reduxTypedHooks/reduxTypedHooks"
 import {
   getEntriesStack,
   getRest,
   getUpdatedCounts,
   updateFilters,
-  updateFilterStack,
+  updateFilterStack
 } from "./modules/modules"
-import { curry, isEmpty } from "ramda"
 
 const initialFilters = {
   year: "",
@@ -19,7 +19,7 @@ const initialFilters = {
 }
 
 export const useFilters = ({ groupedTree, entries }: any) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [filterStack, setFilterStack] = useState<any>([])
   const [entriesStack, setEntriesStack] = useState<any[]>([])
   const [filters, setFilters] = useState(initialFilters)

@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth"
 import {
+  DataSnapshot,
   getDatabase,
   onValue,
   push,
@@ -47,6 +48,6 @@ export const pushNewEntry = (uid: string) =>
   push(ref(db, `users/${uid}/entries`))
 
 export const getEntriesObserver = (
-  uid: string,
-  callback: (...args: any) => void,
+  uid: string | null,
+  callback: (x: DataSnapshot) => void,
 ) => onValue(ref(db, `users/${uid}/entries`), callback)

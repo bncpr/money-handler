@@ -17,7 +17,7 @@ export const SortMenu = ({
   onChange,
 }: {
   value: SortValue
-  onChange: () => void
+  onChange: (s: string | string[]) => void
 }) => {
   return (
     <Menu isLazy={false}>

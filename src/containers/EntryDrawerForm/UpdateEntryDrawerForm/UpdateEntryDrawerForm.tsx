@@ -20,6 +20,7 @@ import {
   useAppSelector,
 } from "../../../hooks/reduxTypedHooks/reduxTypedHooks"
 import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
+import { useSuccessToast } from "../../../hooks/useSuccessToast/useSuccessToast"
 import { updateUserEntriesThunk } from "../../../store/thunks/updateUserEntriesThunk"
 import { Entry } from "../../../types/Entry"
 import { entrySchema } from "../modules/entrySchema"
@@ -54,6 +55,8 @@ export const UpdateEntryDrawerForm = ({
     onClose: onCloseAlert,
   } = useDisclosure()
 
+  const { showSuccessToast } = useSuccessToast()
+
   const formik = useFormik({
     initialValues,
     validationSchema: entrySchema,
@@ -64,9 +67,13 @@ export const UpdateEntryDrawerForm = ({
             entryId: entry.id,
             entry: values,
           }),
-        )
-        onCloseAlert()
-        onClose()
+        ).then(res => {
+          if (updateUserEntriesThunk.fulfilled.match(res)) {
+            showSuccessToast("Entry Updated")
+            onCloseAlert()
+            onClose()
+          }
+        })
       }, 0)
     },
   })

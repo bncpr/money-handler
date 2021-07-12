@@ -1,36 +1,31 @@
-import { createStandaloneToast } from "@chakra-ui/react"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { assoc } from "ramda"
 import { updateUserFields } from "../../api/firebase/firebase"
+import { Entry } from "../../types/Entry"
 import { showError } from "../slices/errorSlice"
 import { updateEntries } from "../slices/groupedEntriesSlice/groupedEntriesSlice"
+import { AppDispatch, RootState } from "../store"
 
-const toast = createStandaloneToast()
-
-export const updateUserEntriesThunk = createAsyncThunk(
+export const updateUserEntriesThunk = createAsyncThunk<
+  any,
+  { entryId: string; entry: Entry },
+  { state: RootState; dispatch: AppDispatch }
+>(
   "data/updateEntryInDb",
-  async ({ entryId, entry }: any, { getState, dispatch, rejectWithValue }) => {
+  async ({ entryId, entry }, { getState, dispatch }) => {
     const updates = {
       [`entries/${entryId}`]: entry,
     }
-    const uid = (getState() as any).authentication.uid
+    const uid = getState().authentication.uid
     try {
       if (!uid) {
-        const entries = (getState() as any).data.entries
+        const entries = getState().data.entries
         dispatch(updateEntries({ entries: assoc(entryId, entry, entries) }))
       } else {
         await updateUserFields(uid, updates)
       }
-      toast({
-        title: "Entry Updated",
-        status: "success",
-        isClosable: true,
-        duration: 1200,
-        variant: "solid",
-      })
     } catch (error) {
       dispatch(showError("Could not update entry"))
-      return rejectWithValue({ error: error.message })
     }
   },
 )

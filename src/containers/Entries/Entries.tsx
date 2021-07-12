@@ -33,6 +33,7 @@ import { useSorting } from "../../hooks/useSorting/useSorting"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
 import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
 import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
+import { useSuccessToast } from "../../hooks/useSuccessToast/useSuccessToast"
 
 const focusVariant = {
   none: { scale: 1 },
@@ -64,7 +65,7 @@ export const Entries = ({
 }: any) => {
   const dispatch = useAppDispatch()
 
-  const { sorted, onChangeSort, sortState } = useSorting({ data: surfaceData })
+  const { sorted, onChangeSort_, sortState } = useSorting(surfaceData)
 
   const {
     pageSize,
@@ -88,16 +89,21 @@ export const Entries = ({
 
   const [isOpen, setIsOpen] = useState<false | "edit" | "del" | "new">(false)
   const onClose = () => setIsOpen(false)
-  const onOpenEdit = () => setIsOpen("edit")
-  const onOpenDel = () => setIsOpen("del")
-  const onOpenNew = () => setIsOpen("new")
+  // fn_1 = curry one argument
+  const onOpen_ = (state: typeof isOpen) => () => setIsOpen(state)
 
   const [isDeleting, setIsDeleting] = useState(false)
+
+  const { showSuccessToast } = useSuccessToast()
 
   const deleteEntry = () => {
     setIsDeleting(true)
     setTimeout(() => {
-      dispatch(removeEntryFromDbThunk(pickedEntry))
+      dispatch(removeEntryFromDbThunk(pickedEntry)).then(res => {
+        if (removeEntryFromDbThunk.fulfilled.match(res)) {
+          showSuccessToast("Entry Deleted")
+        }
+      })
       onClose()
       setIsDeleting(false)
     }, 0)
@@ -150,7 +156,7 @@ export const Entries = ({
             pt={2}
           >
             <Button
-              onClick={onOpenNew}
+              onClick={onOpen_("new")}
               leftIcon={<AddIcon />}
               colorScheme='green'
               w='full'
@@ -171,21 +177,27 @@ export const Entries = ({
                     Date
                     <SortMenu
                       value={sortState.date}
-                      onChange={onChangeSort("date") as unknown as () => void}
+                      onChange={
+                        onChangeSort_("date") as (x: string | string[]) => void
+                      }
                     />
                   </Th>
                   <Th isNumeric>
                     Value
                     <SortMenu
                       value={sortState.value}
-                      onChange={onChangeSort("value") as unknown as () => void}
+                      onChange={
+                        onChangeSort_("value") as (x: string | string[]) => void
+                      }
                     />
                   </Th>
                   <Th>
                     Payer
                     <SortMenu
                       value={sortState.payer}
-                      onChange={onChangeSort("payer") as unknown as () => void}
+                      onChange={
+                        onChangeSort_("payer") as (x: string | string[]) => void
+                      }
                     />
                   </Th>
                   <Th>
@@ -193,7 +205,9 @@ export const Entries = ({
                     <SortMenu
                       value={sortState.category}
                       onChange={
-                        onChangeSort("category") as unknown as () => void
+                        onChangeSort_("category") as (
+                          x: string | string[],
+                        ) => void
                       }
                     />
                   </Th>
@@ -211,8 +225,8 @@ export const Entries = ({
                   <TableRow
                     key={d.id}
                     d={d}
-                    onDelete={onOpenDel}
-                    onEdit={onOpenEdit}
+                    onDelete={onOpen_("del")}
+                    onEdit={onOpen_("edit")}
                     onPick={onPickEntry}
                     categoryColors={categoryColors}
                     setFilter={setFilter}

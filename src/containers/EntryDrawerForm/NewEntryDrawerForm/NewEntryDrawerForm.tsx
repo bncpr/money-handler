@@ -11,14 +11,15 @@ import {
 import { useFormik } from "formik"
 import * as R from "ramda"
 import { useRef } from "react"
-import { useDispatch } from "react-redux"
 import { EntryForm } from "../../../components/UI/Form/EntryForm/EntryForm"
+import { useAppDispatch } from "../../../hooks/reduxTypedHooks/reduxTypedHooks"
 import { useAddedFields } from "../../../hooks/useAddedFields/useAddedFields"
+import { useSuccessToast } from "../../../hooks/useSuccessToast/useSuccessToast"
 import { postNewEntryThunk } from "../../../store/thunks/postNewEntryThunk"
 import { Entry } from "../../../types/Entry"
 import { entrySchema } from "../modules/entrySchema"
 
-const initialValues = {
+const initialValues: Entry = {
   date: new Date().toJSON().slice(0, 10),
   payer: "",
   value: 0,
@@ -42,7 +43,7 @@ export const NewEntryDrawerForm = ({
   header,
   fields,
 }: any) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const initialFocusRef = useRef<HTMLElement>(null)
 
   const onClose = () => {
@@ -50,16 +51,22 @@ export const NewEntryDrawerForm = ({
     formik.resetForm()
   }
 
+  const { showSuccessToast } = useSuccessToast()
+
   const formik = useFormik({
     initialValues,
     validationSchema: entrySchema,
     onSubmit: values => {
       const entry = addYearAndMonthProps(values)
       setTimeout(() => {
-        dispatch(postNewEntryThunk({ entry }))
-        formik.resetForm()
-        resetAddedFields()
-        initialFocusRef.current?.focus()
+        dispatch(postNewEntryThunk(entry)).then(res => {
+          if (postNewEntryThunk.fulfilled.match(res)) {
+            showSuccessToast("Entry Added")
+            formik.resetForm()
+            resetAddedFields()
+            initialFocusRef.current?.focus()
+          }
+        })
       }, 0)
     },
   })
