@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 import * as R from "ramda"
 import { removeEntry } from "../../api/firebase/firebase"
 import { showError } from "../slices/errorSlice"
-import { updateEntries } from "../slices/groupedEntriesSlice/groupedEntriesSlice"
+import { processEntries } from "./processEntries/processEntries"
 import { AppDispatch, RootState } from "../store"
 
 export const removeEntryFromDbThunk = createAsyncThunk<
@@ -14,7 +14,7 @@ export const removeEntryFromDbThunk = createAsyncThunk<
   try {
     if (!uid) {
       const entries = getState().data.entries
-      dispatch(updateEntries({ entries: R.omit([entryId], entries) }))
+      dispatch(processEntries({ entries: R.omit([entryId], entries) }))
     } else {
       await removeEntry(uid, entryId)
     }

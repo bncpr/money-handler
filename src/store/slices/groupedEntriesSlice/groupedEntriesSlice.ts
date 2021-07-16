@@ -1,15 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { DataSliceState } from "../../../types/DataSliceState"
 import { Entry } from "../../../types/Entry"
-import { DictEntryArray, GroupedTree } from "../../../types/GroupedTree"
-import { getGroupedMonths } from "./modules/getGroupedMonths"
-import { getFields, getInitialGroupedTree } from "./modules/modules"
+import { GroupedTree } from "../../../types/GroupedTree"
+import { signOut } from "../authenticationSlice"
 
 interface GroupedMonths {
-  [year: string]: DictEntryArray
+  [year: string]: Record<string, Entry[]>
 }
 
-export type SliceState = {
+export type GroupedEntriesSliceState = {
   entries: Entry[]
   groupedTree: GroupedTree
   groupedMonths: GroupedMonths
@@ -20,7 +18,7 @@ export type SliceState = {
   }
 }
 
-const initialState: SliceState = {
+const initialState: GroupedEntriesSliceState = {
   entries: [],
   groupedTree: { year: {}, payer: {}, category: {} },
   groupedMonths: {},
@@ -31,17 +29,12 @@ const groupedEntriesSlice = createSlice({
   name: "groupedEntries",
   initialState,
   reducers: {
-    updateEntries(state, action: PayloadAction<DataSliceState>) {
-      const entriesArr = Object.values(action.payload.entries)
-
-      const groupedTree = getInitialGroupedTree(entriesArr)
-      state.fields = getFields(groupedTree)
-      
-      state.groupedMonths = getGroupedMonths(groupedTree.year)
-
-      state.entries = entriesArr
-      state.groupedTree = groupedTree
+    updateEntries(_, action: PayloadAction<GroupedEntriesSliceState>) {
+      return action.payload
     },
+  },
+  extraReducers: {
+    [signOut.type]: () => initialState,
   },
 })
 

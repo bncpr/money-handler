@@ -1,12 +1,9 @@
-import * as R from "ramda"
 import { useEffect, useState } from "react"
 import { addProp } from "remeda"
 import { Entry } from "../../types/Entry"
 import {
-  SortState,
   SortedValueState,
-  SortField,
-  SortValue,
+  SortField, SortState, SortValue
 } from "../../types/SortValue"
 import { sortCompMap } from "../../utility/sorting/sortCompMap"
 

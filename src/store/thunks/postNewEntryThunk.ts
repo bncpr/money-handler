@@ -3,7 +3,7 @@ import * as R from "ramda"
 import { pushNewEntry, updateUserFields } from "../../api/firebase/firebase"
 import { Entry } from "../../types/Entry"
 import { showError } from "../slices/errorSlice"
-import { updateEntries } from "../slices/groupedEntriesSlice/groupedEntriesSlice"
+import { processEntries } from "./processEntries/processEntries"
 import { AppDispatch, RootState } from "../store"
 
 export const postNewEntryThunk = createAsyncThunk<
@@ -18,7 +18,7 @@ export const postNewEntryThunk = createAsyncThunk<
       const entryId = nanoid(5)
       const entryWithId = R.assoc("id", entryId, entry)
       dispatch(
-        updateEntries({
+        processEntries({
           entries: R.assoc(entryId, entryWithId, entries),
         }),
       )

@@ -3,7 +3,7 @@ import { assoc } from "ramda"
 import { updateUserFields } from "../../api/firebase/firebase"
 import { Entry } from "../../types/Entry"
 import { showError } from "../slices/errorSlice"
-import { updateEntries } from "../slices/groupedEntriesSlice/groupedEntriesSlice"
+import { processEntries } from "./processEntries/processEntries"
 import { AppDispatch, RootState } from "../store"
 
 export const updateUserEntriesThunk = createAsyncThunk<
@@ -20,7 +20,7 @@ export const updateUserEntriesThunk = createAsyncThunk<
     try {
       if (!uid) {
         const entries = getState().data.entries
-        dispatch(updateEntries({ entries: assoc(entryId, entry, entries) }))
+        dispatch(processEntries({ entries: assoc(entryId, entry, entries) }))
       } else {
         await updateUserFields(uid, updates)
       }

@@ -32,7 +32,7 @@ import { Filters as FiltersType } from "../../hooks/useFilters/useFilters"
 import { usePagination } from "../../hooks/usePagination/usePagination"
 import { useSorting } from "../../hooks/useSorting/useSorting"
 import { useSuccessToast } from "../../hooks/useSuccessToast/useSuccessToast"
-import { SliceState } from "../../store/slices/groupedEntriesSlice/groupedEntriesSlice"
+import { GroupedEntriesSliceState } from "../../store/slices/groupedEntriesSlice/groupedEntriesSlice"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
 import { Entry } from "../../types/Entry"
 import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
@@ -67,7 +67,7 @@ export const Entries = ({
   categoryColors,
 }: {
   surfaceData: Entry[]
-  fields: SliceState["fields"]
+  fields: GroupedEntriesSliceState["fields"]
   filters: FiltersType
   counts: any
   setFilter: any

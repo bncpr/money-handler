@@ -25,7 +25,7 @@ import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { hideError } from "./store/slices/errorSlice"
-import { updateEntries } from "./store/slices/groupedEntriesSlice/groupedEntriesSlice"
+import { processEntries } from "./store/thunks/processEntries/processEntries"
 import { setLoadingOff, setLoadingOn } from "./store/slices/loadingSlice"
 import { getRandomData } from "./utility/getRandomData"
 
@@ -56,7 +56,7 @@ export const App = () => {
   useEffect(() => {
     const unsubscribe = getEntriesObserver(uid, (snapshot: DataSnapshot) => {
       setIsEmptyEntries(snapshot.exists() ? false : true)
-      dispatch(updateEntries({ entries: snapshot.val() || {} }))
+      dispatch(processEntries({ entries: snapshot.val() || {} }))
       setTimeout(() => {
         dispatch(setLoadingOff())
       }, 0)
@@ -92,8 +92,10 @@ export const App = () => {
     setIsEmptyEntries(true)
     if (!signedIn && touchedAuth) {
       dispatch({ type: "app/makingRandomData" })
-      dispatch(updateEntries({ entries: getRandomData() }))
-      dispatch(setLoadingOff())
+      dispatch(processEntries({ entries: getRandomData() }))
+      setTimeout(() => {
+        dispatch(setLoadingOff())
+      }, 0)
     }
   }, [touchedAuth, signedIn, dispatch, resetFilters, resetColors])
 

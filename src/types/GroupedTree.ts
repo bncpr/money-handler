@@ -1,11 +1,7 @@
 import { Entry } from "./Entry"
 
-export type DictEntryArray = {
-  [x: string]: Entry[]
-}
-
 export type GroupedTree = {
-  year: DictEntryArray
-  payer: DictEntryArray
-  category: DictEntryArray
+  year: Record<string, Entry[]>
+  payer: Record<string, Entry[]>
+  category: Record<string, Entry[]>
 }

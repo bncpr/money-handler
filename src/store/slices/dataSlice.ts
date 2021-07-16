@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { DataSliceState } from "../../types/DataSliceState"
-import { updateEntries } from "./groupedEntriesSlice/groupedEntriesSlice"
+import { signOut } from "./authenticationSlice"
 
 const initialState: DataSliceState = {
   entries: {},
@@ -9,12 +9,15 @@ const initialState: DataSliceState = {
 const dataSlice = createSlice({
   name: "data",
   initialState,
-  reducers: {},
-  extraReducers: {
-    [updateEntries.type]: (state, { payload }) => {
-      state.entries = payload.entries
+  reducers: {
+    cacheEntries(_, action: PayloadAction<DataSliceState>) {
+      return action.payload
     },
+  },
+  extraReducers: {
+    [signOut.type]: () => initialState,
   },
 })
 
 export const dataReducer = dataSlice.reducer
+export const { cacheEntries } = dataSlice.actions
