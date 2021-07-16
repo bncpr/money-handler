@@ -8,7 +8,7 @@ import {
   getRest,
   getUpdatedCounts,
   updateFilters,
-  updateFilterStack
+  updateFilterStack,
 } from "./modules/modules"
 
 const initialFilters = {
@@ -17,6 +17,8 @@ const initialFilters = {
   category: "",
   month: "",
 }
+
+export type Filters = typeof initialFilters
 
 export const useFilters = ({ groupedTree, entries }: any) => {
   const dispatch = useAppDispatch()

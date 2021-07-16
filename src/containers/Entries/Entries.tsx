@@ -28,12 +28,15 @@ import { SortMenu } from "../../components/UI/Menu/SortMenu"
 import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
 import { TableRow } from "../../components/UI/Table/TableRow"
 import { useAppDispatch } from "../../hooks/reduxTypedHooks/reduxTypedHooks"
+import { Filters as FiltersType } from "../../hooks/useFilters/useFilters"
 import { usePagination } from "../../hooks/usePagination/usePagination"
 import { useSorting } from "../../hooks/useSorting/useSorting"
+import { useSuccessToast } from "../../hooks/useSuccessToast/useSuccessToast"
+import { SliceState } from "../../store/slices/groupedEntriesSlice/groupedEntriesSlice"
 import { removeEntryFromDbThunk } from "../../store/thunks/removeEntryFromDbThunk"
+import { Entry } from "../../types/Entry"
 import { NewEntryDrawerForm } from "../EntryDrawerForm/NewEntryDrawerForm/NewEntryDrawerForm"
 import { UpdateEntryDrawerForm } from "../EntryDrawerForm/UpdateEntryDrawerForm/UpdateEntryDrawerForm"
-import { useSuccessToast } from "../../hooks/useSuccessToast/useSuccessToast"
 
 const focusVariant = {
   none: { scale: 1 },
@@ -62,7 +65,18 @@ export const Entries = ({
   isLoading,
   filterStack,
   categoryColors,
-}: any) => {
+}: {
+  surfaceData: Entry[]
+  fields: SliceState["fields"]
+  filters: FiltersType
+  counts: any
+  setFilter: any
+  signedIn: boolean
+  isEmptyEntries: boolean
+  isLoading: boolean
+  filterStack: [string, string][]
+  categoryColors: { [x: string]: string }
+}) => {
   const dispatch = useAppDispatch()
 
   const { sorted, onChangeSort_, sortState } = useSorting(surfaceData)

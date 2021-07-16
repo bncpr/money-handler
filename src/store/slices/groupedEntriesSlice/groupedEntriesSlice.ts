@@ -9,7 +9,7 @@ interface GroupedMonths {
   [year: string]: DictEntryArray
 }
 
-type SliceState = {
+export type SliceState = {
   entries: Entry[]
   groupedTree: GroupedTree
   groupedMonths: GroupedMonths
