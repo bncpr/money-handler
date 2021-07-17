@@ -46,7 +46,9 @@ export const App = () => {
   useEffect(() => {
     dispatch(setLoadingOn())
     const unsubscribe = onAuthStateChanged(auth, user => {
-      dispatch(user ? signIn({ uid: user.uid, email: user.email }) : signOut())
+      dispatch(
+        user ? signIn({ uid: user.uid, email: user.email || "" }) : signOut(),
+      )
     })
     return () => unsubscribe()
   }, [dispatch])

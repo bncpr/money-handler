@@ -1,18 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import * as R from "remeda"
 
-interface AuthState {
-  signedIn: boolean
-  email: string | null
-  uid: string | null
-  touched: boolean
-}
-
-const initialState: AuthState = {
+const initialState = {
   signedIn: false,
-  email: null,
-  uid: null,
+  email: "",
+  uid: "",
   touched: false,
 }
+
+type AuthState = typeof initialState
 
 const authenticationSlice = createSlice({
   name: "authentication",
@@ -23,11 +19,8 @@ const authenticationSlice = createSlice({
       state.uid = action.payload.uid
       state.email = action.payload.email
     },
-    signOut(state) {
-      state.signedIn = false
-      state.email = null
-      state.uid = null
-      state.touched = true
+    signOut() {
+      return R.addProp(initialState, "touched", true)
     },
   },
 })
