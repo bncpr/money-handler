@@ -7,15 +7,13 @@ interface GroupedMonths {
   [year: string]: Record<string, Entry[]>
 }
 
+export type Fields = Record<"year" | "payer" | "category", string[]>
+
 export type GroupedEntriesSliceState = {
   entries: Entry[]
   groupedTree: GroupedTree
   groupedMonths: GroupedMonths
-  fields: {
-    year: string[]
-    payer: string[]
-    category: string[]
-  }
+  fields: Fields
 }
 
 const initialState: GroupedEntriesSliceState = {

@@ -28,7 +28,12 @@ import { SortMenu } from "../../components/UI/Menu/SortMenu"
 import { PagePanel } from "../../components/UI/PagePanel/PagePanel"
 import { TableRow } from "../../components/UI/Table/TableRow"
 import { useAppDispatch } from "../../hooks/reduxTypedHooks/reduxTypedHooks"
-import { Filters as FiltersType } from "../../hooks/useFilters/useFilters"
+import {
+  Counts,
+  FilterStack,
+  FiltersType,
+  SetFilter,
+} from "../../hooks/useFilters/useFilters"
 import { usePagination } from "../../hooks/usePagination/usePagination"
 import { useSorting } from "../../hooks/useSorting/useSorting"
 import { useSuccessToast } from "../../hooks/useSuccessToast/useSuccessToast"
@@ -54,6 +59,21 @@ const focusVariant = {
 
 const MotionBox = motion(Box)
 
+type EntriesProps = {
+  surfaceData: Entry[]
+  fields: GroupedEntriesSliceState["fields"]
+  filters: FiltersType
+  counts: Counts
+  setFilter: SetFilter
+  signedIn: boolean
+  isEmptyEntries: boolean
+  isLoading: boolean
+  filterStack: FilterStack
+  categoryColors: {
+    [x: string]: string
+  }
+}
+
 export const Entries = ({
   surfaceData,
   fields,
@@ -65,18 +85,7 @@ export const Entries = ({
   isLoading,
   filterStack,
   categoryColors,
-}: {
-  surfaceData: Entry[]
-  fields: GroupedEntriesSliceState["fields"]
-  filters: FiltersType
-  counts: any
-  setFilter: any
-  signedIn: boolean
-  isEmptyEntries: boolean
-  isLoading: boolean
-  filterStack: [string, string][]
-  categoryColors: { [x: string]: string }
-}) => {
+}: EntriesProps) => {
   const dispatch = useAppDispatch()
 
   const { sorted, onChangeSort_, sortState } = useSorting(surfaceData)
@@ -135,7 +144,7 @@ export const Entries = ({
       <GridItem colSpan={3} justifySelf='center'>
         <HStack>
           <AnimatePresence>
-            {filterStack.map(([key, value]: [string, string]) => (
+            {filterStack.map(([key, value]) => (
               <MotionFilterTag
                 key={key}
                 filter={key}

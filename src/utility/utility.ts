@@ -5,3 +5,5 @@ export const capitalizeFirstChar = (s: string) =>
 
 export const sortDescendList = R.sort(R.descend(R.identity))
 export const sortAscendList = R.sort(R.ascend(R.identity))
+
+export const getCurrentYearAndMonth = () => new Date().toJSON().slice(0, 11).split("-")

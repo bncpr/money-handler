@@ -1,5 +1,12 @@
 import { Stack } from "@chakra-ui/layout"
 import * as R from "ramda"
+import { FunctionComponent } from "react"
+import {
+  Counts,
+  FiltersType,
+  SetFilter,
+} from "../../hooks/useFilters/useFilters"
+import { Fields } from "../../store/slices/groupedEntriesSlice/groupedEntriesSlice"
 import { sortAscendList, sortDescendList } from "../../utility/utility"
 import { SelectMenu } from "../UI/Menu/SelectMenu"
 
@@ -28,14 +35,21 @@ const monthsArray = [
   ["12", "December"],
 ]
 
-export const Filters= ({
+type FilterProps = {
+  fields: Fields
+  filters: FiltersType
+  counts: Counts
+  setFilter: SetFilter
+}
+
+export const Filters: FunctionComponent<FilterProps> = ({
   children,
   fields,
   filters,
   counts,
   setFilter,
   ...rest
-}: any) => {
+}) => {
   return (
     <Stack width='full' {...rest}>
       {children}
@@ -43,7 +57,7 @@ export const Filters= ({
         buttonVal={filters.year}
         buttonDefault='Year'
         array={getTuples(sortDescendList(fields.year))}
-        onChange={setFilter("year")}
+        onChange={(val: string) => setFilter("year", val)}
         counts={counts.year || {}}
         {...selectStyle}
       />
@@ -51,7 +65,7 @@ export const Filters= ({
         buttonVal={filters.month}
         buttonDefault='Month'
         array={monthsArray}
-        onChange={setFilter("month")}
+        onChange={(val: string) => setFilter("month", val)}
         {...selectStyle}
         counts={counts.month || {}}
         isDisabled={filters.year === ""}
@@ -60,7 +74,7 @@ export const Filters= ({
         buttonVal={filters.payer}
         buttonDefault='Payer'
         array={getTuples(sortAscendList(fields.payer))}
-        onChange={setFilter("payer")}
+        onChange={(val: string) => setFilter("payer", val)}
         counts={counts.payer || {}}
         {...selectStyle}
       />
@@ -68,7 +82,7 @@ export const Filters= ({
         buttonVal={filters.category}
         buttonDefault='Category'
         array={getTuples(sortAscendList(fields.category))}
-        onChange={setFilter("category")}
+        onChange={(val: string) => setFilter("category", val)}
         counts={counts.category || {}}
         {...selectStyle}
       />
