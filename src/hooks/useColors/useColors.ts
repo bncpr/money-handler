@@ -12,7 +12,7 @@ function assignColors(
   )
 }
 
-type ColorsState = {
+export type ColorsState = {
   payerColors: { [x: string]: string }
   categoryColors: { [x: string]: string }
 }

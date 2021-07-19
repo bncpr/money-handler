@@ -33,6 +33,7 @@ import {
 } from "../UI/ForwardBackward/ForwardBackward"
 import { getLastIndex } from "../../utility/functions/getLastIndex"
 import { getAverages } from "./modules"
+import { ColorsState } from "../../hooks/useColors/useColors"
 
 const RIGHT_DRAWER_WIDTH = 420
 
@@ -47,19 +48,21 @@ const getSums = R.createPipe(
 )
 const getCategorySums = R.createPipe(groupByCategory, R.mapValues(getSums))
 
+type HomeProps = {
+  groupedTree: GroupedTree
+  colors: ColorsState
+  subField: string[]
+  isEmptyEntries: boolean
+  isSignedIn: boolean
+}
+
 export const Home = ({
   groupedTree,
   colors,
   subField,
   isEmptyEntries,
   isSignedIn,
-}: {
-  groupedTree: GroupedTree
-  colors: any
-  subField: string[]
-  isEmptyEntries: boolean
-  isSignedIn: boolean
-}) => {
+}: HomeProps) => {
   const isLoading = useAppSelector(state => state.loading.isLoading)
   const groupedMonths = useAppSelector(
     state => state.groupedEntries.groupedMonths,
