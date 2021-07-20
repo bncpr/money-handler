@@ -1,17 +1,31 @@
 import { format } from "d3-format"
 import * as d3 from "d3-shape"
+import { FunctionComponent } from "react"
+import { ColorsState } from "../../../hooks/useColors/useColors"
+import { Entry } from "../../../types/Entry"
 import { capitalizeFirstChar } from "../../../utility/utility"
 import { ChartBox } from "../ChartBox/ChartBox"
 
-export const PieChart = ({
+type PieChartProps = {
+  data: any
+  width: number
+  height: number
+  margin: number
+  colors: ColorsState["categoryColors"]
+  hovered: string
+  setHovered: (val: string) => void
+} & Record<string, any>
+
+export const PieChart: FunctionComponent<PieChartProps> = ({
   data,
   width,
   height,
   margin,
   colors,
   hovered,
+  setHovered,
   ...rest
-}: any) => {
+}) => {
   const r = Math.min(width, height) / 2 - margin
   const pie = d3.pie().value((pair: any) => pair[1])(data)
   const arc = d3.arc()
@@ -39,6 +53,8 @@ export const PieChart = ({
           strokeWidth={hovered === d.data[0] ? "1px" : "0.5px"}
           fill={colors[d.data[0]]}
           name={d.data[0]}
+          onMouseEnter={() => setHovered(d.data[0])}
+          onMouseOut={() => setHovered("")}
         >
           <title>{`${capitalizeFirstChar(d.data[0])}: ${format(",")(
             d.value,
@@ -54,6 +70,8 @@ export const PieChart = ({
               transform={`translate(${arcLabel.centroid(d)})`}
               textAnchor='middle'
               fontSize='12'
+              onMouseOver={() => setHovered(d.data[0])}
+              onMouseOut={() => setHovered("")}
             >
               <tspan fontWeight='bold' y='-0.3em'>
                 {d.data[0]}

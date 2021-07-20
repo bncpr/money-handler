@@ -28,6 +28,7 @@ import { hideError } from "./store/slices/errorSlice"
 import { processEntries } from "./store/thunks/processEntries/processEntries"
 import { setLoadingOff, setLoadingOn } from "./store/slices/loadingSlice"
 import { getRandomData } from "./utility/getRandomData"
+import { useWindowSize } from "./hooks/useWindowSize/useWindowSize"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
@@ -108,8 +109,10 @@ export const App = () => {
 
   const [isDesktop] = useMediaQuery("(min-width: 500px)")
 
+  const { width, height } = useWindowSize()
+
   return (
-    <Box>
+    <Box id='app'>
       <Portal>
         {(isLoading || isLoadingFilter) && (
           <Spinner
@@ -144,7 +147,7 @@ export const App = () => {
         </Toolbar>
       </Portal>
 
-      <Box pt='46px'>
+      <Box pt='46px' id='content' h={height}>
         <AnimatePresence exitBeforeEnter initial={false}>
           <Switch location={location} key={location.key}>
             <Route path='/about'>

@@ -12,16 +12,23 @@ import {
 import * as R from "ramda"
 import { capitalizeFirstChar } from "../../../utility/utility"
 
+type CategorySummaryTableProps = {
+  monthFields: [string, number][]
+  averages: {
+    [x: string]: number
+  }
+  hovered: string
+  setHovered: (val: string) => void
+  [x: string]: any
+}
+
 export const CategorySummaryTable = ({
   monthFields,
   averages,
   hovered,
+  setHovered,
   ...rest
-}: {
-  monthFields: [string, number][]
-  averages: { [x: string]: number }
-  hovered: string
-}) => {
+}: CategorySummaryTableProps) => {
   const sorted = R.sortWith(
     [R.descend(R.last), R.descend(el => averages[el[0]])],
     monthFields,
@@ -48,6 +55,8 @@ export const CategorySummaryTable = ({
                 key={key}
                 bg={hovered === key ? "gray.100" : ""}
                 transition='opacity ease 100ms 100ms'
+                onMouseOver={() => setHovered(key)}
+                onMouseOut={() => setHovered("")}
               >
                 <Td>{capitalizeFirstChar(key)}</Td>
 

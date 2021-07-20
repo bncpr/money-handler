@@ -1,23 +1,21 @@
-import { ChevronUpIcon } from "@chakra-ui/icons"
 import {
   Box,
   Button,
-  CloseButton,
   Grid,
   GridItem,
   Heading,
   HStack,
-  Slide,
   Spacer,
-  useDisclosure,
   useMediaQuery,
   VStack,
 } from "@chakra-ui/react"
 import { useEffect, useMemo, useState } from "react"
 import * as R from "remeda"
 import { useAppSelector } from "../../hooks/reduxTypedHooks/reduxTypedHooks"
+import { ColorsState } from "../../hooks/useColors/useColors"
 import { Entry } from "../../types/Entry"
 import { GroupedTree } from "../../types/GroupedTree"
+import { getLastIndex } from "../../utility/functions/getLastIndex"
 import { monthsMapFull } from "../../utility/maps"
 import { sortCompMap } from "../../utility/sorting/sortCompMap"
 import { BreadCrumbsSelect } from "../BreadCrumbs/BreadCrumbsSelect"
@@ -27,15 +25,12 @@ import { PieChart } from "../DataViz/PieChart/PieChart"
 import { NoEntriesModal } from "../NoEntriesModal/NoEntriesModal"
 import { CategorySummaryTable } from "../Tables/CategorySummaryTable/CategorySummaryTable"
 import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable"
+import { CardBox } from "../UI/Box/CardBox/CardBox"
 import {
   BackButton,
   ForwardButton,
 } from "../UI/ForwardBackward/ForwardBackward"
-import { getLastIndex } from "../../utility/functions/getLastIndex"
 import { getAverages } from "./modules"
-import { ColorsState } from "../../hooks/useColors/useColors"
-
-const RIGHT_DRAWER_WIDTH = 420
 
 function getAscendingKeys(obj: Record<string, any> = {}) {
   return Object.keys(obj).sort(sortCompMap.ascend.string)
@@ -199,41 +194,60 @@ export const Home = ({
 
   const [view, setView] = useState("year")
 
-  const { isOpen, onOpen, onClose } = useDisclosure({
-    defaultIsOpen: true,
-  })
+  const [isMedium, isSmall] = useMediaQuery([
+    "(max-width: 49em)",
+    "(max-width: 31em)",
+  ])
 
-  const [isMedium] = useMediaQuery(["(max-width: 1045px)"])
-
-  const chartWidth = isMedium ? 600 : 960
+  const chartWidth = isMedium ? (isSmall ? 350 : 600) : 960
   const chartHeight = isMedium ? 300 : 500
+
+  console.log(isMedium, isSmall)
 
   return isLoading ? null : (
     <Box py={3}>
       <NoEntriesModal isOpen={isEmptyEntries && !isLoading && isSignedIn} />
-      <Slide
-        in={isOpen}
-        direction='right'
-        style={{ zIndex: 10, maxWidth: RIGHT_DRAWER_WIDTH }}
+
+      <Grid
+        align='center'
+        templateColumns='1fr auto auto 1.5fr'
+        templateRows='auto 1fr'
+        // columnGap={3}
+        rowGap={4}
+        justifyItems='center'
+        alignItems='start'
+        h='full'
       >
-        <Box
-          top='46px'
-          position='fixed'
-          w={RIGHT_DRAWER_WIDTH}
-          bg='white'
-          h='calc(100% - 46px)'
-          overflow='auto'
-          overflowX='hidden'
-          shadow='base'
+        <CardBox
+          as={GridItem}
+          colStart={[2, 2, 1]}
+          rowStart={[4, 3, 2]}
+          colSpan={[2, 1, 1]}
+          p={3}
         >
-          <CloseButton
-            mr='auto'
-            ml={3}
-            my={3}
-            onClick={onClose}
-            pos='absolute'
+          <Heading size='sm' px={2} pb={2} fontWeight='semibold'>
+            Monthly Averages of {year}
+          </Heading>
+          <PieChart
+            width={250 - (isMedium ? 25 : 0)}
+            height={250 - (isMedium ? 25 : 0)}
+            margin={0}
+            data={R.toPairs(averages)}
+            colors={colors.categoryColors || {}}
+            hovered={hovered}
+            setHovered={setHovered}
+            shadow='none'
+            alignSelf='center'
           />
-          <VStack spacing={3} align='stretch' px={6} pt={4}>
+        </CardBox>
+
+        <CardBox
+          as={GridItem}
+          colStart={[2, 3, 4]}
+          rowStart={[3, 3, 2]}
+          colSpan={[2, 1, 1]}
+        >
+          <VStack spacing={3} px={6} py={4} alignItems='stretch'>
             <Heading size='sm' p={2} fontWeight='semibold' alignSelf='center'>
               {`${monthsMapFull.get(month)} ${year}`}
             </Heading>
@@ -242,50 +256,14 @@ export const Home = ({
               monthFields={monthCategorySumsPairs}
               averages={averages}
               hovered={hovered}
+              setHovered={setHovered}
             />
 
             <PayerSummaryTable payerMonthFields={payerMonthSumsPairs} />
-
-            <Heading size='sm' p={2} fontWeight='semibold'>
-              Monthly Averages of {year}
-            </Heading>
-
-            <PieChart
-              width={250}
-              height={250}
-              margin={0}
-              data={R.toPairs(averages)}
-              colors={colors.categoryColors || {}}
-              hovered={hovered}
-              shadow='none'
-              alignSelf='center'
-            />
           </VStack>
-        </Box>
-      </Slide>
+        </CardBox>
 
-      <Button
-        onClick={onOpen}
-        pos='absolute'
-        bottom='80%'
-        right='0'
-        transform='rotate(-90deg)'
-        transformOrigin='bottom right'
-        colorScheme='gray'
-        roundedBottom='none'
-        rightIcon={<ChevronUpIcon w={5} h={5} />}
-      >
-        Summary
-      </Button>
-
-      <Grid
-        mr={isOpen ? RIGHT_DRAWER_WIDTH + 20 : ""}
-        align='center'
-        templateColumns='1fr auto 1fr'
-        columnGap={3}
-        rowGap={4}
-      >
-        <GridItem as={HStack} colStart={2} px={2}>
+        <HStack as={GridItem} colStart={2} colSpan={2} px={6} w='full'>
           <BreadCrumbsSelect
             view='year'
             value='year'
@@ -303,7 +281,6 @@ export const Home = ({
             field={months}
             onChange={(val: string) => {
               setMonth(val)
-              onOpen()
               setView("month")
             }}
           />
@@ -316,59 +293,60 @@ export const Home = ({
             {view === "month" && "View Year"}
             {view === "year" && "View Month"}
           </Button>
-        </GridItem>
+        </HStack>
 
-        <GridItem rowStart={2} alignSelf='center' justifySelf='end'>
-          <BackButton onDec={onDecIndex} isDisabledDec={isDisabledDec} />
-        </GridItem>
-
-        <GridItem
-          colStart={3}
-          rowStart={2}
-          alignSelf='center'
-          justifySelf='start'
-        >
-          <ForwardButton onInc={onIncIndex} isDisabledInc={isDisabledInc} />
-        </GridItem>
-
-        {view === "month" && (
-          <GridItem colStart={2} rowStart={2}>
-            <VerticalBarChart
-              fields={monthCategorySumsPairs}
-              height={chartHeight}
-              width={chartWidth}
-              fieldName='category'
-              colors={colors.categoryColors || {}}
-              margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
-              sortByValue
-              subField={subField}
-              fontSize='0.9em'
-              setHovered={setHovered}
-              hovered={hovered}
-              average={averages[hovered]}
-            />
+        <Grid as={GridItem} colStart={2} colSpan={2} columnGap={2}>
+          <GridItem rowStart={2} alignSelf='center' justifySelf='end'>
+            <BackButton onDec={onDecIndex} isDisabledDec={isDisabledDec} />
           </GridItem>
-        )}
 
-        {view === "year" && (
-          <GridItem colStart={2} rowStart={2}>
-            <GroupedVerticalBarChart
-              fields={yearMonthCategorySumsPairs}
-              height={chartHeight}
-              width={chartWidth}
-              fieldName='month'
-              subFieldName='category'
-              subField={subField}
-              colors={colors.categoryColors || {}}
-              margin={{ top: 20, right: 20, bottom: 40, left: 55 }}
-              setHovered={setHovered}
-              hovered={hovered}
-              average={averages[hovered]}
-              month={month}
-              setMonth={setMonth}
-            />
+          {view === "month" && (
+            <GridItem colStart={2} rowStart={2}>
+              <VerticalBarChart
+                fields={monthCategorySumsPairs}
+                height={chartHeight}
+                width={chartWidth}
+                fieldName='category'
+                colors={colors.categoryColors || {}}
+                margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
+                sortByValue
+                subField={subField}
+                fontSize='0.9em'
+                setHovered={setHovered}
+                hovered={hovered}
+                average={averages[hovered]}
+              />
+            </GridItem>
+          )}
+
+          {view === "year" && (
+            <GridItem colStart={2} rowStart={2}>
+              <GroupedVerticalBarChart
+                fields={yearMonthCategorySumsPairs}
+                height={chartHeight}
+                width={chartWidth}
+                fieldName='month'
+                subFieldName='category'
+                subField={subField}
+                colors={colors.categoryColors || {}}
+                margin={{ top: 20, right: 20, bottom: 40, left: 55 }}
+                setHovered={setHovered}
+                hovered={hovered}
+                average={averages[hovered]}
+                month={month}
+                setMonth={setMonth}
+              />
+            </GridItem>
+          )}
+          <GridItem
+            colStart={3}
+            rowStart={2}
+            alignSelf='center'
+            justifySelf='start'
+          >
+            <ForwardButton onInc={onIncIndex} isDisabledInc={isDisabledInc} />
           </GridItem>
-        )}
+        </Grid>
       </Grid>
     </Box>
   )

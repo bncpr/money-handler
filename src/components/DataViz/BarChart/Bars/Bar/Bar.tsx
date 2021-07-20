@@ -6,7 +6,7 @@ export const Bar = ({ d, hovered, setHovered }: any) => {
     <rect
       as='rect'
       {...d}
-      onMouseEnter={() => setHovered(d.name)}
+      onMouseOver={() => setHovered(d.name)}
       onMouseOut={() => setHovered("")}
       style={{
         opacity: hovered && hovered !== d.name ? "0.4" : "1",
