@@ -11,7 +11,7 @@ import {
 import { FC } from "react"
 import { CardBox } from "../UI/Box/CardBox/CardBox"
 
-const Bold: FC = ({ children, ...rest }) => (
+const Bold: FC & Record<string, any> = ({ children, ...rest }) => (
   <Text as='span' fontWeight='semibold' {...rest}>
     {children}
   </Text>
@@ -50,7 +50,7 @@ export const About = () => {
               new Hooks-API.
             </ListItem>
             <ListItem>
-              <Bold>TypeScript</Bold> for type checking.
+              <Bold>TypeScript</Bold>.
             </ListItem>
             <ListItem>
               <Bold>Redux</Bold> for store management with the{" "}
@@ -72,9 +72,6 @@ export const About = () => {
             <ListItem>
               <Bold>Formik</Bold> for easy form state management and{" "}
               <Bold>Yup</Bold> for form validation.
-            </ListItem>
-            <ListItem>
-              <Bold>Ramda</Bold> for functional JS.
             </ListItem>
           </UnorderedList>
         </CardBox>
