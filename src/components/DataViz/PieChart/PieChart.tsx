@@ -2,7 +2,6 @@ import { format } from "d3-format"
 import * as d3 from "d3-shape"
 import { FunctionComponent } from "react"
 import { ColorsState } from "../../../hooks/useColors/useColors"
-import { Entry } from "../../../types/Entry"
 import { capitalizeFirstChar } from "../../../utility/utility"
 import { ChartBox } from "../ChartBox/ChartBox"
 

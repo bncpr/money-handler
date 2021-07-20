@@ -5,9 +5,7 @@ import {
   GridItem,
   Heading,
   HStack,
-  Spacer,
-  useMediaQuery,
-  VStack,
+  Spacer, VStack
 } from "@chakra-ui/react"
 import { useEffect, useMemo, useState } from "react"
 import * as R from "remeda"
@@ -28,7 +26,7 @@ import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable
 import { CardBox } from "../UI/Box/CardBox/CardBox"
 import {
   BackButton,
-  ForwardButton,
+  ForwardButton
 } from "../UI/ForwardBackward/ForwardBackward"
 import { getAverages } from "./modules"
 

@@ -1,6 +1,5 @@
-import { HamburgerIcon } from "@chakra-ui/icons"
 import { Box } from "@chakra-ui/layout"
-import { IconButton, Portal, Spinner, useMediaQuery } from "@chakra-ui/react"
+import { Portal, Spinner } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { DataSnapshot } from "firebase/database"
 import { AnimatePresence } from "framer-motion"
@@ -19,16 +18,15 @@ import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
 import {
   useAppDispatch,
-  useAppSelector,
+  useAppSelector
 } from "./hooks/reduxTypedHooks/reduxTypedHooks"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
 import { signIn, signOut } from "./store/slices/authenticationSlice"
 import { hideError } from "./store/slices/errorSlice"
-import { processEntries } from "./store/thunks/processEntries/processEntries"
 import { setLoadingOff, setLoadingOn } from "./store/slices/loadingSlice"
+import { processEntries } from "./store/thunks/processEntries/processEntries"
 import { getRandomData } from "./utility/getRandomData"
-import { useWindowSize } from "./hooks/useWindowSize/useWindowSize"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
