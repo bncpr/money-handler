@@ -194,16 +194,6 @@ export const Home = ({
 
   const [view, setView] = useState("year")
 
-  const [isMedium, isSmall] = useMediaQuery([
-    "(max-width: 49em)",
-    "(max-width: 31em)",
-  ])
-
-  const chartWidth = isMedium ? (isSmall ? 350 : 600) : 960
-  const chartHeight = isMedium ? 300 : 500
-
-  console.log(isMedium, isSmall)
-
   return isLoading ? null : (
     <Box py={3}>
       <NoEntriesModal isOpen={isEmptyEntries && !isLoading && isSignedIn} />
@@ -218,19 +208,13 @@ export const Home = ({
         alignItems='start'
         h='full'
       >
-        <CardBox
-          as={GridItem}
-          colStart={[2, 2, 1]}
-          rowStart={[4, 3, 2]}
-          colSpan={[2, 1, 1]}
-          p={3}
-        >
+        <CardBox as={GridItem} colStart={1} rowStart={2} p={3}>
           <Heading size='sm' px={2} pb={2} fontWeight='semibold'>
             Monthly Averages of {year}
           </Heading>
           <PieChart
-            width={250 - (isMedium ? 25 : 0)}
-            height={250 - (isMedium ? 25 : 0)}
+            width={250}
+            height={250}
             margin={0}
             data={R.toPairs(averages)}
             colors={colors.categoryColors || {}}
@@ -241,12 +225,7 @@ export const Home = ({
           />
         </CardBox>
 
-        <CardBox
-          as={GridItem}
-          colStart={[2, 3, 4]}
-          rowStart={[3, 3, 2]}
-          colSpan={[2, 1, 1]}
-        >
+        <CardBox as={GridItem} colStart={4} rowStart={2} colSpan={1}>
           <VStack spacing={3} px={6} py={4} alignItems='stretch'>
             <Heading size='sm' p={2} fontWeight='semibold' alignSelf='center'>
               {`${monthsMapFull.get(month)} ${year}`}
@@ -304,8 +283,8 @@ export const Home = ({
             <GridItem colStart={2} rowStart={2}>
               <VerticalBarChart
                 fields={monthCategorySumsPairs}
-                height={chartHeight}
-                width={chartWidth}
+                height={500}
+                width={960}
                 fieldName='category'
                 colors={colors.categoryColors || {}}
                 margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
@@ -323,8 +302,8 @@ export const Home = ({
             <GridItem colStart={2} rowStart={2}>
               <GroupedVerticalBarChart
                 fields={yearMonthCategorySumsPairs}
-                height={chartHeight}
-                width={chartWidth}
+                height={500}
+                width={960}
                 fieldName='month'
                 subFieldName='category'
                 subField={subField}

@@ -107,10 +107,6 @@ export const App = () => {
   const error = useAppSelector(state => state.error.error)
   const errorMessage = useAppSelector(state => state.error.errorMessage)
 
-  const [isDesktop] = useMediaQuery("(min-width: 500px)")
-
-  const { width, height } = useWindowSize()
-
   return (
     <Box id='app'>
       <Portal>
@@ -132,22 +128,11 @@ export const App = () => {
           errorMessage={errorMessage}
         />
         <Toolbar bgColor='purple.500' spacing={3}>
-          {isDesktop ? (
-            <NavigationItems signedIn={signedIn} pathname={pathname} />
-          ) : (
-            <IconButton
-              aria-label='menu'
-              icon={<HamburgerIcon w={6} h={6} />}
-              size='sm'
-              ml={2}
-              color='purple.200'
-              variant='unstyled'
-            />
-          )}
+          <NavigationItems signedIn={signedIn} pathname={pathname} />
         </Toolbar>
       </Portal>
 
-      <Box pt='46px' id='content' h={height}>
+      <Box pt='46px' id='content'>
         <AnimatePresence exitBeforeEnter initial={false}>
           <Switch location={location} key={location.key}>
             <Route path='/about'>
