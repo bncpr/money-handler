@@ -5,7 +5,8 @@ import {
   GridItem,
   Heading,
   HStack,
-  Spacer, VStack
+  Spacer,
+  VStack,
 } from "@chakra-ui/react"
 import { useEffect, useMemo, useState } from "react"
 import * as R from "remeda"
@@ -26,9 +27,11 @@ import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable
 import { CardBox } from "../UI/Box/CardBox/CardBox"
 import {
   BackButton,
-  ForwardButton
+  ForwardButton,
 } from "../UI/ForwardBackward/ForwardBackward"
 import { getAverages } from "./modules"
+import { MonthsSummaryTable } from "../Tables/MonthsSummaryTable/MonthsSummaryTable"
+import { GroupedVerticalStackedBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalStackedBarChart/GroupedVerticalStackedBarChart"
 
 function getAscendingKeys(obj: Record<string, any> = {}) {
   return Object.keys(obj).sort(sortCompMap.ascend.string)
@@ -153,6 +156,16 @@ export const Home = ({
   const [yearMonthCategorySumsPairs, setYearMonthCategorySumsPairs] = useState<
     [string, Record<string, number>][]
   >([])
+  const [monthlySumsPairs, setMonthlySumsPairs] = useState<[string, number][]>(
+    [],
+  )
+
+  useEffect(() => {
+    const yearlyMonths = R.pathOr(groupedMonths, [year], {})
+    const sums = R.mapValues(yearlyMonths, arr => getSums(arr))
+    setMonthlySumsPairs(R.toPairs(sums))
+    console.log(sums)
+  }, [groupedMonths, year])
 
   useEffect(() => {
     const monthEntries = R.pathOr(groupedMonths, [year, month], [])
@@ -169,6 +182,7 @@ export const Home = ({
       R.mapValues(obj => R.merge(initSubField, obj)),
     )
     setYearMonthCategorySumsPairs(R.toPairs(sums))
+    console.log(R.toPairs(sums))
   }, [initSubField, year, groupedTree])
 
   const [payerMonthSumsPairs, setPayerMonthSumsPairs] = useState<
@@ -226,17 +240,23 @@ export const Home = ({
         <CardBox as={GridItem} colStart={4} rowStart={2} colSpan={1}>
           <VStack spacing={3} px={6} py={4} alignItems='stretch'>
             <Heading size='sm' p={2} fontWeight='semibold' alignSelf='center'>
-              {`${monthsMapFull.get(month)} ${year}`}
+              {(view === "month" ? `${monthsMapFull.get(month)} ` : "") + year}
             </Heading>
+            {view === "month" && (
+              <>
+                <CategorySummaryTable
+                  monthFields={monthCategorySumsPairs}
+                  averages={averages}
+                  hovered={hovered}
+                  setHovered={setHovered}
+                />
 
-            <CategorySummaryTable
-              monthFields={monthCategorySumsPairs}
-              averages={averages}
-              hovered={hovered}
-              setHovered={setHovered}
-            />
-
-            <PayerSummaryTable payerMonthFields={payerMonthSumsPairs} />
+                <PayerSummaryTable payerMonthFields={payerMonthSumsPairs} />
+              </>
+            )}
+            {view === "year" && (
+              <MonthsSummaryTable monthlySumsPairs={monthlySumsPairs} />
+            )}
           </VStack>
         </CardBox>
 
@@ -298,7 +318,7 @@ export const Home = ({
 
           {view === "year" && (
             <GridItem colStart={2} rowStart={2}>
-              <GroupedVerticalBarChart
+              <GroupedVerticalStackedBarChart
                 fields={yearMonthCategorySumsPairs}
                 height={500}
                 width={960}
