@@ -5,10 +5,15 @@ import {
   GridItem,
   Heading,
   HStack,
+  Icon,
+  IconButton,
   Spacer,
-  VStack,
+  Text,
+  VStack
 } from "@chakra-ui/react"
+import { format } from "d3"
 import { useEffect, useMemo, useState } from "react"
+import { ImStatsBars, ImStatsBars2 } from "react-icons/im"
 import * as R from "remeda"
 import { useAppSelector } from "../../hooks/reduxTypedHooks/reduxTypedHooks"
 import { ColorsState } from "../../hooks/useColors/useColors"
@@ -19,6 +24,7 @@ import { monthsMapFull } from "../../utility/maps"
 import { sortCompMap } from "../../utility/sorting/sortCompMap"
 import { BreadCrumbsSelect } from "../BreadCrumbs/BreadCrumbsSelect"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
+import { GroupedVerticalStackedBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalStackedBarChart/GroupedVerticalStackedBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
 import { PieChart } from "../DataViz/PieChart/PieChart"
 import { NoEntriesModal } from "../NoEntriesModal/NoEntriesModal"
@@ -27,11 +33,9 @@ import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable
 import { CardBox } from "../UI/Box/CardBox/CardBox"
 import {
   BackButton,
-  ForwardButton,
+  ForwardButton
 } from "../UI/ForwardBackward/ForwardBackward"
 import { getAverages } from "./modules"
-import { MonthsSummaryTable } from "../Tables/MonthsSummaryTable/MonthsSummaryTable"
-import { GroupedVerticalStackedBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalStackedBarChart/GroupedVerticalStackedBarChart"
 
 function getAscendingKeys(obj: Record<string, any> = {}) {
   return Object.keys(obj).sort(sortCompMap.ascend.string)
@@ -156,16 +160,6 @@ export const Home = ({
   const [yearMonthCategorySumsPairs, setYearMonthCategorySumsPairs] = useState<
     [string, Record<string, number>][]
   >([])
-  const [monthlySumsPairs, setMonthlySumsPairs] = useState<[string, number][]>(
-    [],
-  )
-
-  useEffect(() => {
-    const yearlyMonths = R.pathOr(groupedMonths, [year], {})
-    const sums = R.mapValues(yearlyMonths, arr => getSums(arr))
-    setMonthlySumsPairs(R.toPairs(sums))
-    console.log(sums)
-  }, [groupedMonths, year])
 
   useEffect(() => {
     const monthEntries = R.pathOr(groupedMonths, [year, month], [])
@@ -182,7 +176,6 @@ export const Home = ({
       R.mapValues(obj => R.merge(initSubField, obj)),
     )
     setYearMonthCategorySumsPairs(R.toPairs(sums))
-    console.log(R.toPairs(sums))
   }, [initSubField, year, groupedTree])
 
   const [payerMonthSumsPairs, setPayerMonthSumsPairs] = useState<
@@ -204,7 +197,10 @@ export const Home = ({
     number
   >
 
-  const [view, setView] = useState("year")
+  const sum = Object.values(averages).reduce((a, b) => a + b, 0)
+
+  const [view, setView] = useState<"year" | "month">("year")
+  const [withStack, setWithStack] = useState(false)
 
   return isLoading ? null : (
     <Box py={3}>
@@ -235,6 +231,9 @@ export const Home = ({
             shadow='none'
             alignSelf='center'
           />
+          <Text fontSize='sm' textAlign='end'>
+            Total: {format(",")(sum)}
+          </Text>
         </CardBox>
 
         <CardBox as={GridItem} colStart={4} rowStart={2} colSpan={1}>
@@ -242,21 +241,14 @@ export const Home = ({
             <Heading size='sm' p={2} fontWeight='semibold' alignSelf='center'>
               {(view === "month" ? `${monthsMapFull.get(month)} ` : "") + year}
             </Heading>
-            {view === "month" && (
-              <>
-                <CategorySummaryTable
-                  monthFields={monthCategorySumsPairs}
-                  averages={averages}
-                  hovered={hovered}
-                  setHovered={setHovered}
-                />
+            <CategorySummaryTable
+              monthFields={monthCategorySumsPairs}
+              averages={averages}
+              hovered={hovered}
+              setHovered={setHovered}
+            />
 
-                <PayerSummaryTable payerMonthFields={payerMonthSumsPairs} />
-              </>
-            )}
-            {view === "year" && (
-              <MonthsSummaryTable monthlySumsPairs={monthlySumsPairs} />
-            )}
+            <PayerSummaryTable payerMonthFields={payerMonthSumsPairs} />
           </VStack>
         </CardBox>
 
@@ -282,13 +274,31 @@ export const Home = ({
             }}
           />
           <Spacer />
+          <IconButton
+            aria-label=''
+            icon={
+              <Icon
+                opacity='0.9'
+                w={5}
+                h={5}
+                as={!withStack ? ImStatsBars2 : ImStatsBars}
+              />
+            }
+            onClick={() => setWithStack(!withStack)}
+            isDisabled={view === "month"}
+            variant='ghost'
+          />
           <Button
-            alignSelf='flex-end'
-            onClick={() => setView(view === "month" ? "year" : "month")}
-            colorScheme='teal'
+            colorScheme={view === "year" ? "teal" : "gray"}
+            onClick={() => setView("year")}
           >
-            {view === "month" && "View Year"}
-            {view === "year" && "View Month"}
+            Year
+          </Button>
+          <Button
+            colorScheme={view === "month" ? "teal" : "gray"}
+            onClick={() => setView("month")}
+          >
+            Month
           </Button>
         </HStack>
 
@@ -316,7 +326,7 @@ export const Home = ({
             </GridItem>
           )}
 
-          {view === "year" && (
+          {view === "year" && withStack && (
             <GridItem colStart={2} rowStart={2}>
               <GroupedVerticalStackedBarChart
                 fields={yearMonthCategorySumsPairs}
@@ -335,6 +345,27 @@ export const Home = ({
               />
             </GridItem>
           )}
+
+          {view === "year" && !withStack && (
+            <GridItem colStart={2} rowStart={2}>
+              <GroupedVerticalBarChart
+                fields={yearMonthCategorySumsPairs}
+                height={500}
+                width={960}
+                fieldName='month'
+                subFieldName='category'
+                subField={subField}
+                colors={colors.categoryColors || {}}
+                margin={{ top: 20, right: 20, bottom: 40, left: 55 }}
+                setHovered={setHovered}
+                hovered={hovered}
+                average={averages[hovered]}
+                month={month}
+                setMonth={setMonth}
+              />
+            </GridItem>
+          )}
+
           <GridItem
             colStart={3}
             rowStart={2}

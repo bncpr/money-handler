@@ -1,20 +1,15 @@
 import { nanoid } from "@reduxjs/toolkit"
-import { easeCubicOut, select, stack, stackOrderDescending } from "d3"
+import { stack, stackOrderDescending } from "d3"
 import { scaleBand, scaleLinear } from "d3-scale"
-import * as R from "ramda"
-import { useMemo } from "react"
-import { createRef, useEffect } from "react"
-import { flatten, map, mapValues, pipe } from "remeda"
+import { createRef, useMemo } from "react"
+import { flatten, map, pipe } from "remeda"
 import { sortCompMap } from "../../../../../utility/sorting/sortCompMap"
 import { ChartBox } from "../../../ChartBox/ChartBox"
 import { Bars } from "../../Bars/Bars"
 import { BarsLabels } from "../../BarsLabels/BarsLabels"
 import { BottomAxis } from "../../BottomAxis"
 import { LeftAxis } from "../../LeftAxis"
-import { AverageStroke } from "../../Stroke/AverageStroke/AverageStroke"
-import { getDescendingKeys } from "../../_modules/getDescendingKeys"
 import { getDomainXAlphanumerical } from "../../_modules/getDomainX"
-import { getMaxOfSubFields } from "../getMaxOfSubFields"
 
 export const GroupedVerticalStackedBarChart = ({
   fields,
@@ -57,15 +52,14 @@ export const GroupedVerticalStackedBarChart = ({
 
   const stackedData = useMemo(
     () => stack().keys(subField).order(stackOrderDescending)(data),
-    [data],
+    [data, subField],
   )
-  // console.log(stackedData)
 
   const xScale = scaleBand().domain(domainX).range([0, innerWidth]).padding(0.1)
 
   const yScale = scaleLinear().domain(domainY).range([innerHeight, 0])
 
-  const _rects = useMemo(
+  const rects = useMemo(
     () =>
       pipe(
         stackedData,
@@ -85,7 +79,7 @@ export const GroupedVerticalStackedBarChart = ({
         }),
         flatten,
       ),
-    [stackedData],
+    [stackedData, yScale, xScale, colors, domainX],
   )
 
   // useEffect(() => {
@@ -112,13 +106,13 @@ export const GroupedVerticalStackedBarChart = ({
         selected={month}
       />
       <Bars
-        rects={_rects}
+        rects={rects}
         hovered={hovered}
         setHovered={setHovered}
         isInitiallyFlat={false}
         y={yScale(0)}
       />
-      <BarsLabels rects={_rects} hovered={hovered} fontSize={12} />
+      <BarsLabels rects={rects} hovered={hovered} fontSize={14} />
     </ChartBox>
   )
 }

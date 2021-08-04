@@ -1,6 +1,7 @@
 import { easeCubicOut, select } from "d3"
 import { scaleBand, scaleLinear } from "d3-scale"
 import * as R from "ramda"
+import { useMemo } from "react"
 import { createRef, useEffect } from "react"
 import { ChartBox } from "../../ChartBox/ChartBox"
 import { Bars } from "../Bars/Bars"
@@ -40,23 +41,30 @@ export const GroupedVerticalBarChart = ({
 
   const yScale = scaleLinear().domain(domainY).range([innerHeight, 0])
 
-  const rects = R.unnest(
-    fields.map(([key, series]: any) => {
-      const subScale = scaleBand()
-        .domain(getDescendingKeys(series))
-        .range([xScale(key), (xScale(key) as any) + xScale.bandwidth()] as any)
-      return subScale.domain().map((d: any, i: number) => ({
-        key: key + d + i,
-        x: subScale(d),
-        y: yScale(series[d]),
-        width: subScale.bandwidth(),
-        height: innerHeight - yScale(series[d]),
-        fill: colors[d],
-        name: d,
-        value: series[d],
-        ref: createRef(),
-      }))
-    }),
+  const rects = useMemo(
+    () =>
+      R.unnest(
+        fields.map(([key, series]: any) => {
+          const subScale = scaleBand()
+            .domain(getDescendingKeys(series))
+            .range([
+              xScale(key),
+              (xScale(key) as any) + xScale.bandwidth(),
+            ] as any)
+          return subScale.domain().map((d: any, i: number) => ({
+            key: key + d + i,
+            x: subScale(d),
+            y: yScale(series[d]),
+            width: subScale.bandwidth(),
+            height: innerHeight - yScale(series[d]),
+            fill: colors[d],
+            name: d,
+            value: series[d],
+            ref: createRef(),
+          }))
+        }),
+      ),
+    [fields, colors, yScale, innerHeight, xScale],
   )
 
   useEffect(() => {

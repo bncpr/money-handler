@@ -101,10 +101,6 @@ export const UpdateEntryDrawerForm = ({
     }
   }
 
-  useEffect(() => {
-    console.log(formik.errors)
-  }, [formik.errors])
-
   return (
     <Drawer isOpen={isOpen} onClose={onClose} placement={placement} size='md'>
       <DrawerOverlay />
