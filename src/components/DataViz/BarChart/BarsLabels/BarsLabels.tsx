@@ -1,6 +1,6 @@
 import { BarLabel } from "./BarLabel/BarLabel"
 
-export const BarsLabels = ({ rects, hovered, fontSize }: any) => {
+export const BarsLabels = ({ rects, hovered, setHovered, fontSize }: any) => {
   return rects.map(
     (d: any) =>
       hovered === d.name &&

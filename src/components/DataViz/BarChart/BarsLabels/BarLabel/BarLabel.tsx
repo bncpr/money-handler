@@ -8,6 +8,7 @@ export function BarLabel(props: any) {
       fontSize={props.fontSize}
       dy='0.5em'
       dx='0.2em'
+      pointerEvents="none"
     >
       <tspan fontWeight='bold' y='-0.5em'>
         {capitalizeFirstChar(props.d.name)}

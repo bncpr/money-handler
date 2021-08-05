@@ -1,8 +1,8 @@
 import { nanoid } from "@reduxjs/toolkit"
-import { stack, stackOrderDescending } from "d3"
+import { easeCubicOut, select, stack, stackOrderDescending } from "d3"
 import { scaleBand, scaleLinear } from "d3-scale"
-import { createRef, useMemo } from "react"
-import { flatten, map, pipe } from "remeda"
+import { createRef, useEffect, useMemo, useState } from "react"
+import { flatten, map } from "remeda"
 import { sortCompMap } from "../../../../../utility/sorting/sortCompMap"
 import { ChartBox } from "../../../ChartBox/ChartBox"
 import { Bars } from "../../Bars/Bars"
@@ -10,6 +10,7 @@ import { BarsLabels } from "../../BarsLabels/BarsLabels"
 import { BottomAxis } from "../../BottomAxis"
 import { LeftAxis } from "../../LeftAxis"
 import { getDomainXAlphanumerical } from "../../_modules/getDomainX"
+import { Rect } from "../../../../../types/Rect"
 
 export const GroupedVerticalStackedBarChart = ({
   fields,
@@ -59,40 +60,42 @@ export const GroupedVerticalStackedBarChart = ({
 
   const yScale = scaleLinear().domain(domainY).range([innerHeight, 0])
 
-  const rects = useMemo(
-    () =>
-      pipe(
-        stackedData,
-        map(layer => {
-          const key = layer.key
-          return layer.map((xy, i) => ({
-            key: nanoid(5),
-            x: xScale(domainX[i]),
-            y: yScale(xy[1]),
-            width: xScale.bandwidth(),
-            height: yScale(xy[0]) - yScale(xy[1]),
-            fill: colors[key],
-            name: key,
-            value: xy.data[key],
-            ref: createRef(),
-          }))
-        }),
-        flatten,
-      ),
-    [stackedData, yScale, xScale, colors, domainX],
-  )
+  const [rects, setRects] = useState<Rect[]>([])
 
-  // useEffect(() => {
-  //   _rects.forEach(rect => {
-  //     select(rect.ref.current)
-  //       .transition()
-  //       .ease(easeCubicOut)
-  //       .duration(400)
-  //       .attr("y", rect.y)
-  //       .attr("height", rect.height)
-  //   })
-  //   console.log(_rects)
-  // }, [_rects])
+  useEffect(() => {
+    const _rects = flatten(
+      map(stackedData, layer => {
+        const key = layer.key
+        return layer.map(
+          (xy, i) =>
+            ({
+              key: nanoid(5),
+              x: xScale(domainX[i]),
+              y: yScale(xy[1]),
+              width: xScale.bandwidth(),
+              height: yScale(xy[0]) - yScale(xy[1]),
+              fill: colors[key],
+              name: key,
+              value: xy.data[key],
+              ref: createRef(),
+            } as Rect),
+        )
+      }),
+    )
+    setRects(_rects)
+    // eslint-disable-next-line
+  }, [stackedData])
+
+  useEffect(() => {
+    rects.forEach(rect => {
+      select(rect.ref!.current as null)
+        .transition()
+        .ease(easeCubicOut)
+        .duration(400)
+        .attr("y", rect.y)
+        .attr("height", rect.height)
+    })
+  }, [rects])
 
   return (
     <ChartBox h={height} w={width} ml={margin.left} mt={margin.top} {...rest}>
@@ -109,10 +112,15 @@ export const GroupedVerticalStackedBarChart = ({
         rects={rects}
         hovered={hovered}
         setHovered={setHovered}
-        isInitiallyFlat={false}
+        isInitiallyFlat
         y={yScale(0)}
       />
-      <BarsLabels rects={rects} hovered={hovered} fontSize={14} />
+      <BarsLabels
+        rects={rects}
+        setHovered={setHovered}
+        hovered={hovered}
+        fontSize={14}
+      />
     </ChartBox>
   )
 }

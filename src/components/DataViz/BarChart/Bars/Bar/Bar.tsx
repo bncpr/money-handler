@@ -1,5 +1,3 @@
-import { format } from "d3-format"
-import { capitalizeFirstChar } from "../../../../../utility/utility"
 
 export const Bar = ({ d, hovered, setHovered }: any) => {
   return (
@@ -14,8 +12,6 @@ export const Bar = ({ d, hovered, setHovered }: any) => {
         transition: "all ease-out 700ms 100ms",
         transitionProperty: "opacity, stroke",
       }}
-    >
-      <title>{`${capitalizeFirstChar(d.name)}: ${format(",")(d.value)}`}</title>
-    </rect>
+    />
   )
 }
