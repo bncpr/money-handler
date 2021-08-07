@@ -130,7 +130,7 @@ export const App = () => {
         </Toolbar>
       </Portal>
 
-      <Box pt='46px' id='content'>
+      <Box as="main" pt='46px' id='content'>
         <AnimatePresence exitBeforeEnter initial={false}>
           <Switch location={location} key={location.key}>
             <Route path='/about'>
