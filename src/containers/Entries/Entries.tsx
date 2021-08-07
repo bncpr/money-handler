@@ -193,7 +193,7 @@ export const Entries = ({
       <GridItem colStart={2} rowStart={2} justifySelf='center'>
         {!isLoading && (
           <CardBox px={6} py={3}>
-            <Table variant='simple' size='md' w='max'>
+            <Table variant='simple' size='md'>
               <Thead>
                 <Tr>
                   <Th isNumeric>

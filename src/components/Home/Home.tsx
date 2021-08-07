@@ -2,15 +2,13 @@ import {
   Button,
   Grid,
   GridItem,
-  Heading,
-  HStack,
-  Icon,
+  Heading, Icon,
   IconButton,
   Spacer,
   Stack,
   useBreakpointValue,
   VStack,
-  Wrap,
+  Wrap
 } from "@chakra-ui/react"
 import { useEffect, useMemo, useState } from "react"
 import { ImStatsBars, ImStatsBars2 } from "react-icons/im"
@@ -32,7 +30,7 @@ import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable
 import { CardBox } from "../UI/Box/CardBox/CardBox"
 import {
   BackButton,
-  ForwardButton,
+  ForwardButton
 } from "../UI/ForwardBackward/ForwardBackward"
 import { getAverages } from "./modules"
 
