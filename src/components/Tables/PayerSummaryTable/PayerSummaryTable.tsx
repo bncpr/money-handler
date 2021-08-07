@@ -40,7 +40,7 @@ export const PayerSummaryTable = ({
               <Tr key={payer}>
                 <Td>{capitalizeFirstChar(payer)}</Td>
                 <Td isNumeric>{Math.round(value)}</Td>
-                <Td isNumeric whiteSpace='nowrap'>
+                <Td isNumeric whiteSpace={["normal", "nowrap"]}>
                   {`${deviation === 0 ? "" : sign} ${deviation}`}
                 </Td>
               </Tr>

@@ -61,7 +61,7 @@ export const CategorySummaryTable = ({
                 <Td>{capitalizeFirstChar(key)}</Td>
 
                 <Td isNumeric>{Math.round(value)}</Td>
-                <Td isNumeric whiteSpace='nowrap'>
+                <Td isNumeric whiteSpace={["normal", "nowrap"]}>
                   <Text as='span'>
                     {average && `${average}`}
                     {percent && (
@@ -69,7 +69,7 @@ export const CategorySummaryTable = ({
                     )}
                   </Text>
                 </Td>
-                <Td isNumeric whiteSpace='nowrap'>
+                <Td isNumeric whiteSpace={["normal", "nowrap"]}>
                   {`${
                     average < value ? "+" : average === value ? "" : "-"
                   } ${difference}`}

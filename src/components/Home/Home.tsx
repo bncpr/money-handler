@@ -1,7 +1,5 @@
 import {
-  Box,
   Button,
-  Flex,
   Grid,
   GridItem,
   Heading,
@@ -10,10 +8,10 @@ import {
   IconButton,
   Spacer,
   Stack,
-  Text,
+  useBreakpointValue,
   VStack,
+  Wrap,
 } from "@chakra-ui/react"
-import { format } from "d3"
 import { useEffect, useMemo, useState } from "react"
 import { ImStatsBars, ImStatsBars2 } from "react-icons/im"
 import * as R from "remeda"
@@ -28,7 +26,6 @@ import { BreadCrumbsSelect } from "../BreadCrumbs/BreadCrumbsSelect"
 import { GroupedVerticalBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalBarChart"
 import { GroupedVerticalStackedBarChart } from "../DataViz/BarChart/GroupedVerticalBarChart/GroupedVerticalStackedBarChart/GroupedVerticalStackedBarChart"
 import { VerticalBarChart } from "../DataViz/BarChart/VerticalBarChart/VerticalBarChart"
-import { PieChart } from "../DataViz/PieChart/PieChart"
 import { NoEntriesModal } from "../NoEntriesModal/NoEntriesModal"
 import { CategorySummaryTable } from "../Tables/CategorySummaryTable/CategorySummaryTable"
 import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable"
@@ -199,22 +196,44 @@ export const Home = ({
     number
   >
 
-  const sum = Object.values(averages).reduce((a, b) => a + b, 0)
-
   const [view, setView] = useState<"year" | "month">("year")
   const [withStack, setWithStack] = useState(false)
 
+  const buttonSize = useBreakpointValue({ base: "sm", sm: "md" })
+
+  const barChartHeight =
+    useBreakpointValue({ base: 180, sm: 390, lg: 500 }) || 500
+  const barChartWidth =
+    useBreakpointValue({ base: 310, sm: 750, lg: 960 }) || 960
+
+  const barChartMT = useBreakpointValue({ base: 10, md: 30 })
+  const barChartMB = useBreakpointValue({ base: 35, md: 50 })
+  const barChartML = useBreakpointValue({ base: 30, md: 55 })
+  const barChartMR = useBreakpointValue({ base: 15, md: 20 })
+
   return isLoading ? null : (
     <Stack
-      py={9}
+      py={[2, 8]}
       direction={{ base: "column", xl: "row" }}
-      spacing={12}
-      px={{ base: 2, md: 6, lg: 8, xl: 10 }}
+      spacing={[6, 12]}
+      px={{ base: 0, md: 4, lg: 6, xl: 8 }}
+      justify='center'
     >
       <NoEntriesModal isOpen={isEmptyEntries && !isLoading && isSignedIn} />
 
-      <Grid columnGap={2}>
-        <HStack as={GridItem} colStart={2} colSpan={2} px={6} w='full'>
+      <Grid
+        columnGap={[0, 2]}
+        templateColumns='1fr auto 1fr'
+        templateRows='auto 1fr'
+      >
+        <Wrap
+          as={GridItem}
+          colStart={[1, 2]}
+          colSpan={[3, 1]}
+          px={{ base: 1, sm: 6 }}
+          py={[1, 4]}
+          w='full'
+        >
           <BreadCrumbsSelect
             view='year'
             value='year'
@@ -241,8 +260,8 @@ export const Home = ({
             icon={
               <Icon
                 opacity='0.9'
-                w={5}
-                h={5}
+                w={[4, 5]}
+                h={[4, 5]}
                 as={!withStack ? ImStatsBars2 : ImStatsBars}
               />
             }
@@ -253,78 +272,89 @@ export const Home = ({
           <Button
             colorScheme={view === "year" ? "teal" : "gray"}
             onClick={() => setView("year")}
+            size={buttonSize}
           >
             Year
           </Button>
           <Button
             colorScheme={view === "month" ? "teal" : "gray"}
             onClick={() => setView("month")}
+            size={buttonSize}
           >
             Month
           </Button>
-        </HStack>
+        </Wrap>
+
         <GridItem rowStart={2} alignSelf='center' justifySelf='end'>
           <BackButton onDec={onDecIndex} isDisabledDec={isDisabledDec} />
         </GridItem>
 
-        {view === "month" && (
-          <GridItem colStart={2} rowStart={2}>
+        <GridItem colStart={2} rowStart={2} w='min'>
+          {view === "month" && (
             <VerticalBarChart
               fields={monthCategorySumsPairs}
-              height={500}
-              width={960}
+              height={barChartHeight}
+              width={barChartWidth}
               fieldName='category'
               colors={colors.categoryColors || {}}
-              margin={{ top: 20, right: 20, bottom: 50, left: 45 }}
+              margin={{
+                top: barChartMT,
+                right: barChartMR,
+                bottom: barChartMB,
+                left: barChartML,
+              }}
               sortByValue
               subField={subField}
-              fontSize='0.9em'
               setHovered={setHovered}
               hovered={hovered}
               average={averages[hovered]}
             />
-          </GridItem>
-        )}
-
-        {view === "year" && withStack && (
-          <GridItem colStart={2} rowStart={2}>
+          )}
+          {view === "year" && withStack && (
             <GroupedVerticalStackedBarChart
               fields={yearMonthCategorySumsPairs}
-              height={500}
-              width={960}
+              height={barChartHeight}
+              width={barChartWidth}
               fieldName='month'
               subFieldName='category'
               subField={subField}
               colors={colors.categoryColors || {}}
-              margin={{ top: 20, right: 20, bottom: 40, left: 55 }}
+              margin={{
+                top: barChartMT,
+                right: barChartMR,
+                bottom: barChartMB,
+                left: barChartML,
+              }}
               setHovered={setHovered}
               hovered={hovered}
               average={averages[hovered]}
               month={month}
               setMonth={setMonth}
             />
-          </GridItem>
-        )}
-
-        {view === "year" && !withStack && (
-          <GridItem colStart={2} rowStart={2}>
+          )}
+          {view === "year" && !withStack && (
             <GroupedVerticalBarChart
               fields={yearMonthCategorySumsPairs}
-              height={500}
-              width={960}
+              height={barChartHeight}
+              width={barChartWidth}
               fieldName='month'
               subFieldName='category'
               subField={subField}
               colors={colors.categoryColors || {}}
-              margin={{ top: 20, right: 20, bottom: 40, left: 55 }}
+              margin={{
+                top: barChartMT,
+                right: barChartMR,
+                bottom: barChartMB,
+                left: barChartML,
+              }}
               setHovered={setHovered}
               hovered={hovered}
               average={averages[hovered]}
               month={month}
               setMonth={setMonth}
             />
-          </GridItem>
-        )}
+          )}
+        </GridItem>
 
         <GridItem
           colStart={3}
@@ -336,8 +366,8 @@ export const Home = ({
         </GridItem>
       </Grid>
 
-      <CardBox alignSelf='center'>
-        <VStack spacing={3} px={6} py={4} alignItems='stretch'>
+      <CardBox alignSelf={{ base: "center", xl: "flex-end" }} my={[0, 6]}>
+        <VStack spacing={3} px={[2, 6]} py={4} alignItems='stretch'>
           <Heading size='sm' p={2} fontWeight='semibold' alignSelf='center'>
             {(view === "month" ? `${monthsMapFull.get(month)} ` : "") + year}
           </Heading>
@@ -351,26 +381,6 @@ export const Home = ({
           <PayerSummaryTable payerMonthFields={payerMonthSumsPairs} />
         </VStack>
       </CardBox>
-
-      {/* <CardBox as={GridItem} colStart={1} rowStart={2} p={3}>
-          <Heading size='sm' px={2} pb={2} fontWeight='semibold'>
-            Monthly Averages of {year}
-          </Heading>
-          <PieChart
-            width={250}
-            height={250}
-            margin={0}
-            data={R.toPairs(averages)}
-            colors={colors.categoryColors || {}}
-            hovered={hovered}
-            setHovered={setHovered}
-            shadow='none'
-            alignSelf='center'
-          />
-          <Text fontSize='sm' textAlign='end'>
-            Total: {format(",")(sum)}
-          </Text>
-        </CardBox> */}
     </Stack>
   )
 }

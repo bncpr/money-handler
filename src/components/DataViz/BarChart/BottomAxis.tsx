@@ -1,3 +1,4 @@
+import { useBreakpointValue } from "@chakra-ui/react"
 import { monthsMap } from "../../../utility/maps"
 
 export const BottomAxis = ({
@@ -5,9 +6,10 @@ export const BottomAxis = ({
   height,
   yOffset,
   showBy,
-  fontSize,
+  // fontSize,
   selected,
 }: any) => {
+  const fontSize = useBreakpointValue({ base: "0.7rem", sm: "1rem" })
   if (!xScale) return null
   return xScale.domain().map((tick: string) => (
     <text

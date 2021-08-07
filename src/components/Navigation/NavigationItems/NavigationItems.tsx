@@ -13,7 +13,7 @@ export const NavigationItems = ({
 }) => {
   return (
     <>
-      <NavigationItem path='/' current={pathname} label='HOME' ml={3} />
+      <NavigationItem path='/' current={pathname} label='HOME' ml={[1, 3]} />
       <NavigationItem path='/entries' current={pathname} label='ENTRIES' />
       <NavigationItem path='/about' current={pathname} label='ABOUT' />
       <Spacer />

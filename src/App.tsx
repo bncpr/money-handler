@@ -18,7 +18,7 @@ import { Entries } from "./containers/Entries/Entries"
 import { LoginForm } from "./containers/Login/LoginForm"
 import {
   useAppDispatch,
-  useAppSelector
+  useAppSelector,
 } from "./hooks/reduxTypedHooks/reduxTypedHooks"
 import { useColors } from "./hooks/useColors/useColors"
 import { useFilters } from "./hooks/useFilters/useFilters"
@@ -125,12 +125,12 @@ export const App = () => {
           onClose={() => dispatch(hideError())}
           errorMessage={errorMessage}
         />
-        <Toolbar bgColor='purple.500' spacing={3}>
+        <Toolbar bgColor='purple.500' spacing={[1, 3]}>
           <NavigationItems signedIn={signedIn} pathname={pathname} />
         </Toolbar>
       </Portal>
 
-      <Box as="main" pt='46px' id='content'>
+      <Box as='main' pt='46px' id='content'>
         <AnimatePresence exitBeforeEnter initial={false}>
           <Switch location={location} key={location.key}>
             <Route path='/about'>

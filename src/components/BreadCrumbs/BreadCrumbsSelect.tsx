@@ -7,6 +7,7 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
+  useBreakpointValue,
 } from "@chakra-ui/react"
 import { monthsMapFull } from "../../utility/maps"
 
@@ -17,11 +18,12 @@ export const BreadCrumbsSelect = ({
   field = [],
   onChange,
 }: any) => {
+  const buttonSize = useBreakpointValue({ base: "sm", sm: "md" })
   return (
     <HStack spacing={1}>
       <ChevronRightIcon
-        h={7}
-        w={7}
+        h={[5, 7]}
+        w={[5, 7]}
         // opacity={view !== value && "0.3"}
       />
       <Menu>
@@ -29,9 +31,9 @@ export const BreadCrumbsSelect = ({
           <>
             <MenuButton
               as={Button}
-              size='md'
+              size={buttonSize}
               variant='solid'
-              fontSize='xl'
+              // fontSize={["md", "xl"]}
               // opacity={view !== value && "0.3"}
             >
               {value === "month" ? monthsMapFull.get(label) : label}
