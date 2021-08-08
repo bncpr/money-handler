@@ -1,5 +1,14 @@
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons"
-import { MenuItem, Tag, TagLabel, Td, Text, Tr, Wrap } from "@chakra-ui/react"
+import {
+  MenuItem,
+  Tag,
+  TagLabel,
+  Td,
+  Text,
+  Tr,
+  useBreakpointValue,
+  Wrap,
+} from "@chakra-ui/react"
 import { nanoid } from "@reduxjs/toolkit"
 import { capitalizeFirstChar } from "../../../utility/utility"
 import { DownArrowMenu } from "../Menu/DownArrowMenu"
@@ -19,6 +28,7 @@ export const TableRow = ({
   setFilter,
   filters,
 }: any) => {
+  const tagSize = useBreakpointValue({ base: "md", sm: "lg" })
   return (
     <Tr _hover={{ boxShadow: "inner" }} onClick={() => onPick(d.id)}>
       <Td isNumeric>{formatDate(d.date)}</Td>
@@ -41,7 +51,7 @@ export const TableRow = ({
       <Td py={2}>
         <Tag
           rounded='full'
-          size='lg'
+          size={tagSize}
           bgColor={categoryColors[d.category] + "e6"}
           color='white'
           onClick={
@@ -63,7 +73,9 @@ export const TableRow = ({
         <Wrap maxW='256px'>
           {d.tags?.map((label: string) => (
             <Tag key={nanoid()} mx='2px'>
-              <TagLabel>{label}</TagLabel>
+              <TagLabel whiteSpace={{ base: "normal", md: "nowrap" }}>
+                {label}
+              </TagLabel>
             </Tag>
           ))}
         </Wrap>

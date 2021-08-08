@@ -1,14 +1,17 @@
 import {
   Button,
+  ButtonGroup,
+  Flex,
   Grid,
   GridItem,
-  Heading, Icon,
+  Heading,
+  Icon,
   IconButton,
   Spacer,
   Stack,
   useBreakpointValue,
   VStack,
-  Wrap
+  Wrap,
 } from "@chakra-ui/react"
 import { useEffect, useMemo, useState } from "react"
 import { ImStatsBars, ImStatsBars2 } from "react-icons/im"
@@ -30,7 +33,7 @@ import { PayerSummaryTable } from "../Tables/PayerSummaryTable/PayerSummaryTable
 import { CardBox } from "../UI/Box/CardBox/CardBox"
 import {
   BackButton,
-  ForwardButton
+  ForwardButton,
 } from "../UI/ForwardBackward/ForwardBackward"
 import { getAverages } from "./modules"
 
@@ -200,13 +203,13 @@ export const Home = ({
   const buttonSize = useBreakpointValue({ base: "sm", sm: "md" })
 
   const barChartHeight =
-    useBreakpointValue({ base: 180, sm: 390, lg: 500 }) || 500
+    useBreakpointValue({ base: 180, sm: 310, md: 450, lg: 500 }) || 500
   const barChartWidth =
-    useBreakpointValue({ base: 310, sm: 750, lg: 960 }) || 960
+    useBreakpointValue({ base: 310, sm: 500, md: 790, lg: 960 }) || 960
 
   const barChartMT = useBreakpointValue({ base: 10, md: 30 })
-  const barChartMB = useBreakpointValue({ base: 35, md: 50 })
-  const barChartML = useBreakpointValue({ base: 30, md: 55 })
+  const barChartMB = useBreakpointValue({ base: 35, sm: 45, md: 50 })
+  const barChartML = useBreakpointValue({ base: 30, sm: 40, md: 55 })
   const barChartMR = useBreakpointValue({ base: 15, md: 20 })
 
   return isLoading ? null : (
@@ -224,64 +227,67 @@ export const Home = ({
         templateColumns='1fr auto 1fr'
         templateRows='auto 1fr'
       >
-        <Wrap
+        <Stack
           as={GridItem}
           colStart={[1, 2]}
           colSpan={[3, 1]}
-          px={{ base: 1, sm: 6 }}
-          py={[1, 4]}
+          px={{ base: 6, sm: 6 }}
+          py={[4, 4]}
           w='full'
+          direction={["column", "row"]}
         >
-          <BreadCrumbsSelect
-            view='year'
-            value='year'
-            label={year}
-            field={years}
-            onChange={(val: string) => {
-              setYear(val)
-              setView("year")
-            }}
-          />
-          <BreadCrumbsSelect
-            view={view}
-            value='month'
-            label={month}
-            field={months}
-            onChange={(val: string) => {
-              setMonth(val)
-              setView("month")
-            }}
-          />
+          <ButtonGroup>
+            <BreadCrumbsSelect
+              view='year'
+              value='year'
+              label={year}
+              field={years}
+              onChange={(val: string) => {
+                setYear(val)
+                setView("year")
+              }}
+            />
+            <BreadCrumbsSelect
+              view={view}
+              value='month'
+              label={month}
+              field={months}
+              onChange={(val: string) => {
+                setMonth(val)
+                setView("month")
+              }}
+            />
+          </ButtonGroup>
           <Spacer />
-          <IconButton
-            aria-label=''
-            icon={
-              <Icon
-                opacity='0.9'
-                w={[4, 5]}
-                h={[4, 5]}
-                as={!withStack ? ImStatsBars2 : ImStatsBars}
-              />
-            }
-            onClick={() => setWithStack(!withStack)}
-            isDisabled={view === "month"}
-            variant='ghost'
-          />
-          <Button
-            colorScheme={view === "year" ? "teal" : "gray"}
-            onClick={() => setView("year")}
-            size={buttonSize}
-          >
-            Year
-          </Button>
-          <Button
-            colorScheme={view === "month" ? "teal" : "gray"}
-            onClick={() => setView("month")}
-            size={buttonSize}
-          >
-            Month
-          </Button>
-        </Wrap>
+          <ButtonGroup size={buttonSize}>
+            <IconButton
+              aria-label=''
+              icon={
+                <Icon
+                  opacity='0.9'
+                  w={[4, 5]}
+                  h={[4, 5]}
+                  as={!withStack ? ImStatsBars2 : ImStatsBars}
+                />
+              }
+              onClick={() => setWithStack(!withStack)}
+              isDisabled={view === "month"}
+              variant='ghost'
+            />
+            <Button
+              colorScheme={view === "year" ? "teal" : "gray"}
+              onClick={() => setView("year")}
+            >
+              Year
+            </Button>
+            <Button
+              colorScheme={view === "month" ? "teal" : "gray"}
+              onClick={() => setView("month")}
+            >
+              Month
+            </Button>
+          </ButtonGroup>
+        </Stack>
 
         <GridItem rowStart={2} alignSelf='center' justifySelf='end'>
           <BackButton onDec={onDecIndex} isDisabledDec={isDisabledDec} />
@@ -364,7 +370,11 @@ export const Home = ({
         </GridItem>
       </Grid>
 
-      <CardBox alignSelf={{ base: "center", xl: "flex-end" }} my={[0, 6]}>
+      <CardBox
+        alignSelf={{ base: "center", xl: "flex-end" }}
+        my={[0, 6]}
+        flexBasis={{ xl: "420" }}
+      >
         <VStack spacing={3} px={[2, 6]} py={4} alignItems='stretch'>
           <Heading size='sm' p={2} fontWeight='semibold' alignSelf='center'>
             {(view === "month" ? `${monthsMapFull.get(month)} ` : "") + year}

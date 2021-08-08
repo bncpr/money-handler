@@ -14,6 +14,7 @@ import {
   Thead,
   Tooltip,
   Tr,
+  useBreakpointValue,
   VStack,
 } from "@chakra-ui/react"
 import { AnimatePresence, motion } from "framer-motion"
@@ -134,6 +135,8 @@ export const Entries = ({
 
   const paginated = sorted.slice(page * pageSize, page * pageSize + pageSize)
 
+  const tableSize = useBreakpointValue({ base: "sm", md: "md" })
+
   return (
     <Grid
       templateColumns='1fr auto 1fr'
@@ -155,7 +158,11 @@ export const Entries = ({
           </AnimatePresence>
         </HStack>
       </GridItem>
-      <GridItem>
+      <GridItem
+        rowStart={{ base: 3, md: 2 }}
+        colSpan={{ base: 3, md: 1 }}
+        justifySelf={{ base: "center", md: "start" }}
+      >
         <VStack w='2xs' ml={12} spacing={5} align='stretch' justifySelf='start'>
           <CardBox p={6}>
             <Heading size='md' fontWeight='semibold' pl={3} pb={3}>
@@ -193,7 +200,7 @@ export const Entries = ({
       <GridItem colStart={2} rowStart={2} justifySelf='center'>
         {!isLoading && (
           <CardBox px={6} py={3}>
-            <Table variant='simple' size='md'>
+            <Table variant='simple' size={tableSize}>
               <Thead>
                 <Tr>
                   <Th isNumeric>
