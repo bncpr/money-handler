@@ -134,7 +134,6 @@ export const Entries = ({
   }
 
   const paginated = sorted.slice(page * pageSize, page * pageSize + pageSize)
-  console.log(page * pageSize, page * pageSize + pageSize)
 
   const tableSize = useBreakpointValue({ base: "sm", md: "md" })
 
