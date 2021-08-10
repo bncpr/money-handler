@@ -9,12 +9,16 @@ export const usePagination = (length: number, size: number) => {
     setPagesNum(Math.ceil(length / pageSize))
   }, [length, pageSize])
 
+  useEffect(() => {
+    console.log(pageSize, page, pagesNum)
+  }, [pageSize, page, pagesNum])
+
   const onIncPage = () => setPage(Math.min(page + 1, pagesNum))
   const onDecPage = () => setPage(Math.max(page - 1, 0))
 
   const onChangePageSize = (value: number) => {
     setPage(0)
-    setPageSize(value)
+    setPageSize(Number(value))
   }
 
   const resetPage = useCallback(() => setPage(0), [])

@@ -3,6 +3,15 @@ import { IconButton } from "@chakra-ui/react"
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons"
 import { NumberInputComp } from "../Form/NumberInputComp/NumberInputComp"
 
+type PagePanelProps = {
+  page: number
+  pagesNum: number
+  pageSize: number
+  onIncPage: () => void
+  onDecPage: () => void
+  changePageSize: (n: number) => void
+} & Record<string, any>
+
 export const PagePanel = ({
   page,
   pagesNum,
@@ -11,7 +20,7 @@ export const PagePanel = ({
   onDecPage,
   changePageSize,
   ...rest
-}: any) => {
+}: PagePanelProps) => {
   return (
     <HStack {...rest}>
       <IconButton
