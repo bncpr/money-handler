@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/layout"
-import { Portal, Spinner } from "@chakra-ui/react"
+import { Portal, Spinner, useDisclosure } from "@chakra-ui/react"
 import { onAuthStateChanged } from "@firebase/auth"
 import { DataSnapshot } from "firebase/database"
 import { AnimatePresence } from "framer-motion"
@@ -27,6 +27,7 @@ import { hideError } from "./store/slices/errorSlice"
 import { setLoadingOff, setLoadingOn } from "./store/slices/loadingSlice"
 import { processEntries } from "./store/thunks/processEntries/processEntries"
 import { getRandomData } from "./utility/getRandomData"
+import { WelcomeModal } from "./components/UI/Modal/WelcomeModal/WelcomeModal"
 
 const [currentYear, currentMonth] = new Date().toJSON().slice(0, 11).split("-")
 console.log(currentYear, currentMonth)
@@ -105,6 +106,19 @@ export const App = () => {
   const error = useAppSelector(state => state.error.error)
   const errorMessage = useAppSelector(state => state.error.errorMessage)
 
+  useEffect(() => {
+    if (!window.localStorage.getItem("didWelcome")) {
+      console.log("check")
+      onOpen()
+    }
+  })
+
+  const { isOpen, onClose, onOpen } = useDisclosure()
+  const onCloseWelcome = () => {
+    onClose()
+    window.localStorage.setItem("didWelcome", "true")
+  }
+
   return (
     <Box id='app'>
       <Portal>
@@ -128,6 +142,9 @@ export const App = () => {
         <Toolbar bgColor='purple.500' spacing={[1, 3]}>
           <NavigationItems signedIn={signedIn} pathname={pathname} />
         </Toolbar>
+        {!isLoading && (
+          <WelcomeModal isOpen={isOpen} onClose={onCloseWelcome} />
+        )}
       </Portal>
 
       <Box as='main' pt='46px' id='content'>
